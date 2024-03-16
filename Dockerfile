@@ -7,5 +7,7 @@ RUN mkdir /app/public && \
   npm install && \
   npm run docs:build --dest /app/public
 
+RUN ls -la /app/public
+
 FROM nginx:latest
 COPY --from=build /app/public /usr/share/nginx/html
