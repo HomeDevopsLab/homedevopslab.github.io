@@ -4,6 +4,8 @@ WORKDIR /app
 COPY doc/ /app/
 
 RUN npm install && npm run docs:build --dest public
+RUN ls -la .
+RUN pwd
 
 FROM nginx:latest
 COPY --from=build /app/public /usr/share/nginx/html
