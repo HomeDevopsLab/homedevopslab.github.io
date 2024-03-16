@@ -1,0 +1,16 @@
+stages:
+  - build
+
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t devkrolikowski/homelab-doc:$CI_COMMIT_TAG .
+    - docker login -u $DOCKERHUB_LOGIN -p $DOCKERHUB_PASSWORD
+    - docker push devkrolikowski/homelab-doc:$CI_COMMIT_TAG
+  only:
+    - tags
+  except:
+    - branches
