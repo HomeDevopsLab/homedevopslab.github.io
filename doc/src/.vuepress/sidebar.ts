@@ -2,24 +2,12 @@ import { sidebar } from "vuepress-theme-hope";
 
 export default sidebar({
   "/": [
-    "",
     {
-      text: "Demo",
+      text: "Proxmox",
       icon: "laptop-code",
-      prefix: "demo/",
-      link: "demo/",
+      prefix: "proxmox/",
+      link: "proxmox/",
       children: "structure",
-    },
-    {
-      text: "Docs",
-      icon: "book",
-      prefix: "guide/",
-      children: "structure",
-    },
-    {
-      text: "Slides",
-      icon: "person-chalkboard",
-      link: "https://plugin-md-enhance.vuejs.press/guide/content/revealjs/demo.html",
-    },
+    }
   ],
 });
