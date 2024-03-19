@@ -4,10 +4,11 @@ export default navbar([
   "/",
   {
     text: "Proxmox",
-    icon: "lightbulb",
+    icon: "server",
     prefix: "/proxmox/",
     children: [
       "vmtemplates",
+      "vmmachines"
     ]
   }
 ]);

@@ -4,7 +4,7 @@ export default sidebar({
   "/": [
     {
       text: "Proxmox",
-      icon: "laptop-code",
+      icon: "server",
       prefix: "proxmox/",
       link: "proxmox/",
       children: "structure",
