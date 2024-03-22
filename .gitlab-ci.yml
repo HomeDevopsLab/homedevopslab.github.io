@@ -7,7 +7,7 @@ build:
   services:
     - docker:dind
   script:
-    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin <<< $DOCKER_REGISTRY_TOKEN
+    -  echo "$DOCKER_REGISTRY_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - docker build -t ${CI_REGISTRY_IMAGE}:$CI_COMMIT_TAG .
     - docker push ${CI_REGISTRY_IMAGE}:$CI_COMMIT_TAG
   only:
