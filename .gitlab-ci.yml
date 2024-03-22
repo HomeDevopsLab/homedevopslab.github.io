@@ -7,9 +7,9 @@ build:
   services:
     - docker:dind
   script:
-    - docker build -t devkrolikowski/homelab-doc:$CI_COMMIT_TAG .
-    - docker login -u $DOCKERHUB_LOGIN -p $DOCKERHUB_PASSWORD
-    - docker push devkrolikowski/homelab-doc:$CI_COMMIT_TAG
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t ${CI_REGISTRY_IMAGE}:$CI_COMMIT_TAG .
+    - docker push ${CI_REGISTRY_IMAGE}:$CI_COMMIT_TAG
   only:
     - tags
   except:
