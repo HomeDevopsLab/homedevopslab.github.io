@@ -23,3 +23,4 @@ Do prawidłowego wykonania zadań w playbooku muszą zostać ustawione zmienne �
 
 Zmienne należy dostarczyć do użytego pipeline'u lub wyeksportować je do terminala lokalnego, jeśli będziemy uruchamiać playbooka ręcznie.
 
+TEST
