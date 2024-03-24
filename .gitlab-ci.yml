@@ -1,8 +1,8 @@
 stages:
-  - build
+  - deploy
 
-build:
-  stage: build
+publish to docker registry:
+  stage: deploy
   image: docker:latest
   services:
     - docker:dind
