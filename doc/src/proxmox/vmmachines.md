@@ -68,3 +68,22 @@ W CPU określamy ile wątków ma widzieć vm-ka. Okreslamy to za pomocą **vcpus
 ### Memory
 Ta opcja określa ile ramu ma mieć maszyna wirtualna. Wartość podajemy w MB
 
+### Network
+W HomeLAB'ie nie używam serwera DHCP. W związku z tym rozbudowałem sekcję network aby dało się skonfigurować sieć statycznie na vm-kach.
+
+* **ipconfig**: zawiera string w formacie zgodnym z modułem ansiblowym do proxmoxa
+* **dns**: adres IP serwera DNS.
+
+### SMBios
+Konfigurację SMBios wykunuję ze względu na sposób w jaki przygotowane zostały template'y maszyn wirtualnych. Wprowadzona konfiguracja ma za zadanie zmienić hostname na utworzonych z playbooka vmkach.
+
+* **uuid**: UUID maszyny wirtualnej. Możemy go wygenerować korzystając ze strony [Online UUID Generator](https://www.uuidgenerator.net/version4)
+* **serial**: zawiera string, który ustawia hostname na vm-ce
+
+## Wdrożenie zmian
+Wdrożenie zmian polega na przygotowaniu brancha, który będzie zawierał zaktualizowany plik `group_vars/proxmox_hosts`.  Na podstawie brancha powinien powstać pull request, który musi spełnić wymagania:
+
+* weryfikację przez pipeline czy nie zawiera błędów
+* code review
+
+Po zatwierdzeniu zmian i zmergowaniu ich do main trzeba ustawić nowy tag z wersją aby zainicjować wdrożenie na proxmoxie.
