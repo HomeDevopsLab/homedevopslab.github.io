@@ -83,6 +83,7 @@ export default hopeTheme({
       sup: true,
       tabs: true,
       vPre: true,
+      mermaid: true,
 
       // install chart.js before enabling it
       // chart: true,
