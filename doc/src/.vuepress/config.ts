@@ -6,7 +6,7 @@ export default defineUserConfig({
 
   lang: "en-US",
   title: "HomeLab Doc",
-  description: "Dokumentacja środowiska HomeLab",
+  // description: "Dokumentacja środowiska HomeLab",
 
   theme,
 
