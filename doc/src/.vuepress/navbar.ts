@@ -8,7 +8,8 @@ export default navbar([
     prefix: "/proxmox/",
     children: [
       "vmtemplates",
-      "vmmachines"
+      "vmmachines",
+      "template_list"
     ]
   }
 ]);
