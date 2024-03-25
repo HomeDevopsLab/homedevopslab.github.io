@@ -23,7 +23,7 @@ export default navbar([
   },
   {
     text: "CI/CD Environment",
-    icon: "infinitu",
+    icon: "infinity",
     prefix: "/cicd/",
     children: [
       "gitlab",
