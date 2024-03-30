@@ -22,6 +22,13 @@ export default sidebar({
       prefix: "cicd/",
       link: "cicd/",
       children: "structure",
+    },
+    {
+      text: "Security",
+      icon: "shield",
+      prefix: "security/",
+      link: "security/",
+      children: "structure",
     }
   ],
 });

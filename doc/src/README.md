@@ -35,4 +35,14 @@ highlights:
     highlights:
       - title: Praca ze środowiskiem w modelu GitOps
       - title: Automatyka wdrażania infrastruktury i oprogramowania
+  - header: Kluczowe zagadnienia
+    description: Rzeczy o których warto wiedzieć podczas pracy z HomeLAB
+    image: /assets/image/important.jpeg
+    bgImage: /assets/image/important-bg.jpeg
+    features:
+      - title: Logi Kontenerów
+        icon: binoculars
+        details: Jak skonfigurowane są logi w kontenerach dockera na VM-kach.
+        link: ./services/
+
 ---

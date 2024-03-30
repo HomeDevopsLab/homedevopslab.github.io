@@ -11,6 +11,10 @@ Lokalna usługa DNS powstała na potrzeby uruchamiania różnych aplikacji dzia�
 
 DNS uchuchomiony jest na vmce: `srv-dns3` w kontenerze dockera.
 
+| CPU | RAM | Disk | OS |
+| ----| ----| -----| ---|
+| 1 | 2GB | 20GB | ![ubuntu](/assets/image/ubuntu.png =20x) Ubuntu |
+
 ## Architektura
 
 ![Architektura lokalnego DNS](/assets/image/dns-arch.svg)
