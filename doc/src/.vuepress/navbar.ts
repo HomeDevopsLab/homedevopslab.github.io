@@ -29,5 +29,15 @@ export default navbar([
       "gitlab",
       "kubernetes",
     ]
+  },
+  {
+    text: "Security",
+    icon: "shield",
+    prefix: "/security/",
+    children: [
+      "backups",
+      "logs",
+      "monitoring",
+    ]
   }
 ]);
