@@ -23,3 +23,14 @@ Nawigację na stronie konfiguruje się w plikach:
 * doc/src/.vuepress/navbar.ts (menu górne)
 
 Różne opcje związane z pluginami, których możemy używać z tym frameworkiem, ich włączaniem bądź wyłączaniem robi się w pliku: `doc/src/.vuepress/theme.ts`.
+
+## Deployment
+
+Zmiany gotowe do publikacji generujemy w tens sposób
+
+```bash
+cd doc
+npm run docs:build
+```
+
+Polecenie wygeneruje katalog: `doc/src/.vuepress/dist` zawierający statyczne pliki html, css, js, które można podpiąć pod dowolny serwer www.
