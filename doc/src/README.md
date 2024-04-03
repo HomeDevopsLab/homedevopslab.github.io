@@ -51,5 +51,8 @@ highlights:
         icon: server
         details: Jakie parametry ma serwer Proxmox w HomeLabie
         link: ./proxmox/
-
+      - title: GitOps
+        icon: infinity
+        details: W jaki sposób wdrażam i zarządzam konfiguracją w HomeLAB
+        link: ./cicd/
 ---

@@ -7,4 +7,9 @@ category:
 tag:
   - cicd
 ---
-Lokalny DNS
+Gitlab jest miejscem przechowywania i wdrażania kodu IaC usług, które uruchomione są na platformie wirtualizacyjnej proxmox.
+
+## Architektura
+
+![Architektura IaC](/assets/image/gitlab-arch.svg)
+
