@@ -28,6 +28,7 @@ export default navbar([
     children: [
       "gitlab",
       "kubernetes",
+      "aws"
     ]
   },
   {

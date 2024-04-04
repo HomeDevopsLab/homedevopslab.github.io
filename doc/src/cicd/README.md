@@ -30,4 +30,8 @@ stateDiagram-v2
   Merge_Branch --> Deploy_Changes
 ```
 
+## Architektura IaC
+
+![Architektura IaC](/assets/image/gitlab-arch.svg)
+
 <Catalog />
