@@ -13,7 +13,7 @@ Gitlab jest miejscem przechowywania i wdrażania kodu IaC usług, które uruchom
 
 ![Architektura wdrożenia Gitlaba](/assets/image/gitlab-infra.svg)
 
-W HomeLAB'ie używam Gitlaba w wersji CE (Community Edition). Posiada on wystarczające funkcjonalności na potrzeby zbudowania pełnego środowiska CI/CD.
+W HomeLAB'ie używam Gitlaba w wersji CE (Community Edition). Posiada on wystarczające funkcjonalności na potrzeby zbudowania pełnego środowiska CI/CD. Posiada on zintegrowaną funkcjonalność registry dla kontenerów dockera oraz współpracującego z nim zewnętrznej instancji runnera. Runner uruchomiony jest na oddzielnej vm-ce w kontenerze dockerowym.
 
 ## Dostęp do repozytoriów
 Gitlab daje możliwość pracy z repozytoriami użyciem protokołów **https** oraz **ssh**. Dostęp ssh jest wygodniejszą formą dostępu, ale wymaga kilku czynności na początek.
@@ -97,7 +97,7 @@ kubectl exec --stdin --tty gitlab-55c57f6844-cvz95 -- /bin/bash
 root@gitlab-55c57f6844-cvz95:/#
 ```
 
-### Konfiguracja SMTP
+### SMTP
 
 Gitlab został skonfigurowany w taki sposób aby wysyłać maile na mój lokalny serwer SMTP.
 
@@ -110,3 +110,91 @@ gitlab_rails['gitlab_email_from'] = 'gitlab@angrybits.example'
 gitlab_rails['gitlab_email_display_name'] = 'Gitlab'
 gitlab_rails['gitlab_email_reply_to'] = 'noreply@angrybits.example'
 ```
+### Nginx (Gitlab)
+### Registry
+Serwer registry zintegrowany z gitlabem współdzieli z nim część konfiguracji. Jeśli chcemy aby kontenery dla określonego projektu były dostępne publicznie, musimy ustawić w opcjach repozytorium dostęp publiczny. Jeśli repozytorium będzie miało ustawiony poziom dostępu: **Internal**, dostęp do kontenerów będzie wymagał zalogowania się do registry. Taki poziom dostępu mają repozytoria w środowisku HomeLAB.
+
+```bash
+registry_external_url 'https://registry.lab'
+registry['enable'] = true
+gitlab_rails['registry_enabled'] = true
+gitlab_rails['registry_host'] = "registry.lab"
+gitlab_rails['api_url'] = "http://registry.lab"
+registry_nginx['enable'] = true
+registry_nginx['listen_port'] = 5050
+registry_nginx['listen_https'] = false
+registry_nginx['proxy_set_headers'] = {
+  "Host" => "$http_host",
+  "X-Real-IP" => "$remote_addr",
+  "X-Forwarded-For" => "$proxy_add_x_forwarded_for",
+  "X-Forwarded-Proto" => "https",
+  "X-Forwarded-Ssl" => "on"
+}
+
+gitlab_rails['rack_attack_git_basic_auth'] = {
+   'enabled' => true,
+   'ip_whitelist' => ["127.0.0.1"],
+   'maxretry' => 10,
+   'findtime' => 600,
+   'bantime' => 136000
+}
+registry['env'] = {
+  "REGISTRY_HTTP_RELATIVEURLS" => true
+}
+nginx['real_ip_trusted_addresses'] = ['10.0.0.0/8', '192.168.0.0/16']
+nginx['real_ip_header'] = 'X-Real-IP'
+nginx['real_ip_recursive'] = 'on'
+```
+
+Usługa registstry uruchomiona jest na porcie `5000`. Jest to domyślny port i nie ma potrzeby jego definiowania, chyba, że chcielibyśmy to z jakiegoś powodu zmienić. Registry jest udostępniane poza koneter za pomocą dedykowanego procesu nginx'a, który działa na porcie: `5050`.
+
+Na podstawie pliku `gitlab.rb` powstają pliki konfiguracyjne usługi registry: 
+
+* /storage/gitlab/data/registry/config.yml
+* /storage/gitlab/data/nginx/conf/gitlab-registry.conf
+
+::: normal-demo /storage/gitlab/data/registry/config.yml
+```yaml
+version: 0.1
+log:
+  level: info
+  formatter: text
+  fields:
+    service: registry
+    environment: production
+storage: {"filesystem":{"rootdirectory":"/var/opt/gitlab/gitlab-rails/shared/registry"},"cache":{"blobdescriptor":"inmemory"},"delete":{"enabled":true}}
+http:
+  addr: 127.0.0.1:5000
+  secret: "**********************************"
+  headers:
+    X-Content-Type-Options: [nosniff]
+health:
+  storagedriver:
+    enabled: true
+    interval: 10s
+    threshold: 3
+auth:
+  token:
+    realm: https://gitlab.lab/jwt/auth
+    service: container_registry
+    issuer: omnibus-gitlab-issuer
+    rootcertbundle: /var/opt/gitlab/registry/gitlab-registry.crt
+    autoredirect: false
+validation:
+  disabled: true
+```
+:::
+
+::: warning Realm
+Zanim wykonamy polecenie `gitlab-ctl` restart należy upewnić się, że w config.yml w realm: ustawiony jest url https. W przeciwnym razie kubernetes będzie miało problemy z pobieraniem obrazów dockera.
+:::
+
+
+
+
+### Zbędne usługi
+## Gitlab Runner
+dind
+## CI / CD
+### Pipelines
+### Kubernetes
