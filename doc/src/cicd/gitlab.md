@@ -258,6 +258,106 @@ Aby to zadziałało naley zrestartować proces runnera w kontenerze, lub cały k
 docker restart gitlab-runner
 ```
 
-## CI / CD
-### Pipelines
+## Container Registry
+Container Registry używane w mojej instacji gitlaba wymaga zalogowania się do niego. W tym celu wygenerowałem w ramach swojego konta gitlab personal token.
+Generowanie tokena robi się poprzez: `Edit Profile/ Access Tokens`.
+
+### Pipeline
+Wygenerowany w ten sposób token mam dodany jako zmienną środowiskową w ustawieniach grupy HomeLAB. Zmienna nazywa się `DOCKER_REGISTRY_TOKEN` i jest użyta w pipeline, który buduje kontener dockera.
+
+![CI/CD Variables](/assets/image/cicd-vars.png)
+
+Przykładowy pipeline
+
+::: normal-demo .gitlab-ci.yml
+```yaml
+stages:
+  - deploy
+
+publish to docker registry:
+  stage: deploy
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - echo "$DOCKER_REGISTRY_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+    - docker build -t ${CI_REGISTRY_IMAGE}:$CI_COMMIT_TAG .
+    - docker push ${CI_REGISTRY_IMAGE}:$CI_COMMIT_TAG
+  only:
+    - tags
+  except:
+    - branches
+
+```
+:::
+
+Powyższy pipeline uruchamia budowanie dockera po wystawieniu nowego taga na branchu main. Zmienne zaczynające się od `$CI_` są wbudowane w gitlaba i nie trzeba ich nigdzie wcześniej definiować
+* **CI_REGISTRY**: ścieżka do registry pod którą zostaną opublikowane kontenery (przykład: registry.lab/nazwa_grupy)
+* **CI_REGISTRY_USER**: login naszego konta gitlab
+* **CI_REGISTRY_IMAGE**: nazwa obrazu kontenera, jest to pełna ścieżka do obrazu dockera (przykład: registry.lab/nazwa_grupy/nazwa_repozytorium)
+* **CI_COMMIT_TAG**: ostatnio zacommitowany tag.
+
 ### Kubernetes
+Za komunikację z registry odpoowiedzialne są w moim klastrze kubernetes dwa komponenty:
+
+* ImageRepository
+* kubelet
+
+ImageRepository jest to CRD (Custom Resource Definition) od Flux'a, który zapenia warstę delivery w całym pipeline. ImageRepository co 1m (timer zdefiniowany w manifeście) skanuje registry w poszukiwaniu nowych tagów kontenerów do wdrożenia. Jeśli takowe się pojawią, wtedy zaczyna się cały proces proces aktualizacji aplikacji pracującej w kontenerze. 
+Aby kubernetes był w stanie współpracować z private registry, trzeba w pierwszej kolejności utworzyć secret w odpowiednim namespace.
+
+ImageRepository uruchomiony jest w namepace flux-system, natomiast aplikacje, które działają na klastrze działają w namespace: default. W związku z tym secret zawierający token do registry trzeba utworzyć w obu tych namespace'ach.
+
+```bash
+kubectl create secret docker-registry regcred \
+  --docker-server=registry.lab \
+  --docker-username=gitlablogin \
+  --docker-password=glpat-_xxxxxx \
+  --docker-email=user.email@example.com \
+  -n default
+```
+
+Dodatkowo należy skonfigurować odpowiednio manifesty
+
+::: code-tabs#secret
+@tab ImageRepository
+```yaml
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: podinfo
+  namespace: flux-system
+spec:
+  image: <your-private-image>
+  interval: 1h
+  secretRef:
+    name: regcred
+```
+@tab Pod
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: private-app
+  namespace: default
+spec:
+  containers:
+  - name: private-app
+    image: <your-private-image>
+  imagePullSecrets:
+  - name: regcred
+```
+:::
+
+W przypadku użycia mojego helmcharta wystarczy w definicji HelmRelease ustawić odpowiednio klucz values
+
+```yaml
+values:
+...
+  image:
+    registrySecret: regcred
+    imagePolicy: true
+    repository: registry.lab/groupname/appimage
+```
+
+Helmchart odpowiednio skonfiguruje obiekty ImageRepository oraz Deployment za nas.
