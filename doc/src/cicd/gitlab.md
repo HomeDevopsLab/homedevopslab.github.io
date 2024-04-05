@@ -111,6 +111,17 @@ gitlab_rails['gitlab_email_display_name'] = 'Gitlab'
 gitlab_rails['gitlab_email_reply_to'] = 'noreply@angrybits.example'
 ```
 ### Nginx (Gitlab)
+Za działanie serwera gitlab odpowiada usługa **gitlab-workhorse**. Komunikuje się ona ze środowiskiem zewnętrznym poprzez instancję nginx'a, która nasłuchuje na porcie `80` w kontenerze.
+
+Konfiguracja w **gitlab.rb**
+
+```bash
+nginx['referrer_policy'] = 'false'
+nginx['listen_port'] = 80
+nginx['listen_https'] = false
+```
+Na podstawie tej konfiguracji generowany jest plik: **/storage/gitlab/data/nginx/conf/gitlab-http.conf**.
+
 ### Registry
 Serwer registry zintegrowany z gitlabem współdzieli z nim część konfiguracji. Jeśli chcemy aby kontenery dla określonego projektu były dostępne publicznie, musimy ustawić w opcjach repozytorium dostęp publiczny. Jeśli repozytorium będzie miało ustawiony poziom dostępu: **Internal**, dostęp do kontenerów będzie wymagał zalogowania się do registry. Taki poziom dostępu mają repozytoria w środowisku HomeLAB.
 
@@ -186,15 +197,67 @@ validation:
 :::
 
 ::: warning Realm
-Zanim wykonamy polecenie `gitlab-ctl` restart należy upewnić się, że w config.yml w realm: ustawiony jest url https. W przeciwnym razie kubernetes będzie miało problemy z pobieraniem obrazów dockera.
+Zanim wykonamy polecenie `gitlab-ctl restart` należy upewnić się, że w config.yml w realm: ustawiony jest url https. W przeciwnym razie kubernetes będzie miało problemy z pobieraniem obrazów dockera.
 :::
 
-
-
-
 ### Zbędne usługi
+Po przeglądzie konfiguracji w pliku **gitlab.rb** wyłączyłem usługi z których nie korzystam.
+
+* Promotheus
+* Prometheus Alert Manager
+
+```bash
+monitoring_role['enable'] = false
+prometheus['enable'] = false
+alertmanager['enable'] = false
+```
+
 ## Gitlab Runner
-dind
+Gitlab runner uruchomiony jest na osobnej vm-ce: gitlab-runner w konenerze dockera. Runner w mojej instancji gitlaba jest typu **instance**. Dzięki temu mogę go używać we wszystkich projektach bez potrzeby dodawania go do nich.
+
+Gitlab runner został dodany w sekcji: `Admin Area / Runners`. Aby dodać runnera klikamy **New instance runner**. W dalszym kroku wybieramy platform: Linux
+Po kliknięciu **Create runner** pojawia się instrukcja, która opisuje jak zarejestrować runnera. Zawiera ona informacje potrzebne w dalszych krokach.
+
+```bash
+gitlab-runner register  --url http://gitlab.angrybits.pl  --token glrt-xxxxxxxxx
+```
+
+### Uruchomienie
+
+```bash
+docker run -d --name gitlab-runner --restart always \
+  -v /home/ubuntu/gitlab-runner/config:/etc/gitlab-runner \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  gitlab/gitlab-runner:latest
+```
+
+### Rejestracja
+Następnym krokiem jest rejestracja runnera w gitlabie, aby mógł on przyjmować zadania.
+
+```bash
+docker exec -it gitlab-runner gitlab-runner register
+```
+Po wykonaniu polecenia należy postępować zgodnie z instrukcjami wyświetlanymi na ekranie.
+
+### Konfiguracja DIND
+Do budowania kontenerów dockera poprzez runnera, który jest uruchomiony jako kontener dockera potrzebne jest skonfigurowanie funkcjonalności DIND (Docker IN Docker).
+W pliku **/home/ubuntu/containers/gitlab-runner/config/config.toml** w sekcji `[[runners]]` zastępujemy obecny blok `[runners.docker]` poniższą konfiguracją.
+
+```bash
+[runners.docker]
+  tls_verify = false
+  image = "docker:24.0.5"
+  privileged = true
+  disable_cache = false
+  volumes = ["/certs/client", "/cache"]
+```
+
+Aby to zadziałało naley zrestartować proces runnera w kontenerze, lub cały kontener.
+
+```bash
+docker restart gitlab-runner
+```
+
 ## CI / CD
 ### Pipelines
 ### Kubernetes
