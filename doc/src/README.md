@@ -55,4 +55,8 @@ highlights:
         icon: infinity
         details: W jaki sposób wdrażam i zarządzam konfiguracją w HomeLAB
         link: ./cicd/
+      - title: Kubernetes
+        icon: dharmachakra
+        details: Opis konfiguracji klastra kubernetes w HomeLAB'ie
+        link: ./kubernetes/
 ---

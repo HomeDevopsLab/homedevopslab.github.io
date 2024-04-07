@@ -10,6 +10,13 @@ export default sidebar({
       children: "structure",
     },
     {
+      text: "Kubernetes",
+      icon: "dharmachakra",
+      prefix: "kubernetes/",
+      link: "kubernetes/",
+      children: "structure",
+    },
+    {
       text: "Docker Services",
       icon: "fa-brands fa-docker",
       prefix: "services/",

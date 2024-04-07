@@ -13,6 +13,15 @@ export default navbar([
     ]
   },
   {
+    text: "Kubernetes",
+    icon: "dharmachakra",
+    prefix: "/kubernetes/",
+    children: [
+      "helmchart",
+      "sops",
+    ]
+  },
+  {
     text: "Docker Services",
     icon: "fa-brands fa-docker",
     prefix: "/services/",
@@ -27,7 +36,7 @@ export default navbar([
     prefix: "/cicd/",
     children: [
       "gitlab",
-      "kubernetes",
+      "flux",
       "aws"
     ]
   },

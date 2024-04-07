@@ -1,10 +1,9 @@
 ---
 title: Kubernetes
+index: false
 icon: dharmachakra
-order: 2
 category:
   - Guide
-tag:
-  - cicd
 ---
-Lokalny DNS
+
+<Catalog />
