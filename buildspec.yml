@@ -7,11 +7,13 @@ phases:
   pre_build:
     commands:
       - echo "Installing dependencies"
+      - ls -la
       - cd doc
       - npm install
   build:
     commands:
       - echo "Building the application"
+      - ls -la
       - cd doc
       - npm run docs:build
   post_build:
