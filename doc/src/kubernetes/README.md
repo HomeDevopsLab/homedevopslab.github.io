@@ -16,4 +16,9 @@ Klaster, który powstał w oparciu o [K3S](https://k3s.io/) został zainicjowany
 * 3x worker-nodes (Raspberry Pi4)
 * 2x worker-nodes (Proxmox VM)
 
+## Inicjalizacja klastra
+### Przygotowanie Raspberry
+
+Klaster został zainicjowany z pojedynczym master-nodem, który znajduje się na hoście k3s-master.
+
 <Catalog />
