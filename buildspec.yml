@@ -18,6 +18,6 @@ phases:
     commands:
       - mkdir dist
       - cp -R src/.vuepress/dist/* dist
-  artifacts:
-    files:
-      - dist/**/*
+artifacts:
+  files:
+    - dist/**/*
