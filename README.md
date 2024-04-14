@@ -40,3 +40,4 @@ npm run docs:build
 Polecenie wygeneruje katalog: `doc/src/.vuepress/dist` zawierający statyczne pliki html, css, js, które można podpiąć pod dowolny serwer www.
 
 test
+test
