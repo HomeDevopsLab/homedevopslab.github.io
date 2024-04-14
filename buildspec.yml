@@ -19,7 +19,7 @@ phases:
       - mkdir dist
       - cp -R src/.vuepress/dist/* dist
       - echo $CODEBUILD_SRC_DIR
-      - ls -la $CODEBUILD_SRC_DIR
+      - ls -la $CODEBUILD_SRC_DIR/doc
 artifacts:
   files:
-    - dist/**/*
+    - doc/dist/**/*
