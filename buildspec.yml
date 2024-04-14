@@ -16,4 +16,8 @@ phases:
       - npm run docs:build
   post_build:
     commands:
-      - echo "Build completed on `date`"
+      - mkdir dist
+      - cp -R src/.vuepress/dist/* dist
+  artifacts:
+    files:
+      - dist/**/*
