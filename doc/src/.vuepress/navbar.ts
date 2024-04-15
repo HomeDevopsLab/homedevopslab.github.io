@@ -12,7 +12,7 @@ export default navbar([
     text: "Kubernetes",
     icon: "dharmachakra",
     prefix: "/kubernetes/",
-    children: ["k8s-install", "helmchart", "sops"],
+    children: ["k8s-install", "helmchart", "sops", "lets-encrypt"],
   },
   {
     text: "Docker Services",
