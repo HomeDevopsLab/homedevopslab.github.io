@@ -112,3 +112,19 @@ Klaster skonfigurowany jest w uproszczonym modelu z pojedynczym master-nodem. Ko
 * instalacja worker-nodów.
 
 ### Instalacja master-node
+Na Raspberry: ***k3s-master*** uruchamiamy skrypt:
+```bash
+curl -sfL https://get.k3s.io | sh -
+```
+Po zakończeniu jego wykonania jest zainicjowany jedno nodowy klaster kubernetes, który pełni jednocześnie rolę control-plaina. Do dołączenia do klastra worker-nodów potrzebny jest token mastera. Znajduje się on w pliku: `/var/lib/rancher/k3s/server/node-token` na utworzonym masterze.
+
+### Instalacja worker-node
+Operację powtarzamy na kazdym z worker-nodów, które mają zostać dołączone do klastra.
+
+```bash
+curl -sfL https://get.k3s.io | K3S_URL=https://myserver:6443 K3S_TOKEN=mynodetoken sh -
+```
+
+* my-server - jest to adres master-noda, możemy podać adres IP
+* mynodetoken - jest to token mastera, który pozyskaliśmy w poprzednim kroku
+
