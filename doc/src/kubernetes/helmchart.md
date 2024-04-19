@@ -65,8 +65,35 @@ startupProbes:
 
 ### replicaCount
 
-ReplicaCount jest bardzo prostym parametrem. Za jego pomocą na sztywno można określić na ilu podach ma zostać uruchomiona aplikacja. W środowisku domowym zazwyczaj będzie to wartość: 1 aby zaoszczędzić zasoby. W środowiskach produkcyjnych można użyć większej licznby aby zapewnić aplikacji większą moc obliczeniową i HA.
+ReplicaCount jest bardzo prostym parametrem. Za jego pomocą na sztywno można określić na ilu podach ma zostać uruchomiona aplikacja. W środowisku domowym zazwyczaj będzie to wartość: 1 aby zaoszczędzić zasoby. W środowiskach produkcyjnych można użyć większej liczby aby zapewnić aplikacji większą moc obliczeniową i HA.
 
 ```yaml
 replicaCount: 1
 ```
+
+### database
+
+Opcja database odpowiada za stworzenie ssecretu do bazy MySQL w kubernetes oraz za uruchomienie skryptu tworzącego bazę danych i konto użytkownika na podstawie stworzonego secretu. Akcje związane z tworzeniem bazy uruchamiają się w pre-install hooku, zanim aplikacja zostanie uruchomiona.
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{.Release.Name }}-db
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+type: Opaque
+data:
+  login: {{ .Release.Name | trimSuffix "-www" | b64enc | quote }}
+  password: {{ randAlphaNum 32 | b64enc | quote }}
+```
+
+Do wygenerowania hasła wykorzyystywana jest funckcja helma: `randAlphaNum`.
+
+::: warning Secret
+Jeśli secret o tej nazwie już istnieje, zostanie on wygenerowany od nowa. Może to doprowadzić do problemów z działaniem aplikacji, jeśli dane konta w bazie się nie zmienią.
+:::
+
+
