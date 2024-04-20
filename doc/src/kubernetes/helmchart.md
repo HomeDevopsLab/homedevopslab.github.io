@@ -73,13 +73,32 @@ replicaCount: 1
 
 ### database
 
+Opcja database służy do uruchomienia hooków, które mają za zadanie stworzyć bazę danych mysql oraz wygenerować secret dla aplikacji. Uruchamiane są podczas instalacji aplikacji z helmcharta.
+
+```yaml
+database:
+  enabled: true
+```
+
+Jeśli nie chcemy używać tych pre-hooków ustawiamy `enabled: false`.
+
+::: warning Deprecation warning
+Obsługa database zostanie usunięta w kolejnych wersjach helmcharta. Utrzymanie tego modelu wymaga zbyt dużo pracy związanej z aktualizacją infrastruktury.
+:::
+
+## Templates
+
+Opis działania poszczególnych elementów helmcharta. Definicje obiektów znajdują się w katalogu [appchart/chart/templates](https://github.com/HomeDevopsLab/appchart/tree/multiple-ingresses/chart/templates) w repozytorium.
+
+### dbsecrets.yaml
+
 Opcja database odpowiada za stworzenie ssecretu do bazy MySQL w kubernetes oraz za uruchomienie skryptu tworzącego bazę danych i konto użytkownika na podstawie stworzonego secretu. Akcje związane z tworzeniem bazy uruchamiają się w pre-install hooku, zanim aplikacja zostanie uruchomiona.
 
 ```yaml
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{.Release.Name }}-db
+  name: {{ .Release.Name }}-db
   annotations:
     "helm.sh/hook": pre-install
     "helm.sh/hook-weight": "-5"
@@ -92,8 +111,49 @@ data:
 
 Do wygenerowania hasła wykorzyystywana jest funckcja helma: `randAlphaNum`.
 
-::: warning Secret
+::: important Secret
 Jeśli secret o tej nazwie już istnieje, zostanie on wygenerowany od nowa. Może to doprowadzić do problemów z działaniem aplikacji, jeśli dane konta w bazie się nie zmienią.
 :::
 
+### mysqlDBhelper.yaml
 
+Jest to pre-hook odpowiedzialny za utworzenie bazy danych oraz konta użytkownika na sewerze mysql. Źródłem danych, na których on operuje jest stworzony w innym pre-hooku secret kubernetes. Prehook uruchamia skrypt w bashu, który jest obudowany kontenerem dockera: mysql-initdb:0.0.1.
+
+::: normal-demo mysql-initdb
+**run.sh**
+
+```bash
+#!/bin/bash
+
+MYSQL="/usr/bin/mysql"
+
+function mysql_cmd() {
+    $MYSQL -u ${DB_ADMIN_LOGIN} -p${DB_ADMIN_PASS} -h ${DB_HOST} -Nsre "$1"
+}
+
+function userExists() {
+    result=$(mysql_cmd "SELECT count(User) FROM mysql.user WHERE User='${APPDB_LOGIN}'")
+    echo $result
+}
+
+if [ $(userExists) == "1" ]; then
+    mysql_cmd "ALTER USER '${APPDB_LOGIN}'@'%' IDENTIFIED BY '${APPDB_PASS}'"
+    mysql_cmd "FLUSH PRIVILEGES"
+else
+    mysql_cmd "CREATE DATABASE ${APPDB_NAME}"
+    mysql_cmd "CREATE USER '${APPDB_LOGIN}'@'%' IDENTIFIED BY '${APPDB_PASS}'"
+    mysql_cmd "GRANT ALL ON ${APPDB_NAME}.* TO '${APPDB_LOGIN}'@'%'"
+fi
+```
+
+**Dockerfile**
+
+```dockerfile
+FROM gitea.angrybits.pl/kkrolikowski/toolbox:0.0.1
+WORKDIR /usr/local/bin
+COPY run.sh .
+RUN chmod +x run.sh
+ENTRYPOINT [ "/bin/bash", "./run.sh" ]
+```
+
+:::
