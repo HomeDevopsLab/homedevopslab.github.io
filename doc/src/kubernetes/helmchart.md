@@ -86,6 +86,41 @@ Jeśli nie chcemy używać tych pre-hooków ustawiamy `enabled: false`.
 Obsługa database zostanie usunięta w kolejnych wersjach helmcharta. Utrzymanie tego modelu wymaga zbyt dużo pracy związanej z aktualizacją infrastruktury.
 :::
 
+### image
+
+Opcja `image` służy do wskazania kontenera, który ma zostać uruchomiony.
+
+```yaml
+image:
+  registrySecret: regcred
+  imagePolicy: true
+  repository: private.registry.address/homelab/documentation
+  tag: 2.4.0 # {"$imagepolicy": "flux-system:homelab-doc:tag"}
+```
+
+| Opcja          | Wymagane | Opis                                                                                                                |
+| -------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| registrySecret | Nie      | Opcji używamy w przypadku rejestru prywatnego, który wymaga zalogowania się do niego. Opcja wskazuje nazwę secretu  |
+| imagePolicy    | tak      | **false** image policy off, **true** image policy on                                                                |
+| repository     | tak      | Wskazanie registry z kontenerami dockera                                                                            |
+| tag            | tak      | wskazanie na wersję aplikacji. W przypadku imagepolicy, trzeba podać specjalny string dla fluxa po znaku komentarza |
+
+#### Image Policy
+
+Image policy to specjalny typ resource'u (CRD), który jest dostarczany przez Fluxa. Odpowiada on za wdrożenie najnowszego dostępnego taga/ W homelabie posługuję się patternem [semver](https://semver.org/lang/pl/).
+
+```yaml
+policy:
+  semver:
+    range: ">=0.0.1"
+```
+
+Aby można było śledzić wersje w deploymencie, trzeba dodać do linijki `tag` specjalny komentarz: `# {"$imagepolicy": "flux-system:homelab-doc:tag"}`. Wskazuje on namespace oraz nazwę resource'a ImagePolicy, który ma zostać utworzony.
+
+### resources
+
+Całe `resources` jest wczytywane bezpośrednio do deploymentu. Jest to standardowa konfiguracja kubernetes. Pozwala ustawić limity na użycie procesora i ramu w aplikacji.
+
 ## Templates
 
 Opis działania poszczególnych elementów helmcharta. Definicje obiektów znajdują się w katalogu [appchart/chart/templates](https://github.com/HomeDevopsLab/appchart/tree/multiple-ingresses/chart/templates) w repozytorium.
