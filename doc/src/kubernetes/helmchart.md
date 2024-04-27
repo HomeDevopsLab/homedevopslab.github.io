@@ -121,6 +121,22 @@ Aby można było śledzić wersje w deploymencie, trzeba dodać do linijki `tag`
 
 Całe `resources` jest wczytywane bezpośrednio do deploymentu. Jest to standardowa konfiguracja kubernetes. Pozwala ustawić limity na użycie procesora i ramu w aplikacji.
 
+### services
+
+Opcja `services` odpowiedzialna jest za stworzenie obiektu (lub obiektów) typu service w klastrze kubernetes. Jest to yamlowa tablica obiektów.
+
+| Opcja       | Opis                                                                                                                                                                                                                          |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| name        | Do nazwy dokładany jest prefix z nazwą HelmRelease'a. Np: na podstawie `name: ssh` zostanie utworzony serwis: gitlab-ssh                                                                                                      |
+| type        | **ClusterIP** - służy do komunikacji wewnętrznej: service - kontener. Używam go do komunikacji z serwerami www działającymi w podach. **LoadBalancer** - mapuje servicePort do IPków wystawianych przez load balancer         |
+| protocol    | **TCP** lub **UDP**                                                                                                                                                                                                           |
+| servicePort | Port, który wystaia serwis. Korzysta z niego Ingress (w przypadku ClusterIP) lub jest on wystawiony do LoadBalancera (type: LoadBalancer), dzięki czemu możemy np. na porcie: 2222 połączyć się do ssh działającego w podzie. |
+| targetPort  | Port wystawiony przez kontener z aplikacją                                                                                                                                                                                    |
+
+::: tip Service
+Jedna aplikacja może mieć kilka usług, które potrzebują komunikacji ze światem. Najlepszym przykładem jest gitlab, który posiada serwer www, serwer ssh oraz dodatkowo registry kontenerów dockera.
+:::
+
 ## Templates
 
 Opis działania poszczególnych elementów helmcharta. Definicje obiektów znajdują się w katalogu [appchart/chart/templates](https://github.com/HomeDevopsLab/appchart/tree/multiple-ingresses/chart/templates) w repozytorium.
