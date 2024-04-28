@@ -125,6 +125,16 @@ Całe `resources` jest wczytywane bezpośrednio do deploymentu. Jest to standard
 
 Opcja `services` odpowiedzialna jest za stworzenie obiektu (lub obiektów) typu service w klastrze kubernetes. Jest to yamlowa tablica obiektów.
 
+```yaml
+services:
+  - name: gitlab
+    type: ClusterIP
+    protocol: 'TCP'
+    servicePort: 80
+    targetPort: 80
+    ....
+```
+
 | Opcja       | Opis                                                                                                                                                                                                                          |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | name        | Do nazwy dokładany jest prefix z nazwą HelmRelease'a. Np: na podstawie `name: ssh` zostanie utworzony serwis: gitlab-ssh                                                                                                      |
@@ -136,6 +146,27 @@ Opcja `services` odpowiedzialna jest za stworzenie obiektu (lub obiektów) typu 
 ::: tip Service
 Jedna aplikacja może mieć kilka usług, które potrzebują komunikacji ze światem. Najlepszym przykładem jest gitlab, który posiada serwer www, serwer ssh oraz dodatkowo registry kontenerów dockera.
 :::
+
+### ingress
+
+Ingress jest odpowiedzialny za serwowanie aplikacji webowej pod wybranym adresem domenowym. Ostatnia wersja helmcharta umożliwia utworzenie więcej niż jednego ingressu dla aplikacji. Przykładem jest Gitlab, który wymaga wystawienia GUI gitlaba oraz registry doockerowego.
+
+```yaml
+ingress:
+  enabled: true
+  ssl: true
+  hosts:
+    - name: gitlab.example.com
+      servicePort: 80
+    - name: registry.example.com
+      servicePort: 5050
+```
+| Opcja | Opis |
+| ------| -----|
+| enabled | **true**: ingress zainstalowany, **false**: ingress nie zainstalowany |
+| ssl | **true**: certyfikat Let's Encrypt podłączony, ustawione przekierowanie lub **false**: brak certyfikatu ssl |
+| hosts | tablica vhostów. Każdy vhost to jeden ingress |
+| servicePort | Numer portu musi być zgodny z `servicePort` w kluczu service |
 
 ## Templates
 
