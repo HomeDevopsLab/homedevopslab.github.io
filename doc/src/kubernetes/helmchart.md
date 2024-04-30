@@ -161,12 +161,48 @@ ingress:
     - name: registry.example.com
       servicePort: 5050
 ```
-| Opcja | Opis |
-| ------| -----|
-| enabled | **true**: ingress zainstalowany, **false**: ingress nie zainstalowany |
-| ssl | **true**: certyfikat Let's Encrypt podłączony, ustawione przekierowanie lub **false**: brak certyfikatu ssl |
-| hosts | tablica vhostów. Każdy vhost to jeden ingress |
-| servicePort | Numer portu musi być zgodny z `servicePort` w kluczu service |
+
+| Opcja       | Opis                                                                                                        |
+| ----------- | ----------------------------------------------------------------------------------------------------------- |
+| enabled     | **true**: ingress zainstalowany, **false**: ingress nie zainstalowany                                       |
+| ssl         | **true**: certyfikat Let's Encrypt podłączony, ustawione przekierowanie lub **false**: brak certyfikatu ssl |
+| hosts       | tablica vhostów. Każdy vhost to jeden ingress                                                               |
+| servicePort | Numer portu musi być zgodny z `servicePort` w kluczu service                                                |
+
+### volumes
+
+Klucz volumes służy do pomontowywania przestrzeni dyskowej do aplikacji, jeśli jest to wymagane.
+
+```yaml
+volumes:
+  enabled: true
+  mountPath:
+    - config:/etc/gitlab
+    - logs:/var/log/gitlab
+    - data:/var/opt/gitlab
+  ownership: 0:0
+  type:
+    nfs:
+      server: srv-nfs.lan
+      path: /storage
+```
+
+| Opcja     | Opis                                                                         |
+| --------- | ---------------------------------------------------------------------------- |
+| mountPath | Tablica mapowań katalogu na współdzielonym storage, do katalogu w kontenerze |
+| ownership | Kto ma być właścicielem utworzonych katalogów                                |
+| type      | Obecnie jest to tylko NFS                                                    |
+
+Po ustawieniu trybu `enabled: true` uruchamiany jest w pre-install hooku skrypt, który tworzy na udziale storage odpowiednią strukturę katalogów. W przedstawionym przykładzie tworzona jest następująca struktura katalogów:
+
+```bash
+gitlab
+├── config
+├── data
+└── logs
+```
+
+W parametrze nfs ustawiony jest adres serwera nfs oraz wyeksportowany z niego katalog.
 
 ## Templates
 
