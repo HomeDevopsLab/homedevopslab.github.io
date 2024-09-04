@@ -13,6 +13,8 @@ Kubernetes stanowi centralny punt w moim homelabie. Jest to miejsce w którym ho
 ![Architektura Kubernetes w HomeLAB](/assets/image/kubernetes-arch.png)
 
 ## Implementacja klastra
+<!--- #TODO: Do aktualizacji opis architektury clustra
+-->
 
 Klaster, który powstał w oparciu o [K3S](https://k3s.io/) został zainicjowany w bardzo prostej architekturze:
 
