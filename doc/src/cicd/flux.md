@@ -111,11 +111,44 @@ Dodatkowymi komponentami, które są wykorzystywane w klastrze są:
 - image-automation-controller
 
 Służą one do wykrywania i wdrażania nowych wersji kontenerów.
+
 ### Aktualizacja tokenu PAT
+
+Token PAT zainstalowany jest w kubernetes w namespace: `flux-system` jako secret o nazwie: `flux-system`
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: flux-system
+  namespace: flux-system
+type: Opaque
+data:
+  password: ghp_xxxxxxxxxxxx
+  username: git
+```
+
+Po aktualizacji tokenu PAT, usuwamy stary secret i wdrażamy nowy
+
+```bash
+kubectl -n flux-system delete secret flux-system
+kubectl -n flux-system apply -f flux-secret.yaml
+```
+
+::: important Base64
+Wartości kluczy password oraz username muszą być zakodowane base64
+:::
+
 ## Wdrażanie aplikacji
+
 ### Struktura repozytorium
+
 ### Kustomization
+
 ### SOPS
+
 ## Obsługa HelmChart
+
 ### Gitrepo
+
 ## Image automation
