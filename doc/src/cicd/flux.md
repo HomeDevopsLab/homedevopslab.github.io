@@ -37,7 +37,9 @@ choco install flux
 
 :::
 
-## Github PAT token
+## Bootstrap fluxa
+
+### Github PAT token
 
 Wchodzimy na link: [https://github.com/settings/tokens](https://github.com/settings/tokens)
 
@@ -81,7 +83,7 @@ Po kliknięciu "Generate token" postępując zgodnie z instrukcjami skopiować w
 Jeśli zakładka zostanie zamknięta lub odświeżona jej zawartość przed skopiowaniem tokena, trzeba będzie powtórzyć operację. Nie ma możliwości odczytania wartości tokena w późniejszym momencie.
 :::
 
-## Bootstrap clustra w githubie
+### Deployment fluxa
 
 Aby rozpocząć korzystanie z Fluxa należy wykonać bootstrap. W tym procesie flux generuje i wdraża swoje manifesty na kustsze kubernetes oraz jednocześnie kommituje je do wskazanego repozytorium. Miejscem przechowywania konfiguracji klastra mojego środowiska jest Github. Lista dostępnych opcji znajduje się w [dokumentacji procesu bootstrap](https://fluxcd.io/flux/installation/bootstrap/)
 
@@ -89,14 +91,31 @@ Aby rozpocząć korzystanie z Fluxa należy wykonać bootstrap. W tym procesie f
 Zanim wykonamy polecenie flux należy być zalogowanym do klastra kubernetes w którym chcemy mieć zainstalowanego fluxa.
 :::
 
-```
-export GITHUB_TOKEN=<gh-token>
+```bash
+export GITHUB_TOKEN=gh-xxxxxxxxxxxxx
+flux bootstrap github \
+  --components-extra=image-reflector-controller,image-automation-controller \
+  --token-auth \
+  --owner=HomeDevopsLab \
+  --repository=homelab \
+  --branch=main \
+  --path=clusters/raspberry \
+  --personal
 ```
 
-flux bootstrap github \
- --token-auth \
- --owner=HomeDevopsLab \
- --repository=homelab \
- --branch=main \
- --path=clusters/k3s-cl2 \
- --personal
+Polecenie powyżej instaluje manifesty fluxa w repozytorium o nazwie **homelab**, które znajduje się w projekcie: **HomeDevopsLab**. Manifesty fluxa znajdują się w katalogu: **clusters/raspberry** w tym repozytorium. Flux będzie wdrażał wszyskie zmiany, które pojawią się na branchu **main**.
+
+Dodatkowymi komponentami, które są wykorzystywane w klastrze są:
+
+- image-reflector-controller
+- image-automation-controller
+
+Służą one do wykrywania i wdrażania nowych wersji kontenerów.
+### Aktualizacja tokenu PAT
+## Wdrażanie aplikacji
+### Struktura repozytorium
+### Kustomization
+### SOPS
+## Obsługa HelmChart
+### Gitrepo
+## Image automation
