@@ -141,8 +141,42 @@ Wartości kluczy password oraz username muszą być zakodowane base64
 
 ## Wdrażanie aplikacji
 
+Wdrażanie aplikacji odbywa się na podstawie pliku: `clusters/raspberry/apps.yaml`. Zdefiniowane są tam 3 ważne rzeczy:
+
+- **sourceRef**: obiekt typu GitRepository, który przechowuje namiary na repozytorium na którym operuje flux
+- **decryption**: namiary na secret SOPS służący do deszyfracji secretów
+- **path**: ścieżka do katalogu w repozytorium, który będzie skanował flux w poszukiwaniu zmian do wdrożenia.
+
+::: info Kustomization
+Aktualnym katalogiem używanym przez fluxa jest katalog: `apps-raspberry`.
+::::
+
 ### Struktura repozytorium
 
+```markmap
+---
+markmap:
+  colorFreezeLevel: 2
+---
+
+# homelab
+## clusters
+### raspberry
+## apps
+### gitrepos
+### letsencrypt
+### monitoring
+### secrets
+### tools
+### webapps
+## base
+## attic
+```
+
+| Katalog | Opis |
+| --------| -----|
+| clusters | Konfiguracja fluxa pozostała dotycząca konfiguracji corowej clustra |
+| apps | test |
 ### Kustomization
 
 ### SOPS
