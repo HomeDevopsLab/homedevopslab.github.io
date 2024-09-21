@@ -10,7 +10,7 @@ tag:
 
 ## Opis
 
-[FluxCD](https://fluxcd.io/flux/) jest narzędziem realizującym obszar continous delivery. W moim środowisku homelab używam go do wdrażania wszystkich aplikacji na klastrze kubernetes. Dzięki komponentowi `ImageUpdateAutomation` mogę zautomatuzować wdrażanie nowych wersji aplikacji - jeśli zostanie zbudowany kontener w odpowiedniej wersji.
+[FluxCD](https://fluxcd.io/flux/) jest narzędziem realizującym obszar continous delivery. W moim środowisku homelab używam go do wdrażania wszystkich aplikacji na klastrze kubernetes. Dzięki komponentowi `ImageUpdateAutomation` mogę zautomatyzować wdrażanie nowych wersji aplikacji - jeśli zostanie zbudowany kontener w odpowiedniej wersji.
 Flux jest narzędziem typu cli.
 
 ### Instalacja fluxa
@@ -85,7 +85,7 @@ Jeśli zakładka zostanie zamknięta lub odświeżona jej zawartość przed skop
 
 ### Deployment fluxa
 
-Aby rozpocząć korzystanie z Fluxa należy wykonać bootstrap. W tym procesie flux generuje i wdraża swoje manifesty na kustsze kubernetes oraz jednocześnie kommituje je do wskazanego repozytorium. Miejscem przechowywania konfiguracji klastra mojego środowiska jest Github. Lista dostępnych opcji znajduje się w [dokumentacji procesu bootstrap](https://fluxcd.io/flux/installation/bootstrap/)
+Aby rozpocząć korzystanie z Fluxa należy wykonać bootstrap. W tym procesie flux generuje i wdraża swoje manifesty na klastrze kubernetes i publikuje je we wskazanym repozytorium. Miejscem przechowywania konfiguracji klastra mojego środowiska jest Github. Lista dostępnych opcji znajduje się w [dokumentacji procesu bootstrap](https://fluxcd.io/flux/installation/bootstrap/)
 
 ::: important Kubernetes
 Zanim wykonamy polecenie flux należy być zalogowanym do klastra kubernetes w którym chcemy mieć zainstalowanego fluxa.
@@ -162,7 +162,7 @@ markmap:
 # homelab
 ## clusters
 ### raspberry
-## apps
+## apps-raspberry
 ### gitrepos
 ### letsencrypt
 ### monitoring
@@ -173,11 +173,85 @@ markmap:
 ## attic
 ```
 
-| Katalog | Opis |
-| --------| -----|
-| clusters | Konfiguracja fluxa pozostała dotycząca konfiguracji corowej clustra |
-| apps | test |
+| Katalog        | Opis                                                                                                                                                                                                      |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| clusters       | Konfiguracja fluxa pozostała dotycząca konfiguracji corowej clustra                                                                                                                                       |
+| apps-raspberry | każdy manifest wgrany do tego katalogu zostanie wdrożony przez fluxa. Ten bszar został podzielony na podkatalogi, w których znajdują się manifesty aplikacji, które odpowiadają za różne logiczne obszary |
+| base           | W tym katalgu znajduje się konfiguracja Kustomize'a dla aplikacji.                                                                                                                                        |
+| attic          | Manifesty, które nie są obecnie używane. Archiwum.                                                                                                                                                        |
+
 ### Kustomization
+
+Kustomize umożliwia zredukowanie wielkości manifestu HelmRelease umieszczając w **base** konfigurację, która jest wspólna dla wszystkich aplikacji uruchomionych jednego HelmRelase'a.
+
+W tym momencie jedyną aplikacją wykorzystującej kustomize jest dashboard homer.
+
+#### ⚙️ Konfiguracja Base
+
+Obecnie jedynym szablonem kustomize jest `webapps`. Znajduje się on w katalogu `base`. Składa się on z dwóch plików:
+
+- release.yaml
+- kustonization.yaml
+
+Plik release.yaml zawiera definicję zasobu HelmRelease z domyślnymi wartościami.
+
+```yaml
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  namespace: default
+  name: www
+  ...
+```
+
+W powyższym przykładzie `metadata/name` jest używany do budowania nazwy release'a.
+
+::: tabs
+
+@tab kustomization.yaml
+
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - release.yaml
+```
+
+:::
+
+W kustomization.yaml podajemy jako resources plik relase.yaml utworzony w tym samym katalogu.
+
+#### ⚙️ Konfiguracja aplikacji
+
+Konfiuracja nie różni się znacznie od `base`. Tworzymy plik app.yaml z definicją HelmRelease, który ma taką samą konfigurację metadata
+
+```yaml
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: www
+  namespace: default
+```
+
+oraz plik kustomization.yaml
+
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../base/webapps
+patchesStrategicMerge:
+  - app.yaml
+namePrefix: homer-
+```
+
+Konfiguracja kustomization.yaml różni się nieco od tej w `base`. W resources podajemy ścieżkę do template'u `base`. Dodatkowo używając `patchesStrategicMerge` podłączamy HelmRelease dla aplikacji. Opcja `namePrefix` ustawia przedrostek dla stworzonych na podstawie HelmRelease'a obiektów kubernetes.
+
+Powyższa konfiguracja łączy to co jest w pliku app.yaml z zawartością base/webapps.
+
+::: warning Kustomize
+Pliki definiujące Kustomize muszą mieć nazwę: kustomization.yaml
+:::
 
 ### SOPS
 
