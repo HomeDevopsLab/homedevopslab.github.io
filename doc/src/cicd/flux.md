@@ -135,7 +135,7 @@ kubectl -n flux-system delete secret flux-system
 kubectl -n flux-system apply -f flux-secret.yaml
 ```
 
-::: important Base64
+::: tip Base64
 Wartości kluczy password oraz username muszą być zakodowane base64
 :::
 
@@ -253,10 +253,113 @@ Powyższa konfiguracja łączy to co jest w pliku app.yaml z zawartością base/
 Pliki definiujące Kustomize muszą mieć nazwę: kustomization.yaml
 :::
 
-### SOPS
-
 ## Obsługa HelmChart
 
-### Gitrepo
+w katalogu `apps-raspberry/gitrepos` przechowywane są manifesty typu: **GitRepository**, które służą do synchronizowania repozytorium HelmChart. Obiekty GitRepository są okresowo skanowane przez fluxa w poszukiwaniu nowych zmian.
+
+### GitRepository
+
+Definicja manifestu
+
+```yaml {4}
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: app-chart
+  namespace: default
+spec:
+  interval: 1m
+  url: https://github.com/myawesomeproject/appchart
+  ref:
+    branch: main
+```
+
+Użycie manifestu w aplikacji
+
+```yaml {13}
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: myapp
+  namespace: default
+spec:
+  interval: 1m
+  chart:
+    spec:
+      chart: ./chart
+      sourceRef:
+        kind: GitRepository
+        name: app-chart
+        namespace: default
+      interval: 1m
+  values:
+```
+
+W Helmrelease aplikacji używamy `name` aby powiązać oba obiekty.
+
+### Wdrożenie nowych funkcjonalności
+
+Wykonywanie zmian na helmcharcie może prowadzić do nieoczekiwanego zachowania się działających aplikacji. Z tego względu nową konfigurację tworzę na dedykowanym branchu w repozytorium helmcharta.
+
+#### Konfiguracja brancha w repozytorium clustra
+
+W celu podłączenia nowego bracncha tworzymy nowy plik w katalogu `apps-repository/gitrepos` z definicją **GitRepository**.
+
+```yaml {4,10}
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: app-chart-feature
+  namespace: default
+spec:
+  interval: 1m
+  url: https://github.com/myawesomeproject/appchart
+  ref:
+    branch: new-feature
+```
+
+Na clustrze zostanie utworzony nowy obiekt **GitRepository**, który będzie śledził zmiany na wskazanym branchu. Mając wykonaną konfigurację podłączamy w HelmRelease w wybranej aplikacji zdefiniowny w ten sposób helmchart. Dzięki temu jesteśmy w stanie kontrolować czy wykonane zmiany są kompatybilne z resztą aplikacji uruchomionych w clustrze.
+
+#### Wdrożenie nowej wersji HelmChart
+
+---
+
+Jeśli wszystkie zmiany działają poprawnie wykonujemy następujące czynności.
+
+1. Przygotowujemy release helmcharta. Zmieniamy wersję i mergujemy z masterem
+2. Zmieniamy we wszystkich manifestach HelmRelease nazwę dowiązanego HelmCharta na tą, która jest powiązana z branchem main
+3. Usuwamy plik z `apps-repository/gitrepos`, który jest powiązany z branchem
+4. Usuwamy branch z repozytorium.
 
 ## Image automation
+
+[ImageAutomation](https://fluxcd.io/flux/components/image/) jest funkcjonalnością, która pozwala na automatyzację wdrażania nowych wersji aplikacji. Funckjonalność ta jest wspierana w wykorzysytwanym HelmCharcie. Jeśli chcemy z niej skorzystać należy skonfigurować `imagePolicy: true` w przeciwnym razie trzeba ustawić wartość `false`.
+
+```yaml {2,3,5}
+image:
+  registrySecret: regcred
+  imagePolicy: true
+  repository: registry.private.pl/project/documentation
+  tag: 2.5.1 # {"$imagepolicy": "flux-system:doc:tag"}
+```
+
+Jeśli registry wymaga zalogowania się do niego, należy zdeployować odpowiedni secret i użyć go w opcji `registrySecret`. Aby image policy działało prawidłowo w linijce `tag` należy dodać specjalny komentarz.
+
+```
+# {"$imagepolicy": "flux-system:doc:tag"}
+```
+| namespace | release name | field |
+| ----------| -------------| ------|
+| flux-system | doc | tag |
+
+W namespace `flux-system` zdeployowany jest obiekt imagePolicy, doc jest nazwą aplikacji zdefiniowaną w HelmRelase w którym się znajduje ta konfiguracja. Tag jest polem, które jeset aktualizowane przez fluxa
+
+::: important ReleaseName
+Nazwa aplikacji w imagepolicy musi być taka sama jak ReleaseName.
+:::
+
+Dzięki tej konfiguracji nie trzeba ręcznie aktualizować taga w HelmReleasie, zrobi to za nas Flux.
+
+::: warning git pull
+Należy pamiętać o zrobieniu git pull na repozytorium w którym operuje flux, w przeciwnym razie nie uda się poprawnie wykonywać dalszych zmian.
+:::
