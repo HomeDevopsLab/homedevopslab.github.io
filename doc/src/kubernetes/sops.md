@@ -1,6 +1,6 @@
 ---
 title: SOPS
-icon: computer
+icon: key
 order: 3
 category:
   - Guide
