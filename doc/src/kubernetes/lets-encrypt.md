@@ -7,3 +7,11 @@ category:
 tag:
   - kubernetes
 ---
+
+## Certmanager
+
+Certmanager jest odpowiedzialny za wystawianie CSR (Certificate Sign Request) i pośredniczy w podpisywaniu cetyfikatów SSL.
+
+```bash
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.11.0/cert-manager.yaml
+```
