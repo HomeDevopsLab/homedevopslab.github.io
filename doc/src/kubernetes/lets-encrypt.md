@@ -10,7 +10,16 @@ tag:
 
 ## Certmanager
 
-Certmanager jest odpowiedzialny za wystawianie CSR (Certificate Sign Request) i pośredniczy w podpisywaniu certyfikatów SSL.
+Certmanager jest odpowiedzialny za instalację certyfikatów SSL dla aplikacji, które mają skonfigurowaną obsługę SSL. Zainstalowane
+certyfikaty znajdują się w namespace `default`, tam gdzie uruchomione są aplikacje.
+
+```yaml {3}
+ingress:
+  enabled: true
+  ssl: true
+```
+
+### Instalacja
 
 ```bash
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.11.0/cert-manager.yaml
