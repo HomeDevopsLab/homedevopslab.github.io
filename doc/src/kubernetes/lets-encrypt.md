@@ -76,3 +76,20 @@ spec:
 ```
 
 ## Traefik
+
+Poniższa konfiguracja dotyczy traefika, który działa jako ingress controller w klastrze kubernetes.
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    cert-manager.io/cluster-issuer: letsencrypt
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+```
+
+Dzięki tej konfiguracji traefik komunikuje się z cluster-issuerem, żeby zarządać wystawienia certyfikatu a także konfiguruje redirect na
+https dla aplikacji za pomocą middleware'a.
