@@ -1,3 +1,52 @@
 // you can change config here
-$colors: #c0392b, #d35400, #f39c12, #27ae60, #16a085, #2980b9, #8e44ad, #2c3e50,
-  #7f8c8d !default;
+$theme-color: #096dd9;
+
+// Nadpisanie rozmiaru obrazka w sekcji highlights dla całego projektu
+
+// 1. STYLE GLOBALNE (Domyślnie pod urządzenia mobilne / Mobile-First)
+.vp-highlight {
+  max-width: 95% !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important; // Na telefonie: obrazek na górze, tekst na dole
+  align-items: center !important;
+  gap: 2rem !important;
+  padding: 1.5rem !important;
+
+  .vp-highlight-info-wrapper {
+    width: 100% !important;
+    text-align: center !important; // Wyśrodkowanie tekstu na telefonie wygląda lepiej
+  }
+}
+
+.vp-highlight-image {
+  width: 100% !important; // Na telefonie obrazek skaluje się do szerokości ekranu
+  max-width: 25rem !important; // Ale nie pozwalamy mu być gigantycznym na małym ekranie
+  height: auto !important;
+  margin: 0 auto !important;
+}
+
+// 2. STYLE DLA DUŻYCH EKRANÓW (Komputery / Tablety w układzie poziomym)
+// Aktywują się, gdy ekran ma szerokość 992px lub więcej
+@media (min-width: 992px) {
+  .vp-highlight {
+    max-width: 90% !important;
+    width: 1400px !important;
+    flex-direction: row !important; // Powrót do układu obok siebie (kolumny)
+    justify-content: space-between !important;
+    gap: 4rem !important;
+    padding: 2rem !important;
+
+    .vp-highlight-info-wrapper {
+      flex: 1 !important;
+      text-align: left !important; // Na komputerze tekst wyrównany do lewej
+    }
+  }
+
+  .vp-highlight-image {
+    width: 42rem !important; // Twoja docelowa wielkość na desktopie
+    max-width: 45% !important; // Bezpiecznik: obrazek nie zajmie więcej niż 45% szerokości całego kontenera
+    flex-shrink: 0 !important;
+    margin: 0 0 !important;
+  }
+}

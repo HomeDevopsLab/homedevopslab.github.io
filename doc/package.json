@@ -1,7 +1,7 @@
 {
   "name": "homelab-doc",
-  "version": "1.0.0",
-  "description": "Dokumentacja Środowiska HomeLab",
+  "description": "My homelab documentation",
+  "version": "2.0.0",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -11,15 +11,10 @@
     "docs:update-package": "npx vp-update"
   },
   "devDependencies": {
-    "@vuepress/bundler-vite": "2.0.0-rc.8",
-    "flowchart.ts": "^3.0.0",
-    "markmap-lib": "^0.16.1",
-    "markmap-toolbar": "^0.16.0",
-    "markmap-view": "^0.16.0",
-    "mermaid": "^10.9.0",
-    "reveal.js": "^5.1.0",
-    "vue": "^3.4.16",
-    "vuepress": "2.0.0-rc.8",
-    "vuepress-theme-hope": "2.0.0-rc.31"
+    "@vuepress/bundler-vite": "2.0.0-rc.30",
+    "sass-embedded": "^1.99.0",
+    "vue": "^3.5.34",
+    "vuepress": "2.0.0-rc.30",
+    "vuepress-theme-hope": "2.0.0-rc.107"
   }
 }
