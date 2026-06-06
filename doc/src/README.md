@@ -25,16 +25,18 @@ tagline: Dokumentacja mojego środowiska homelab
 highlights:
   - header: Kamienie milowe
     image: /assets/image/highlights-img.png
-    bgImage: https://theme-hope-assets.vuejs.press/bg/3-light.svg
+    bgImage: /assets/image/highlights-light.svg
     bgImageDark: /assets/image/highlights.svg
     bgImageStyle:
       background-size: cover
       background-position: center
-      filter: brightness(0.4) contrast(0.8) # Przyciemnia niebieską sieć i wtapia ją w głęboki granat
+      filter: brightness(0.5) contrast(0.8) # Przyciemnia niebieską sieć i wtapia ją w głęboki granat
     highlights:
-      - title: 25.02.2023 - Uruchamiam 2-node cluster na Raspberry Pi4
-      - title: 17.06.2023 - Cluster się powiększa o dwa kolejne Raspberry Pi. Pojawia się serwer Proxmox
-      - title: 18.04.2025 - Uruchamiam duży NAS (8TB) do backupów
+      - title: "<strong>🚀 25.02.2023</strong> — Uruchamiam 2-node cluster na Raspberry Pi4"
+      - title: "<strong>🏗️ 17.06.2023</strong> — Cluster zwiększa się o dwa RPi + serwer Proxmox"
+      - title: "<strong>💾 18.04.2025</strong> — Uruchamiam duży NAS (8TB) do backupów"
+      - title: "<strong>🛠️ 11.07.2025</strong> — Rozwój IaC (Terragrunt / Terraform / Ansible)"
+      - title: "<strong>🔥 21.02.2026</strong> — Pełne capacity klastra Proxmox: 3x 64GB RAM"
 
   - header: Add things you want in markdown
     description: We extended the standard commonMark specification and added tons of new features for you.

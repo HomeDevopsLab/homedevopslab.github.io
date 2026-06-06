@@ -50,3 +50,39 @@ $theme-color: #096dd9;
     margin: 0 0 !important;
   }
 }
+// Usuwamy display: list-item oraz paski z głównego elementu
+.vp-highlight-item {
+  display: block !important;
+  list-style: none !important;
+  margin-bottom: 1.4rem !important; // Zwiększony odstęp dla lepszej czytelności
+}
+
+// Celujemy bezpośrednio w nagłówek i jego wewnętrzny span
+h3.vp-highlight-title {
+  font-weight: normal !important; // Bazowy tekst (opis) traktujemy jako normalny
+
+  span {
+    display: inline-block !important;
+    border-left: none !important; // Usuwamy niebieski pasek, który wyglądał "off"
+    padding-left: 0 !important; // Resetujemy przesunięcie w prawo
+    color: #cbd5e1 !important; // Ładny, czytelny szaro-niebieski kolor opisu
+
+    // KLUCZ: Wymuszamy, aby tag strong/b wewnątrz spana odzyskał swoją wagę
+    strong,
+    b {
+      font-weight: 700 !important; // Silne pogrubienie daty i emoji
+      color: #ffffff !important; // Data i emoji będą świecić jasną bielą
+      margin-right: 4px; // Delikatny odstęp przed długim myślnikiem
+    }
+  }
+}
+
+// Celujemy w główny nagłówek sekcji highlights
+h2.vp-highlight-header {
+  color: #ffffff !important; // Opcja A: Czysta biel (Maksymalny kontrast)
+  // color: #38bdf8 !important;   // Opcja B: Neonowy błękit (Jeśli wolisz akcent kolorystyczny)
+
+  font-size: 2.2rem !important; // Przy okazji delikatnie go powiększamy
+  font-weight: 700 !important; // Upewniamy się, że jest solidnie pogrubiony
+  margin-bottom: 2rem !important; // Dajemy mu trochę więcej oddechu od pierwszego wpisu
+}
