@@ -38,9 +38,9 @@ highlights:
       - title: "<strong>🛠️ 11.07.2025</strong> — Rozwój IaC (Terragrunt / Terraform / Ansible)"
       - title: "<strong>🔥 21.02.2026</strong> — Pełne capacity klastra Proxmox: 3x 64GB RAM"
 
-  - header: Add things you want in markdown
-    description: We extended the standard commonMark specification and added tons of new features for you.
-    image: /assets/image/markdown.svg
+  - header: Czytaj dokumentację na wybrane tematy
+    description: Najczęściej pojawiające się zagadnienia w czasie pracy nad homelabem
+    image: /assets/image/docs-image.png
     bgImage: https://theme-hope-assets.vuejs.press/bg/2-light.svg
     bgImageDark: https://theme-hope-assets.vuejs.press/bg/2-dark.svg
     bgImageStyle:

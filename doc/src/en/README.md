@@ -38,9 +38,9 @@ highlights:
       - title: "<strong>🛠️ 11.07.2025</strong> — IaC development (Terragrunt / Terraform / Ansible)"
       - title: "<strong>🔥 21.02.2026</strong> — Proxmox cluster reaches full capacity: 3x 64GB RAM"
 
-  - header: 在 Markdown 中添加你想要的内容
-    description: 我们扩展了标准的 CommonMark 规范，为你添加了成吨功能。
-    image: /assets/image/markdown.svg
+  - header: Read documentation on selected topics
+    description: Common Homelab Challenges & Solutions
+    image: /assets/image/docs-image.png
     bgImage: https://theme-hope-assets.vuejs.press/bg/2-light.svg
     bgImageDark: https://theme-hope-assets.vuejs.press/bg/2-dark.svg
     bgImageStyle:
