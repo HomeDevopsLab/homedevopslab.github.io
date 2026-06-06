@@ -23,13 +23,20 @@ tagline: My homelab environment documentation
 #     link: ./guide/
 
 highlights:
-  - header: 易于安装
-    image: /assets/image/box.svg
-    bgImage: https://theme-hope-assets.vuejs.press/bg/3-light.svg
-    bgImageDark: https://theme-hope-assets.vuejs.press/bg/3-dark.svg
+  - header: Milestones
+    image: /assets/image/highlights-img.png
+    bgImage: /assets/image/highlights-light.svg
+    bgImageDark: /assets/image/highlights.svg
+    bgImageStyle:
+      background-size: cover
+      background-position: center
+      filter: brightness(0.5) contrast(0.8) # Przyciemnia niebieską sieć i wtapia ją w głęboki granat
     highlights:
-      - title: 运行 <code>pnpm create vuepress-theme-hope hope-project</code> 以创建一个新的主题项目。
-      - title: 在已有项目根目录下运行 <code>pnpm create vuepress-theme-hope add .</code> 以在项目中添加主题。
+      - title: "<strong>🚀 25.02.2023</strong> — Launching a 2-node cluster on Raspberry Pi 4"
+      - title: "<strong>🏗️ 17.06.2023</strong> — Cluster scales up with two additional RPis and Proxmox server"
+      - title: "<strong>💾 18.04.2025</strong> — Deploying a large NAS (8TB) for backups"
+      - title: "<strong>🛠️ 11.07.2025</strong> — IaC development (Terragrunt / Terraform / Ansible)"
+      - title: "<strong>🔥 21.02.2026</strong> — Proxmox cluster reaches full capacity: 3x 64GB RAM"
 
   - header: 在 Markdown 中添加你想要的内容
     description: 我们扩展了标准的 CommonMark 规范，为你添加了成吨功能。
