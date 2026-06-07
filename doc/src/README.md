@@ -55,7 +55,7 @@ highlights:
   - header: Wirtualizacja Proxmox
     description: Wspólna platfoma dla wszystkich aplikacji uruchomionych w homelabie. Trzy fizyczne serwery połączone w jeden cluster ze wspólnym storage w CEPH
     image: /assets/image/logo-proxmox.svg
-    bgImage: https://theme-hope-assets.vuejs.press/bg/9-light.svg
+    bgImage: /assets/image/virtualization-bg-light.svg
     bgImageDark: /assets/image/virtualization-bg.svg
     bgImageStyle:
       background-size: cover

@@ -154,3 +154,32 @@ h2.vp-highlight-header {
   font-weight: 700 !important; // Upewniamy się, że jest solidnie pogrubiony
   margin-bottom: 2rem !important; // Dajemy mu trochę więcej oddechu od pierwszego wpisu
 }
+
+html[data-theme="light"] {
+  .vp-highlight:has(img[src*="proxmox"]) {
+    .vp-highlight-info-wrapper {
+      // 1. Naprawiamy główny opis (teraz jest na właściwym poziomie)
+      .vp-highlight-description {
+        color: #ffffff !important; // Czysta biel dla całego opisu
+      }
+
+      // 2. Kafelki specyfikacji sprzętowej
+      li {
+        background: #1e293b !important;
+        border: 1px solid #334155 !important;
+        color: #cbd5e1 !important;
+
+        strong,
+        b {
+          color: #ffffff !important;
+        }
+
+        i,
+        svg,
+        em {
+          color: #ff6a00 !important;
+        }
+      }
+    }
+  }
+}

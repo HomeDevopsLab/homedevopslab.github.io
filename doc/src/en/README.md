@@ -55,7 +55,7 @@ highlights:
   - header: Proxmox Virtualization
     description: Unified platform hosting all homelab applications. Three physical servers configured as a single cluster with shared Ceph storage.
     image: /assets/image/logo-proxmox.svg
-    bgImage: https://theme-hope-assets.vuejs.press/bg/9-light.svg
+    bgImage: /assets/image/virtualization-bg-light.svg
     bgImageDark: /assets/image/virtualization-bg.svg
     bgImageStyle:
       background-size: cover
