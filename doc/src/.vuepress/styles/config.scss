@@ -50,6 +50,73 @@ $theme-color: #096dd9;
     flex-shrink: 0 !important;
     margin: 0 0 !important;
   }
+
+  // 1. Centrujemy całą sekcję i zbliżamy elementy do siebie
+  .vp-highlight:has(img[src*="proxmox"]) {
+    align-items: center !important; // Wracamy do bezpiecznego centrowania w pionie...
+    justify-content: center !important; // ...ale ściągamy elementy do środka ekranu
+    gap: 6rem !important; // Zmniejszamy dystans między logo a tekstem
+
+    .vp-highlight-info-wrapper {
+      max-width: 500px !important; // Tekst zachowuje idealną, czytelną szerokość
+      margin-top: 0 !important;
+
+      // NOWOŚĆ: Usuwamy ukryte przesunięcie listy ze specyfikacją
+      ul,
+      ol {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+        list-style-position: inside !important; // Upewnia się, że ikony są przy samej krawędzi
+      }
+      li,
+      p {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important; // Ładny, stały odstęp między ikonką a tekstem "42 CPU Cores"
+      }
+    }
+
+    .vp-highlight-info-wrapper ul {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.75rem !important; // Większy odstęp między kafelkami
+    }
+
+    .vp-highlight-info-wrapper li {
+      background: rgba(
+        255,
+        255,
+        255,
+        0.03
+      ) !important; // Bardzo delikatne, ciemne tło
+      border: 1px solid rgba(255, 255, 255, 0.08) !important; // Subtelna ramka
+      border-radius: 6px !important;
+      padding: 0.5rem 1rem !important;
+      display: inline-flex !important; // Żeby kafelek nie rozciągał się na 100% szerokości
+      align-items: center !important;
+
+      // Kolor ikony (możesz dopasować pod akcent pomarańczowy Proxmoxa!)
+      i,
+      svg,
+      .icon {
+        color: #ff6a00 !important; // Pomarańczowy akcent pasujący do logo Proxmoxa
+      }
+    }
+
+    .vp-highlight-info-wrapper li strong {
+      color: #f26422 !important; // Oficjalny pomarańczowy Proxmoxa
+      font-weight: 700 !important;
+    }
+  }
+
+  // 2. Podnosimy tekst (lub obniżamy logo), żeby optycznie złapały jedną linię
+  img.vp-highlight-image[src*="proxmox"] {
+    width: 26rem !important; // Optymalna wielkość logo
+    max-width: 35% !important;
+    margin-bottom: 3rem !important; // KLUCZ: Delikatnie podbijamy logo do góry,
+    // co zrównoważy dół z listą specyfikacji (CPU/RAM)
+    transform: translateY(20px) !important;
+  }
 }
 // Usuwamy display: list-item oraz paski z głównego elementu
 .vp-highlight-item {

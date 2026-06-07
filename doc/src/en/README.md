@@ -62,11 +62,11 @@ highlights:
       background-position: center
       filter: brightness(0.5) contrast(0.8)
     highlights:
-      - title: 42 CPU Cores
+      - title: <strong>42 CPU Cores</strong>
         icon: microchip
-      - title: 184 GB RAM
+      - title: <strong>184 GB RAM</strong>
         icon: memory
-      - title: 14 TB Storage
+      - title: <strong>14 TB Storage</strong>
         icon: hard-drive
 
   - header: 布局
