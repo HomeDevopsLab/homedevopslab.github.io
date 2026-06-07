@@ -1,7 +1,7 @@
 import { hopeTheme } from "vuepress-theme-hope";
 
-import { enNavbar, zhNavbar } from "./navbar/index.js";
-import { enSidebar, zhSidebar } from "./sidebar/index.js";
+import { plNavbar, enNavbar } from "./navbar/index.js";
+import { plSidebar, enSidebar } from "./sidebar/index.js";
 
 export default hopeTheme({
   hostname: "https://docs-lab.angrybits.pl",
@@ -20,6 +20,22 @@ export default hopeTheme({
   locales: {
     "/": {
       // navbar
+      navbar: plNavbar,
+
+      // sidebar
+      sidebar: plSidebar,
+
+      footer: "Default footer",
+
+      displayFooter: true,
+      repoDisplay: false,
+      editLink: false,
+
+      // metaLocales: {},
+    },
+
+    "/en/": {
+      // navbar
       navbar: enNavbar,
 
       // sidebar
@@ -28,28 +44,11 @@ export default hopeTheme({
       footer: "Default footer",
 
       displayFooter: true,
-
-      metaLocales: {
-        editLink: "Edit this page on GitHub",
-      },
-    },
-
-    /** Chinese locale config */
-    "/zh/": {
-      // navbar
-      navbar: zhNavbar,
-
-      // sidebar
-      sidebar: zhSidebar,
-
-      footer: "默认页脚",
-
-      displayFooter: true,
+      repoDisplay: false,
+      editLink: false,
 
       // page meta
-      metaLocales: {
-        editLink: "在 GitHub 上编辑此页",
-      },
+      // metaLocales: {},
     },
   },
 
@@ -141,13 +140,13 @@ export default hopeTheme({
   plugins: {
     // Note: This is for testing ONLY!
     // You MUST generate and use your own comment service in production.
-    comment: {
-      provider: "Giscus",
-      repo: "vuepress-theme-hope/giscus-discussions",
-      repoId: "R_kgDOG_Pt2A",
-      category: "Announcements",
-      categoryId: "DIC_kwDOG_Pt2M4COD69",
-    },
+    // comment: {
+    //   provider: "Giscus",
+    //   repo: "vuepress-theme-hope/giscus-discussions",
+    //   repoId: "R_kgDOG_Pt2A",
+    //   category: "Announcements",
+    //   categoryId: "DIC_kwDOG_Pt2M4COD69",
+    // },
 
     components: {
       components: ["Badge", "VPCard"],

@@ -10,7 +10,7 @@ bgImageStyle:
   background-position: center -15%
   background-size: contain # <--- KLUCZOWA ZMIANA
   background-repeat: no-repeat # Zabezpieczenie przed kafelkowaniem
-  # filter: brightness(0.45) contrast(0.7)
+  filter: brightness(0.80) contrast(0.7)
 heroText: Angrybits Homelab
 tagline: My homelab environment documentation
 # actions:
@@ -38,8 +38,8 @@ highlights:
       - title: "<strong>🛠️ 11.07.2025</strong> — IaC development (Terragrunt / Terraform / Ansible)"
       - title: "<strong>🔥 21.02.2026</strong> — Proxmox cluster reaches full capacity: 3x 64GB RAM"
 
-  - header: Read documentation on selected topics
-    description: Common Homelab Challenges & Solutions
+  - header: Common Homelab Challenges & Solutions
+    description: Read documentation on selected topics
     image: /assets/image/docs-image.png
     bgImage: https://theme-hope-assets.vuejs.press/bg/2-light.svg
     bgImageDark: https://theme-hope-assets.vuejs.press/bg/2-dark.svg
@@ -182,26 +182,22 @@ highlights:
         details: 通过 Reveal.js 在 Markdown 中插入幻灯片
         link: https://theme-hope.vuejs.press/zh/guide/markdown/content/revealjs.html
 
-  - header: 可定制的页面
-    description: 完整无障碍支持的可定制外观
-    image: /assets/image/ui.svg
+  - header: Proxmox Virtualization
+    description: Unified platform hosting all homelab applications. Three physical servers configured as a single cluster with shared Ceph storage.
+    image: /assets/image/logo-proxmox.svg
     bgImage: https://theme-hope-assets.vuejs.press/bg/9-light.svg
-    bgImageDark: https://theme-hope-assets.vuejs.press/bg/9-dark.svg
+    bgImageDark: /assets/image/virtualization-bg.svg
+    bgImageStyle:
+      background-size: cover
+      background-position: center
+      filter: brightness(0.5) contrast(0.8)
     highlights:
-      - title: 深色模式
-        icon: circle-half-stroke
-        details: 可以自由切换浅色模式与深色模式
-        link: https://theme-hope.vuejs.press/zh/guide/interface/darkmode.html
-
-      - title: 主题色切换
-        icon: palette
-        details: 支持自定义主题色并允许用户在预设的主题颜色之间切换
-        link: https://theme-hope.vuejs.press/zh/guide/interface/theme-color.html
-
-      - title: 更多
-        icon: ellipsis
-        details: RTL 布局，打印支持，全局按钮等
-        link: https://theme-hope.vuejs.press/zh/guide/interface/others.html
+      - title: 42 CPU Cores
+        icon: microchip
+      - title: 184 GB RAM
+        icon: memory
+      - title: 14 TB Storage
+        icon: hard-drive
 
   - header: 布局
     description: 一个完美的响应式布局。

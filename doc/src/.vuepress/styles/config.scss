@@ -40,10 +40,11 @@ $theme-color: #096dd9;
     .vp-highlight-info-wrapper {
       flex: 1 !important;
       text-align: left !important; // Na komputerze tekst wyrównany do lewej
+      max-width: 600px !important;
     }
   }
 
-  .vp-highlight-image {
+  .vp-highlight-image[src="/assets/image/highlights-img.png"] {
     width: 42rem !important; // Twoja docelowa wielkość na desktopie
     max-width: 45% !important; // Bezpiecznik: obrazek nie zajmie więcej niż 45% szerokości całego kontenera
     flex-shrink: 0 !important;
@@ -54,7 +55,7 @@ $theme-color: #096dd9;
 .vp-highlight-item {
   display: block !important;
   list-style: none !important;
-  margin-bottom: 1.4rem !important; // Zwiększony odstęp dla lepszej czytelności
+  margin-bottom: 0rem !important; // Zwiększony odstęp dla lepszej czytelności
 }
 
 // Celujemy bezpośrednio w nagłówek i jego wewnętrzny span

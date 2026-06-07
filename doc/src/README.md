@@ -30,7 +30,7 @@ highlights:
     bgImageStyle:
       background-size: cover
       background-position: center
-      filter: brightness(0.5) contrast(0.8) # Przyciemnia niebieską sieć i wtapia ją w głęboki granat
+      filter: brightness(0.5) contrast(0.8)
     highlights:
       - title: "<strong>🚀 25.02.2023</strong> — Uruchamiam 2-node cluster na Raspberry Pi4"
       - title: "<strong>🏗️ 17.06.2023</strong> — Cluster zwiększa się o dwa RPi + serwer Proxmox"
@@ -38,8 +38,8 @@ highlights:
       - title: "<strong>🛠️ 11.07.2025</strong> — Rozwój IaC (Terragrunt / Terraform / Ansible)"
       - title: "<strong>🔥 21.02.2026</strong> — Pełne capacity klastra Proxmox: 3x 64GB RAM"
 
-  - header: Czytaj dokumentację na wybrane tematy
-    description: Najczęściej pojawiające się zagadnienia w czasie pracy nad homelabem
+  - header: Najczęściej pojawiające się zagadnienia w homelabie
+    description: Czytaj dokumentację na wybrane tematy
     image: /assets/image/docs-image.png
     bgImage: https://theme-hope-assets.vuejs.press/bg/2-light.svg
     bgImageDark: https://theme-hope-assets.vuejs.press/bg/2-dark.svg
@@ -182,26 +182,22 @@ highlights:
         details: Insert presentation in Markdown files via Reveal.js
         link: https://theme-hope.vuejs.press/guide/markdown/content/revealjs.html
 
-  - header: Customizable UI
-    description: Customizable outlook with full a11y support.
-    image: /assets/image/ui.svg
+  - header: Wirtualizacja Proxmox
+    description: Wspólna platfoma dla wszystkich aplikacji uruchomionych w homelabie. Trzy fizyczne serwery połączone w jeden cluster ze wspólnym storage w CEPH
+    image: /assets/image/logo-proxmox.svg
     bgImage: https://theme-hope-assets.vuejs.press/bg/9-light.svg
-    bgImageDark: https://theme-hope-assets.vuejs.press/bg/9-dark.svg
+    bgImageDark: /assets/image/virtualization-bg.svg
+    bgImageStyle:
+      background-size: cover
+      background-position: center
+      filter: brightness(0.5) contrast(0.8)
     highlights:
-      - title: Dark Mode
-        icon: circle-half-stroke
-        details: Switch between light and dark modes freely
-        link: https://theme-hope.vuejs.press/guide/interface/darkmode.html
-
-      - title: Customizable Theme Color
-        icon: palette
-        details: Set theme color with the brand color and even a picker
-        link: https://theme-hope.vuejs.press/guide/interface/theme-color.html
-
-      - title: More
-        icon: ellipsis
-        details: RTL layout, print support, fullscreen button, etc.
-        link: https://theme-hope.vuejs.press/guide/interface/others.html
+      - title: 42 CPU
+        icon: microchip
+      - title: 184 GB RAM
+        icon: memory
+      - title: 14 TB Storage
+        icon: hard-drive
 
   - header: Improved layouts
     description: An awesome responsive layout
