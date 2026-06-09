@@ -79,6 +79,7 @@ export default hopeTheme({
     include: true,
     mark: true,
     plantuml: true,
+    preview: true,
     spoiler: true,
     stylize: [
       {
@@ -116,7 +117,7 @@ export default hopeTheme({
     // echarts: true,
 
     // install flowchart.ts before enabling it
-    // flowchart: true,
+    flowchart: true,
 
     // install mermaid before enabling it
     // mermaid: true,
