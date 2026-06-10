@@ -8,7 +8,7 @@ tag:
   - proxmox
 ---
 
-Do tworzenia templateów maszyn wirtualnych służy repozytorium proxmox-vm-templates. Kod napisany jest przy uzyciu Ansible. Playbook, który tworzy template'y znajduje się w pliku: `deploy-vm-templates.yaml`. Template'y wdrażane są na wszystkich serwerach będących częścią clustra proxmox i zapisują się na przestrzeni dyskowej: `local-lvm`.
+Do tworzenia templateów maszyn wirtualnych służy repozytorium proxmox-vm-templates. Kod napisany jest przy użyciu Ansible. Playbook, który tworzy template'y znajduje się w pliku: `deploy-vm-templates.yaml`. Template'y wdrażane są na wszystkich serwerach będących częścią clustra proxmox i zapisują się na przestrzeni dyskowej: `local-lvm`.
 
 Źródłem obrazów systemu są publicznie dostępne obrazy cloud-init popularnych dystrybucji linuksa.
 
@@ -73,7 +73,7 @@ Logujemy się przez ssh na serwery proxmox na konto root i do pliku `~/.ssh/auth
 
 ## Pliki konfiguracyjne
 
-Do repozytorium zostały dodane dwa pliki typu `cloud-init`. Zostały one podzielone względem dystrybucji linuksa dla której zostały pyrzgotowane:
+Do repozytorium zostały dodane dwa pliki typu `cloud-init`. Zostały one podzielone względem dystrybucji linuksa dla której zostały przygotowane:
 
 - userdata-debian.yaml
 - userdata-ubuntu.yaml
@@ -125,7 +125,7 @@ vm_templates:
 
 ## Uruchomienie ręczne
 
-Aby wygenerować template'y ręcznie musimy mieć na komputerze odpowiednio przygotowane środowisko, które składa się z zainstalowanego ansible'a, wygenerowanego klucza SSH, który będzie potrzebny do przeprowadzenia wdrożenia na proxmoxie oraz ustawionych zmienych środowiskowych.
+Aby wygenerować template'y ręcznie musimy mieć na komputerze odpowiednio przygotowane środowisko, które składa się z zainstalowanego ansible'a, wygenerowanego klucza SSH, który będzie potrzebny do przeprowadzenia wdrożenia na proxmoxie oraz ustawionych zmiennych środowiskowych.
 
 ::: tip Vault
 Jeśli klucze ssh dla ansible są zapisane w lokalnym vault, możemy je sobie pobrać i zapisać na koncie na lokalnej lub zdalnej maszynie na którym będziemy uruchamiać playbook
@@ -189,14 +189,14 @@ ansible-playbook -i hosts deploy-vm-templates.yaml
 
 ## CI/CD Pipeline
 
-W repozytorium skonfigurowany jest pipeline, wdrażający template'y na sewrerach proxmox. Aby mógł on poprawnie wykonać zadanie, musimy mieć uruchomiony Gitlab Runner, który będzie podłączony do instancji gitlaba.
+W repozytorium skonfigurowany jest pipeline, wdrażający template'y na serwerach proxmox. Aby mógł on poprawnie wykonać zadanie, musimy mieć uruchomiony Gitlab Runner, który będzie podłączony do instancji gitlaba.
 
 ### Zmienne środowiskowe
 
 Pipeline jest zintegrowany z Vault. Do jego prawidłowego wykonania potrzebne są odpowiednie zmienne środowiskowe.
 
 ::: important Zmienne środowiskowe
-Zmienne muszą zostać ustawione na pozionie grupy Homelab a nie pojedynczego repozytorium
+Zmienne muszą zostać ustawione na poziomie grupy Homelab a nie pojedynczego repozytorium
 :::
 
 ![Dodawanie zmiennych środowiskowych w Gitlabie](/assets/image/add_vars.png)
