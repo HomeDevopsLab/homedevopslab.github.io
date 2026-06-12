@@ -11,7 +11,7 @@ export default hopeTheme({
     url: "https://kkrolikowski.github.io",
   },
 
-  logo: "https://theme-hope-assets.vuejs.press/logo.svg",
+  logo: "/assets/image/logo.png",
 
   repo: "vuepress-theme-hope/vuepress-theme-hope",
 
@@ -74,6 +74,9 @@ export default hopeTheme({
     demo: true,
     figure: true,
     gfm: true,
+    highlighter: {
+      type: "shiki",
+    },
     imgLazyload: true,
     imgSize: true,
     include: true,
@@ -120,7 +123,7 @@ export default hopeTheme({
     flowchart: true,
 
     // install mermaid before enabling it
-    // mermaid: true,
+    mermaid: true,
 
     // playground: {
     //   presets: ["ts", "vue"],

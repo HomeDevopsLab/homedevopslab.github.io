@@ -10,7 +10,7 @@ category:
 
 Cluster składa się z trzech fizycznych urządzeń. Dzięki zastosowaniu ceph, uruchomione maszyny wirtualne pracują w trybie HA. Oznacza to, że w przypadku awarii jednego z serwerów, zostaną przemigrowane na dwa pozostałe - działające węzły clustra. Cluster posiada dodatkowe dedykowane interfejsy sieciowe 2.5Gbit, które służą do sychronizacji danych w ramach clustra ceph.
 
-![Architektura clustra proxmox](/assets/image/proxmox-cluster.svg)
+![Architektura clustra proxmox](/assets/image/proxmox-cluster.png)
 
 ## Sprzęt
 

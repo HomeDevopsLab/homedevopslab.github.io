@@ -10,7 +10,7 @@ category:
 
 The cluster consists of three physical servers. Thanks to Ceph, the running virtual machines operate in High Availability (HA) mode. This means that in the event of a node failure, VMs will be automatically migrated to the two remaining active cluster nodes. The cluster also features dedicated 2.5Gbit network interfaces used for data synchronization within the Ceph storage cluster.
 
-![Proxmox Cluster Architecture](/assets/image/proxmox-cluster.svg)
+![Proxmox Cluster Architecture](/assets/image/proxmox-cluster.png)
 
 ## Hardware
 
