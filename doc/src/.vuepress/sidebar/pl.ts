@@ -9,5 +9,12 @@ export const plSidebar = sidebar({
       link: "proxmox/",
       children: "structure",
     },
+    {
+      text: "Kubernetes",
+      icon: "dharmachakra",
+      prefix: "kubernetes/",
+      link: "kubernetes/",
+      children: "structure",
+    },
   ],
 });

@@ -8,4 +8,10 @@ export const plNavbar = navbar([
     prefix: "/proxmox/",
     children: ["vmtemplates", "vmmachines", "template_list"],
   },
+  {
+    text: "Kubernetes",
+    icon: "dharmachakra",
+    prefix: "/kubernetes/",
+    children: ["k8s-install", "helmchart", "sops", "lets-encrypt"],
+  },
 ]);

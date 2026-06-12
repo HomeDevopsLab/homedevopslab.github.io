@@ -51,6 +51,10 @@ highlights:
         icon: server
         details: Opis architektury clustra proxmox
         link: ./proxmox/
+      - title: Kubernetes Cluster
+        icon: dharmachakra
+        details: Budowa lokalnego clustra kubernetes
+        link: ./kubernetes/
 
   - header: Wirtualizacja Proxmox
     description: Wspólna platfoma dla wszystkich aplikacji uruchomionych w homelabie. Trzy fizyczne serwery połączone w jeden cluster ze wspólnym storage w CEPH

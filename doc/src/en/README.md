@@ -51,6 +51,10 @@ highlights:
         icon: server
         details: Proxmox Cluster Architecture Overview
         link: ./proxmox/
+      - title: Kubernetes Cluster
+        icon: dharmachakra
+        details: Building a local Kubernetes cluster
+        link: ./kubernetes/
 
   - header: Proxmox Virtualization
     description: Unified platform hosting all homelab applications. Three physical servers configured as a single cluster with shared Ceph storage.
