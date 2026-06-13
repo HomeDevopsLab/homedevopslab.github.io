@@ -13,14 +13,6 @@ bgImageStyle:
   filter: brightness(0.80) contrast(0.7)
 heroText: Angrybits Homelab
 tagline: My homelab environment documentation
-# actions:
-#   - text: 使用指南
-#     icon: lightbulb
-#     link: ./demo/
-#     type: primary
-
-#   - text: 文档
-#     link: ./guide/
 
 highlights:
   - header: Milestones
@@ -56,8 +48,8 @@ highlights:
         details: Building a local Kubernetes cluster
         link: ./kubernetes/
 
-  - header: Proxmox Virtualization
-    description: Unified platform hosting all homelab applications. Three physical servers configured as a single cluster with shared Ceph storage.
+  - header: Virtualization & High Availability
+    description: An ultra-reliable computing environment based on a 3-node Proxmox VE hypervisor cluster. Thanks to full hyper-converged integration, a single server failure does not interrupt the operation of critical services.
     image: /assets/image/logo-proxmox.svg
     bgImage: /assets/image/virtualization-bg-light.svg
     bgImageDark: /assets/image/virtualization-bg.svg
@@ -66,11 +58,11 @@ highlights:
       background-position: center
       filter: brightness(0.5) contrast(0.8)
     highlights:
-      - title: <strong>42 CPU Cores</strong>
+      - title: <strong>42 vCPU</strong> – Moc obliczeniowa klastra
         icon: microchip
-      - title: <strong>184 GB RAM</strong>
+      - title: <strong>184 GB RAM</strong> – Pamięć z obsługą HA
         icon: memory
-      - title: <strong>14 TB Storage</strong>
+      - title: <strong>14 TB Ceph NVMe</strong> – Replikowany storage
         icon: hard-drive
 
   - header: 布局
