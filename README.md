@@ -1,40 +1,50 @@
 # docs.lab.angrybits.pl
 
-Strona wygenerowana jest za pomocą [VuePress Theme Hope](https://theme-hope.vuejs.press/)
+Strona z dokumentacją homelaba wygenerowana za pomocą [VuePress Theme Hope](https://theme-hope.vuejs.press/). Dostępna w dwóch językach: polskim (domyślny) i angielskim (`/en/`).
 
-## Inicjalizacja projektu
+## Wymagania
 
-Do inicjalizcji projektu potrzebny jest zainstalowany NodeJS.
+- Node.js 22+
 
-```bash
-npm init vuepress-theme-hope@latest doc
-```
-
-## Praca z frameworkiem
-
-Podczas tworzenia dokumentacji możemy uruchomić sobie na komputerze dev server.
+## Instalacja
 
 ```bash
 cd doc
-npm run docs:dev
+npm install
 ```
 
-## Dev Hints
+## Praca lokalna
 
-Nawigację na stronie konfiguruje się w plikach:
+```bash
+cd doc
+npm run docs:dev          # Dev server z hot-reload
+npm run docs:clean-dev    # Dev server z wyczyszczonym cache
+```
 
-- doc/src/.vuepress/sidebar.ts (menu boczne)
-- doc/src/.vuepress/navbar.ts (menu górne)
-
-Różne opcje związane z pluginami, których możemy używać z tym frameworkiem, ich włączaniem bądź wyłączaniem robi się w pliku: `doc/src/.vuepress/theme.ts`.
-
-## Deployment
-
-Zmiany gotowe do publikacji generujemy w tens sposób
+## Budowanie
 
 ```bash
 cd doc
 npm run docs:build
 ```
 
-Polecenie wygeneruje katalog: `doc/src/.vuepress/dist` zawierający statyczne pliki html, css, js, które można podpiąć pod dowolny serwer www.
+Statyczne pliki (html, css, js) trafią do `doc/src/.vuepress/dist/`.
+
+## Konfiguracja nawigacji
+
+- `doc/src/.vuepress/navbar/pl.ts` i `navbar/en.ts` — menu górne
+- `doc/src/.vuepress/sidebar/pl.ts` i `sidebar/en.ts` — menu boczne
+
+Ogólne opcje motywu i pluginów: `doc/src/.vuepress/theme.ts`
+
+Dodanie nowego pliku `.md` do katalogu `proxmox/` lub `kubernetes/` automatycznie pojawia się w menu bocznym — nie wymaga edycji konfiguracji sidebara.
+
+## Deployment
+
+CI/CD uruchamia się automatycznie przy pushu **taga** na GitLab. Pipeline:
+
+1. Pobiera dane dostępowe do rejestru Docker z Vault (JWT auth)
+2. Buduje wieloarchitekturowy obraz Docker (`linux/amd64`, `linux/arm64/v8`)
+3. Pushuje obraz z tagiem odpowiadającym tagowi git
+
+Obraz oparty jest na dwuetapowym Dockerfile: Node 22 Alpine do budowania, nginx do serwowania.
