@@ -1,7 +1,26 @@
 import { hopeTheme } from "vuepress-theme-hope";
 
-import { enNavbar, zhNavbar } from "./navbar/index.js";
-import { enSidebar, zhSidebar } from "./sidebar/index.js";
+import { plNavbar, enNavbar } from "./navbar/index.js";
+import { plSidebar, enSidebar } from "./sidebar/index.js";
+
+import { execSync } from "child_process";
+
+// Pobranie krótkiego ID ostatniego commita (np. a1b2c3d)
+let commitHash = "unknown";
+try {
+  commitHash = execSync("git rev-parse --short HEAD").toString().trim();
+} catch (e) {
+  console.warn("Nie udało się pobrać commit hash z Git", e);
+}
+
+// Pobranie daty ostatniego commita w formacie DD.MM.YYYY
+let lastUpdateDate = "unknown";
+try {
+  lastUpdateDate = execSync('git log -1 --format="%cd" --date=format:"%d.%m.%Y"').toString().trim();
+} catch (e) {
+  console.warn("Nie udało się pobrać daty z Git", e);
+}
+
 
 export default hopeTheme({
   hostname: "https://docs-lab.angrybits.pl",
@@ -11,7 +30,7 @@ export default hopeTheme({
     url: "https://kkrolikowski.github.io",
   },
 
-  logo: "https://theme-hope-assets.vuejs.press/logo.svg",
+  logo: "/assets/image/logo.png",
 
   repo: "vuepress-theme-hope/vuepress-theme-hope",
 
@@ -19,6 +38,66 @@ export default hopeTheme({
 
   locales: {
     "/": {
+      // navbar
+      navbar: plNavbar,
+
+      // sidebar
+      sidebar: plSidebar,
+
+      footer: `
+        <div style="
+          display: flex; 
+          flex-direction: column; 
+          align-items: center; 
+          gap: 16px; 
+          font-family: 'Fira Code', Consolas, Monaco, monospace; 
+          font-size: 0.85rem; 
+          color: #94a3b8;
+          padding: 15px 0;
+        ">
+          <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px; width: fit-content;">
+            <div style="color: #64748b;">
+              <span style="color: #38bdf8;">[angrybits-homelab]$</span> systemctl status documentation.service
+            </div>
+            <div style="display: inline-flex; align-items: center; gap: 8px; padding-left: 2px;">
+              <span style="
+                background: rgba(0, 223, 162, 0.15); 
+                color: #00dfa2; 
+                padding: 2px 8px; 
+                border-radius: 4px; 
+                font-size: 0.75rem; 
+                font-weight: bold;
+                border: 1px solid rgba(0, 223, 162, 0.3);
+              ">● active (running)</span>
+              <span style="color: #64748b; font-size: 0.8rem;">since Sat 2023-02-25; k3s & pve node manager</span>
+            </div>
+          </div>
+          
+          <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; align-items: center; font-size: 0.8rem; color: #64748b; width: 100%; border-top: 1px solid rgba(148, 163, 184, 0.08); padding-top: 12px;">
+            <span style="display: inline-flex; align-items: center; gap: 5px;">
+              <iconify-icon icon="fa6-brands:gitlab" style="color: #fc6d26;"></iconify-icon> 
+              pipeline: <span style="color: #00dfa2;">#stable</span>
+            </span>
+            <span>•</span>
+            <span style="display: inline-flex; align-items: center; gap: 5px;">
+              <iconify-icon icon="fa6-solid:code-commit"></iconify-icon> 
+              commit: <span style="color: #e2e8f0; font-weight: bold;">${commitHash}</span>
+            </span>
+            <span>•</span>
+            <span>updated: ${lastUpdateDate}</span>
+          </div>
+        </div>
+      `,
+      copyright: "Copyright © 2026 angrybits | Automation Powered Homelab",
+      displayFooter: true,
+
+      repoDisplay: false,
+      editLink: false,
+
+      // metaLocales: {},
+    },
+
+    "/en/": {
       // navbar
       navbar: enNavbar,
 
@@ -28,28 +107,11 @@ export default hopeTheme({
       footer: "Default footer",
 
       displayFooter: true,
-
-      metaLocales: {
-        editLink: "Edit this page on GitHub",
-      },
-    },
-
-    /** Chinese locale config */
-    "/zh/": {
-      // navbar
-      navbar: zhNavbar,
-
-      // sidebar
-      sidebar: zhSidebar,
-
-      footer: "默认页脚",
-
-      displayFooter: true,
+      repoDisplay: false,
+      editLink: false,
 
       // page meta
-      metaLocales: {
-        editLink: "在 GitHub 上编辑此页",
-      },
+      // metaLocales: {},
     },
   },
 
@@ -75,11 +137,15 @@ export default hopeTheme({
     demo: true,
     figure: true,
     gfm: true,
+    highlighter: {
+      type: "shiki",
+    },
     imgLazyload: true,
     imgSize: true,
     include: true,
     mark: true,
     plantuml: true,
+    preview: true,
     spoiler: true,
     stylize: [
       {
@@ -117,10 +183,10 @@ export default hopeTheme({
     // echarts: true,
 
     // install flowchart.ts before enabling it
-    // flowchart: true,
+    flowchart: true,
 
     // install mermaid before enabling it
-    // mermaid: true,
+    mermaid: true,
 
     // playground: {
     //   presets: ["ts", "vue"],
@@ -141,13 +207,13 @@ export default hopeTheme({
   plugins: {
     // Note: This is for testing ONLY!
     // You MUST generate and use your own comment service in production.
-    comment: {
-      provider: "Giscus",
-      repo: "vuepress-theme-hope/giscus-discussions",
-      repoId: "R_kgDOG_Pt2A",
-      category: "Announcements",
-      categoryId: "DIC_kwDOG_Pt2M4COD69",
-    },
+    // comment: {
+    //   provider: "Giscus",
+    //   repo: "vuepress-theme-hope/giscus-discussions",
+    //   repoId: "R_kgDOG_Pt2A",
+    //   category: "Announcements",
+    //   categoryId: "DIC_kwDOG_Pt2M4COD69",
+    // },
 
     components: {
       components: ["Badge", "VPCard"],

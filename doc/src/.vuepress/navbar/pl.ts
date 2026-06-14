@@ -1,31 +1,17 @@
 import { navbar } from "vuepress-theme-hope";
 
-export const enNavbar = navbar([
+export const plNavbar = navbar([
   "/",
-  "/portfolio",
-  "/demo/",
   {
-    text: "Guide",
-    icon: "lightbulb",
-    prefix: "/guide/",
-    children: [
-      {
-        text: "Bar",
-        icon: "lightbulb",
-        prefix: "bar/",
-        children: ["baz", { text: "...", icon: "ellipsis", link: "#" }],
-      },
-      {
-        text: "Foo",
-        icon: "lightbulb",
-        prefix: "foo/",
-        children: ["ray", { text: "...", icon: "ellipsis", link: "#" }],
-      },
-    ],
+    text: "Proxmox",
+    icon: "server",
+    prefix: "/proxmox/",
+    children: ["vmtemplates", "vmmachines", "template_list"],
   },
   {
-    text: "V2 Docs",
-    icon: "book",
-    link: "https://theme-hope.vuejs.press/",
+    text: "Kubernetes",
+    icon: "dharmachakra",
+    prefix: "/kubernetes/",
+    children: ["k8s-install", "helmchart", "sops", "lets-encrypt"],
   },
 ]);
