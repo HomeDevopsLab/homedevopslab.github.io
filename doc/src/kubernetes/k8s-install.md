@@ -1,6 +1,6 @@
 ---
-title: K3S Install
-icon: fa-brands fa-raspberry-pi
+title: Instalacja clustra
+icon: download
 order: 3
 category:
   - Guide
@@ -8,123 +8,156 @@ tag:
   - kubernetes
 ---
 
-Głównym komponentem klastra są cztery mikrokomputery: [Raspberry Pi4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/), Każdy z nich wykosażony jest w 8GB pamięci RAM, gigabitowy interfejs sieciowy oraz CPU: Broadcom BCM2711, Quad core Cortex-A72 (ARM v8) 64-bit. Dodatkowo każdy z nich wyposażony jest w kartę micro-sd o pojemności 64GB. Miejsce jest przeznaczone na system operacyjny oraz do bieżącej pracy klastra kubernetes.
+Proces instalacji wykonamy na czterech maszynach wirtualnych (VM) o identycznych parametrach.
 
-Pełną specyfikację można znaleźć pod adresem: [https://www.raspberrypi.com/products/raspberry-pi-4-model-b/specifications/](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/specifications/)
+* control-plane: test-master1, test-master2, test-master3
+* worker nodes: test-worker1
 
-## Instalacja systemu
+Instalacja zostanie wykonana przy użyciu narzędzia [k3sup](https://github.com/alexellis/k3sup) bezpośrednio z komputera.
 
-Instalację systemu można przeprowadzić w trybie "headless" przy użyciu narzędzia: [Raspberry Pi Imager](https://www.raspberrypi.com/software/). W pierwszym kroku (model) wybieramy Raspberry Pi4. W opcji "System Operacyjny" wybieramy "Raspberry Pi (other)" a następnie Raspberry Pi OS Lite (32-bit). Wybieramy urządzeie flash do którego mamy włożoną kartę microSD i możemy rozpocząć procedurę instalacji
+## Wymagania wstępne
 
-::: important Pre-install
-Zanim rozpoczniemy proces instalacji warto zmienić ustawienia systemu operacyjnego. Minimum, które trzeba wykonać to ustawić login i hasło, inaczej nie będzie można się zalogować po instalacji.
+Działające serwery wirtualne z linuksem z dostępem przez ssh. Najlepiej utworzyć je przy użyciu repozytorium według [dokumentacji tworzenia vm](/proxmox/vmmachines.md).
+
+::: tip known_hosts
+Zanim zaczniemy proces instalacji wskazane jest zalogowanie się raz na każdą z VM aby uniknąć pytania o akceptację klucza hosta.
 :::
 
-![Konfiguracja instalatora Raspberry Pi](/assets/image/rpi-install-config.png)
+### Narzędzia
 
-Proces ten należy przeprowadzić na wszystkich czterech kartach microSD.
+* [k3sup](https://github.com/alexellis/k3sup)
+* [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
 
-## Pierwsze uruchomienie.
+## Instalacja
 
-Po instalacji OS na wszystkich czterech kartach, wkładamy je do Raspberry i startujemy na czas ok. 2 min. W ten sposób utworzą się potrzebne do dalszej konfiguracji pliki:
+Przed przystąpieniem do instalacji trzeba założyć lokalnie katalog `.kube`
 
-* cmdline.txt
-* config.txt
+### Opcje k3sup
 
-Znajdują się one na dysku oznaczonym: **boot**
+Wybrane opcje k3sup
 
-## Konfiguracja systemu
+| Opcja | Opis |
+| ------| -----|
+| --ip | Adres IP hosta na którym k3sup ma wykonywać operacje |
+| --tls-san | Adres IP (oraz nazwa DNS), który w kube-vip będzie wspólnym adresem IP clustra |
+| --cluster | Opcja używana na hoście na którym inicjowany jest cluster |
+| --server-ip | Opcja do podania adresu IP noda na którym został zainicjowany cluster, używamy do dodawania kolejnych node'ów |
+| --server | Opcja używana do dodania hosta do control-plane |
 
-Po podłączeniu kart sd do komputera edytujemy pliki **cmdline.txt** oraz **config.txt**.
+### Inicjalizacja clustra
 
-### Plik cmdline.txt
-```
-cgroup_memory=1 cgroup_enable=memory ip=10.1.1.10::10.1.1.1:255.255.255.0:k3s-master:eth0:off
-```
-
-konfiguracja IP składa się z następujacych pól:
-* **10.1.1.10:** adres IP urządzenia
-* **10.1.1.1:** brama domyślna
-* **255.255.255.0:** maska
-* **k3s-master:** hostname
-* **eth0:** interfejs sieciowy
-* **off:** dhcp client
-
-### Plik config.txt
-```
-arm_64bit=1
-```
-
-Odkomentowujemy, lub dodajemy tą opcję. Włącza ona 64-bitowy kernel systemu.
-
-### SSH
-Na dysku **boot** tworzymy pusty plik o nazwie ssh. Spowoduje to uruchomienie sshd wraz ze startem systemu.
-
-::: tabs
-
-@tab MacOS/Linux
-```bash
-touch ssh
+```bash title="test-master1"
+k3sup install \
+--ip 192.168.3.17 \
+--tls-san 192.168.3.22 \
+--tls-san testk3s-ha-cluster.lan \
+--k3s-extra-args "--disable servicelb" \
+--cluster \
+--k3s-channel latest \
+--local-path $HOME/.kube/config \
+--user cloud-user \
+--merge
 ```
 
-@tab Windows
-```powershell
-New-Item ssh
-```
+Polecenie inicjuje cluster kubernetes na wskazanym opcją `--ip` hoście.
 
+::: tip .kube/config
+Jeśli w czasie inicjalizacji clustra pojawi się błąd
+
+``` :no-line-numbers
+Error: open /home/cloud-user/.kube/config: no such file or director
+```
+Oznacza on. że k3sup nie był w stanie skonfigurować dla nas dostępu do clustra. Logujemy się na dopiero co stworzony node i kopiujemy zawartość pliku: `/etc/rancher/k3s/k3s.yaml` do swojego lokalnego `~/.kube/config`. Należy tylko zmienić linijkę `server: https://127.0.0.1:6443` i wstawić adres IP hosta, który przed chwilą był konfigurowany.
 :::
 
-## Konfiguracja sieci
+Po zakończeniu działania polecenia mamy już działający pierwszy node clustra.
+Instalacja kończy się komunikatami
 
-Po zalogowaniu się na raspberry dodajemy trasę domyślną poleceniem:
+``` :no-line-numbers
+Merging config into file: /home/cloud-user/.kube/config
+Saving file to: /home/cloud-user/.kube/config
 
-```bash
-route add default gw 10.1.1.1
+# Test your cluster with:
+export KUBECONFIG=/home/cloud-user/.kube/config
+kubectl config use-context default
+kubectl get node -o wide
 ```
 
-::: tip Sieć
-Jeśli raspberry ma działać w innym vlanie niż normalnie pracujemy i nie mamy w nim hosta przesiadkowego, możemy skonfigurować sieć na laptopie aby dopasować się do sieci raspberry i wykonać na nim ustawienie gatewaya.
+Weryfikacja działania kubernetes
+
+```bash title="🖥️ kubectl get nodes"
+NAME           STATUS   ROLES                AGE   VERSION
+test-master1   Ready    control-plane,etcd   12m   v1.36.1+k3s1
+```
+
+### Instalacja kube-vip
+
+::: important
+Jest to krok wymagany zanim przejdziemy do instalacji k3s na kolejnych nodach clustra
 :::
 
-Ustawienie gatewaya umożliwi instalację potrzebnych pakietów (np. vim).
-
-### dhcpcd.conf
-Plik: **/etc/dhcpcd.conf**
-```
-interface eth0
-static ip_address=10.1.1.10/24
-static routers=10.1.1.1
-static domain_name_servers=10.1.1.1 8.8.8.8
-```
-### Hostname
-Hostname ustawiamy w plikach:
-
-* /etc/hostname
-* /etc/hosts
-
-/etc/hosts:
-```
-127.0.1.1               k3s-master
-```
-## Klaster K3S
-Klaster skonfigurowany jest w uproszczonym modelu z pojedynczym master-nodem. Konfiguracja klastra składa się z dwóch etapów:
-* instalacja master-node'a
-* instalacja worker-nodów.
-
-### Instalacja master-node
-Na Raspberry: ***k3s-master*** uruchamiamy skrypt:
-```bash
-curl -sfL https://get.k3s.io | sh -
-```
-Po zakończeniu jego wykonania jest zainicjowany jedno nodowy klaster kubernetes, który pełni jednocześnie rolę control-plaina. Do dołączenia do klastra worker-nodów potrzebny jest token mastera. Znajduje się on w pliku: `/var/lib/rancher/k3s/server/node-token` na utworzonym masterze.
-
-### Instalacja worker-node
-Operację powtarzamy na kazdym z worker-nodów, które mają zostać dołączone do klastra.
+Wszystkie polecenia wykonujamy na `test-master1`
 
 ```bash
-curl -sfL https://get.k3s.io | K3S_URL=https://myserver:6443 K3S_TOKEN=mynodetoken sh -
+sudo su -
+mkdir -p /var/lib/rancher/k3s/server/manifests/
+curl https://kube-vip.io/manifests/rbac.yaml > /var/lib/rancher/k3s/server/manifests/kube-vip-rbac.yaml
+kubectl apply -f https://kube-vip.io/manifests/rbac.yaml
+export VIP=192.168.3.22
+export INTERFACE=eth0
+KVVERSION=$(curl -sL https://api.github.com/repos/kube-vip/kube-vip/releases | jq -r ".[0].name")
+alias kube-vip="ctr image pull ghcr.io/kube-vip/kube-vip:$KVVERSION; ctr run --rm --net-host ghcr.io/kube-vip/kube-vip:$KVVERSION vip /kube-vip"
+kube-vip manifest daemonset --services --inCluster --arp --interface eth0 | kubectl apply -f -
 ```
 
-* my-server - jest to adres master-noda, możemy podać adres IP
-* mynodetoken - jest to token mastera, który pozyskaliśmy w poprzednim kroku
+Po wykonaniu tych poleceń powinien się uruchomić pod z kube-vip
 
+```bash :no-line-numbers
+root@test-master1:~# kubectl get pods -n kube-system | grep kube-vip
+kube-vip-ds-xr8f5                         1/1     Running     0             11m
+```
+### Dołączanie nodów control-plane
+
+Dodajemy kolejne hosty zmieniając adres ip w opcji `--ip`
+
+```bash :no-line-numbers
+k3sup join \
+--ip 192.168.3.xx \
+--server-ip 192.168.3.17 \
+--server \
+--k3s-channel latest \
+--user cloud-user
+```
+
+### Dołączanie workerów
+
+Dołączając worker nody nie podajemy opcji `--server`.
+
+```bash :no-line-numbers
+k3sup join \
+--ip 192.168.3.xx \
+--server-ip 192.168.3.17 \
+--k3s-channel latest \
+--user cloud-user
+```
+
+## Podsumowanie
+
+Po zakończeniu wszystkich operacji mamy gotowy 4-nodowy cluster kubernetes
+
+```bash :no-line-numbers title="🖥️ kubectl get nodes"
+NAME           STATUS   ROLES                AGE    VERSION
+test-master1   Ready    control-plane,etcd   95m    v1.36.1+k3s1
+test-master2   Ready    control-plane,etcd   64m    v1.36.1+k3s1
+test-master3   Ready    control-plane,etcd   4m3s   v1.36.1+k3s1
+test-worker1   Ready    <none>               34s    v1.36.1+k3s1
+```
+
+Daemonset kube-vip uruchomiony na wszystkich nodach control-plane (master)
+
+```bash :no-line-numbers title="🖥️ kubectl get pods -n kube-system -o wide | grep kube-vip"
+kube-vip-ds-4ww75                         1/1     Running     0              70m     192.168.3.18   test-master2   <none>           <none>
+kube-vip-ds-b99sh                         1/1     Running     0              6m24s   192.168.3.20   test-worker1   <none>           <none>
+kube-vip-ds-xglx4                         1/1     Running     0              9m52s   192.168.3.19   test-master3   <none>           <none>
+kube-vip-ds-xr8f5                         1/1     Running     0              87m     192.168.3.17   test-master1   <none>           <none>
+```
