@@ -72,6 +72,11 @@ highlights:
   image: /assets/image/k3s.png
   bgImage: /assets/image/cloudy-light.svg
   bgImageDark: /assets/image/cloudy.svg
+  bgImageStyle:
+    background-attachment: fixed
+    background-position: center -15%
+    background-size: contain
+    filter: brightness(0.80) contrast(0.7)
   highlights:
     - title: <strong>100% GitOps Driven</strong>
       icon: code-branch
