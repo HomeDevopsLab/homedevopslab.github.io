@@ -8,7 +8,7 @@ tag:
   - kubernetes
 ---
 
-Proces instalacji wykonamy na 4-ech maszynach wirtualnych (VM) o identycznych parametrach.
+Proces instalacji wykonamy na czterech maszynach wirtualnych (VM) o identycznych parametrach.
 
 * control-plane: test-master1, test-master2, test-master3
 * worker nodes: test-worker1
@@ -20,7 +20,7 @@ Instalacja zostanie wykonana przy użyciu narzędzia [k3sup](https://github.com/
 Działające serwery wirtualne z linuksem z dostępem przez ssh. Najlepiej utworzyć je przy użyciu repozytorium według [dokumentacji tworzenia vm](/proxmox/vmmachines.md).
 
 ::: tip known_hosts
-Zanim zaczniemy proces instalacji wskazane jest zalogowanie się raz na każdą z VM aby uniknąć pytania p akceptację klucza hosta.
+Zanim zaczniemy proces instalacji wskazane jest zalogowanie się raz na każdą z VM aby uniknąć pytania o akceptację klucza hosta.
 :::
 
 ### Narzędzia
@@ -110,7 +110,7 @@ alias kube-vip="ctr image pull ghcr.io/kube-vip/kube-vip:$KVVERSION; ctr run --r
 kube-vip manifest daemonset --services --inCluster --arp --interface eth0 | kubectl apply -f -
 ```
 
-Po wykonaniu tych poleceń pownien się uruchomić pod z kube-vip
+Po wykonaniu tych poleceń powinien się uruchomić pod z kube-vip
 
 ```bash :no-line-numbers
 root@test-master1:~# kubectl get pods -n kube-system | grep kube-vip
@@ -153,7 +153,7 @@ test-master3   Ready    control-plane,etcd   4m3s   v1.36.1+k3s1
 test-worker1   Ready    <none>               34s    v1.36.1+k3s1
 ```
 
-Daemonset kube-vip uruchomiony na wszyskich nodach control-plane (master)
+Daemonset kube-vip uruchomiony na wszystkich nodach control-plane (master)
 
 ```bash :no-line-numbers title="🖥️ kubectl get pods -n kube-system -o wide | grep kube-vip"
 kube-vip-ds-4ww75                         1/1     Running     0              70m     192.168.3.18   test-master2   <none>           <none>
