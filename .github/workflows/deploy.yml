@@ -41,7 +41,7 @@ jobs:
       - name: Build
         working-directory: doc
         env:
-          VUEPRESS_COMMIT_SHA: ${{ github.sha }}
+          VUEPRESS_GIT_TAG: ${{ github.ref_name }}
           VUEPRESS_BUILD_DATE: ${{ github.run_started_at }}
         run: npm run docs:build
 

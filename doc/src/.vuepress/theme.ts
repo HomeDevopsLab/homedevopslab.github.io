@@ -6,8 +6,8 @@ import { plSidebar, enSidebar } from "./sidebar/index.js";
 import { execSync } from 'child_process';
 
 // Sprawdź zmienną ENV, jeśli nie ma - spróbuj odpalić gita (fallback dla deweloperki lokalnej)
-const commitHash = process.env.VUEPRESS_COMMIT_SHA || (() => {
-  try { return execSync('git rev-parse --short HEAD').toString().trim(); }
+const gitTag = process.env.VUEPRESS_GIT_TAG || (() => {
+  try { return execSync('git describe --tags --abbrev=0').toString().trim(); }
   catch { return 'unknown'; }
 })();
 
@@ -75,8 +75,8 @@ export default hopeTheme({
             </span>
             <span>•</span>
             <span style="display: inline-flex; align-items: center; gap: 5px;">
-              <iconify-icon icon="fa6-solid:code-commit"></iconify-icon> 
-              commit: <span style="color: #e2e8f0; font-weight: bold;">${commitHash}</span>
+              <iconify-icon icon="fa6-solid:tag"></iconify-icon>
+              version: <span style="color: #e2e8f0; font-weight: bold;">${gitTag}</span>
             </span>
             <span>•</span>
             <span>updated: ${updatedDate}</span>
