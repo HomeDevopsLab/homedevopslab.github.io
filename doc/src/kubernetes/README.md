@@ -9,7 +9,7 @@ category:
 Kubernetes stanowi centralny punt w moim homelabie. Jest to miejsce w którym hostuję wszystkie aplikacje. Ruch internetowy skierowany na porty 80 i 443 na adres IP load balancera. Nody clustra rozmieszczone są na różnych fizycznych urządzeniach. Dzięki zastosowaniu maszyn VM uruchomionych w trybie HA, awaria jednego z fizycznych urządzeń spowoduje jedynie chwilową niedostępność działających aplikacji.
 
 ::: info Raspberry Pi
-Ze względu na niską wydajność sprzętową nie planuję w przyszłości dołączania do clustra tych urządzeń. Obecnie działające nody w przypadku awarii bedą wymieniane na maszyny VM. Docelowo wszystkie Raspberry pi zostaną wymienione na kolejne sewery proxmox, które zwiększą w większym stopniu pojemność klastra.
+Ze względu na niską wydajność sprzętową nie planuję w przyszłości dołączania do clustra tych urządzeń. Obecnie działające nody w przypadku awarii bedą wymieniane na maszyny wirtualne (VM). Docelowo wszystkie Raspberry pi zostaną wymienione na kolejne sewery proxmox, które zwiększą w większym stopniu pojemność klastra.
 :::
 
 ## Architektura
