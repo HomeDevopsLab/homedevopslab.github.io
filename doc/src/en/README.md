@@ -27,7 +27,7 @@ highlights:
       - title: "<strong>🚀 25.02.2023</strong> — Launching a 2-node cluster on Raspberry Pi 4"
       - title: "<strong>🏗️ 17.06.2023</strong> — Cluster scales up with two additional RPis and Proxmox server"
       - title: "<strong>💾 18.04.2025</strong> — Deploying a large NAS (8TB) for backups"
-      - title: "<strong>🛠️ 11.07.2025</strong> — IaC development (Terragrunt / Terraform / Ansible)"
+      - title: "<strong>🛠️ 11.07.2025</strong> — Central IaC Repository (Terragrunt / Terraform / Ansible)"
       - title: "<strong>🔥 21.02.2026</strong> — Proxmox cluster reaches full capacity: 3x 64GB RAM"
 
   - header: Knowledge Base
