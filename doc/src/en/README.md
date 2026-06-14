@@ -50,7 +50,7 @@ highlights:
 
   - header: Virtualization & High Availability
     description: An ultra-reliable computing environment based on a 3-node Proxmox VE hypervisor cluster. Thanks to full hyper-converged integration, a single server failure does not interrupt the operation of critical services.
-    image: /assets/image/rack.png
+    image: /assets/image/rack.jpg
     bgImage: /assets/image/virtualization-bg-light.svg
     bgImageDark: /assets/image/virtualization-bg.svg
     bgImageStyle:
@@ -66,7 +66,7 @@ highlights:
         icon: hard-drive
   - header: Orchestration & GitOps (Kubernetes)
     description: A primary, highly available application environment powered by a k3s cluster. The entire infrastructure and service lifecycle are managed declaratively, eliminating the need for manual configuration or deployments via SSH.
-    image: /assets/image/k3s.png
+    image: /assets/image/k3s.jpg
     bgImage: /assets/image/cloudy-light.svg
     bgImageDark: /assets/image/cloudy.svg
     bgImageStyle:
