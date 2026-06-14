@@ -6,22 +6,27 @@ category:
   - Guide
 ---
 
-Kubernetes stanowi centralny punt w moim homelabie. Jest to miejsce w którym hostuję wszystkie aplikacje. Ruch internetowy skierowany na porty 80 i 443 skierowany jest na jeden zadresów IP wystawionych przez LoadBalancer wbudowany w K3S.
+Kubernetes is at the heart of my homelab, serving as the primary hosting environment for all my applications. Internet traffic on ports 80 and 443 is routed to the load balancer's IP address. The cluster nodes are distributed across various physical devices. Thanks to the use of virtual machines (VMs) running in High Availability (HA) mode, a failure of any single physical device results only in momentary downtime for active services.
 
-## Architektura
+::: info Raspberry Pi
+Due to limited hardware performance, I do not plan to add any more of these devices to the cluster in the future. In the event of a failure, the currently active nodes will be replaced by virtual machines (VMs). Ultimately, all Raspberry Pi units will be replaced by additional Proxmox servers to significantly increase the cluster's overall capacity.
+:::
 
-![Architektura Kubernetes w HomeLAB](/assets/image/kubernetes-arch.png)
+## Architecture
 
-## Implementacja klastra
-<!--- #TODO: Do aktualizacji opis architektury clustra
--->
+![Kubernetes Architecture in HomeLAB](/assets/image/kubernetes-arch.png)
 
-Klaster, który powstał w oparciu o [K3S](https://k3s.io/) został zainicjowany w bardzo prostej architekturze:
+### Node Distribution
 
-- 1x master-node (Raspberry Pi4)
-- 3x worker-nodes (Raspberry Pi4)
-- 2x worker-nodes (Proxmox VM)
+| Node | Role | Host |
+| -----| -----| -----|
+| k3s-master1 | control-plane | hp1 |
+| k3s-master2 | control-plane | hp2 |
+| k3s-master3 | control-plane | proxmox |
+| k3s-aarch64-worker1 | worker | raspberry pi |
+| k3s-aarch64-worker2 | worker | raspberry pi |
+| k3s-amd64-worker3 | worker | proxmox |
+| k3s-amd64-worker4 | worker | proxmox |
 
-Klastser posiada nody o architekturze x86_64 oraz aarch64. Daje to większe możliwości uruchamiania projektów.
 
 <Catalog />
