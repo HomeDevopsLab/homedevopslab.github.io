@@ -52,7 +52,7 @@ highlights:
 
 - header: Wirtualizacja & High Availability
   description: Ultra-niezawodne środowisko obliczeniowe oparte o 3-węzłowy klaster hypervisorów Proxmox VE. Dzięki pełnej integracji hiperkonwergentnej, awaria pojedynczego serwera nie przerywa działania krytycznych usług.
-  image: /assets/image/rack.png
+  image: /assets/image/rack.jpg
   bgImage: /assets/image/virtualization-bg-light.svg
   bgImageDark: /assets/image/virtualization-bg.svg
   bgImageStyle:
@@ -69,7 +69,7 @@ highlights:
 
 - header: Orkiestracja & GitOps (Kubernetes)
   description: Główne, wysoce dostępne środowisko aplikacyjne klastra k3s. Całość infrastruktury oraz cykl życia usług są zarządzane w pełni deklaratywnie, eliminując potrzebę ręcznej konfiguracji i wdrażania zmian przez SSH.
-  image: /assets/image/k3s.png
+  image: /assets/image/k3s.jpg
   bgImage: /assets/image/cloudy-light.svg
   bgImageDark: /assets/image/cloudy.svg
   bgImageStyle:

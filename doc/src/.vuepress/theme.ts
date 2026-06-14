@@ -3,23 +3,18 @@ import { hopeTheme } from "vuepress-theme-hope";
 import { plNavbar, enNavbar } from "./navbar/index.js";
 import { plSidebar, enSidebar } from "./sidebar/index.js";
 
-import { execSync } from "child_process";
+import { execSync } from 'child_process';
 
-// Pobranie krótkiego ID ostatniego commita (np. a1b2c3d)
-let commitHash = "unknown";
-try {
-  commitHash = execSync("git rev-parse --short HEAD").toString().trim();
-} catch (e) {
-  console.warn("Nie udało się pobrać commit hash z Git", e);
-}
+// Sprawdź zmienną ENV, jeśli nie ma - spróbuj odpalić gita (fallback dla deweloperki lokalnej)
+const commitHash = process.env.VUEPRESS_COMMIT_SHA || (() => {
+  try { return execSync('git rev-parse --short HEAD').toString().trim(); }
+  catch { return 'unknown'; }
+})();
 
-// Pobranie daty ostatniego commita w formacie DD.MM.YYYY
-let lastUpdateDate = "unknown";
-try {
-  lastUpdateDate = execSync('git log -1 --format="%cd" --date=format:"%d.%m.%Y"').toString().trim();
-} catch (e) {
-  console.warn("Nie udało się pobrać daty z Git", e);
-}
+const updatedDate = process.env.VUEPRESS_BUILD_DATE || (() => {
+  try { return execSync('git log -1 --format="%cd" --date=format:"%d.%m.%Y"').toString().trim(); }
+  catch { return 'unknown'; }
+})();
 
 
 export default hopeTheme({
@@ -84,7 +79,7 @@ export default hopeTheme({
               commit: <span style="color: #e2e8f0; font-weight: bold;">${commitHash}</span>
             </span>
             <span>•</span>
-            <span>updated: ${lastUpdateDate}</span>
+            <span>updated: ${updatedDate}</span>
           </div>
         </div>
       `,
