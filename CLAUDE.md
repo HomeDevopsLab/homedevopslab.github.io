@@ -51,3 +51,15 @@ CI (`.gitlab-ci.yml`) triggers only on git tags. It:
 3. Pushes the image tagged with the git tag to the registry
 
 The `Dockerfile` is a two-stage build: Node 22 Alpine builds the static files, then copies them into an `nginx:latest` image.
+
+## Versioning scheme
+
+The project follows semantic versioning (`MAJOR.MINOR.PATCH`) with these rules:
+
+- **MAJOR** — new top-level section added (e.g. a new topic alongside Proxmox/Kubernetes), complete site restructure, or VuePress engine upgrade
+- **MINOR** — new article added within an existing top-level section; new subsection (e.g. `kubernetes/networking/`) also counts as minor
+- **PATCH** — update or correction to an existing document (both typo fixes and substantive content changes)
+
+Adding a translation of an existing article is `patch`; adding a translated version of a new article follows the same bump as the article itself.
+
+Every bump gets a git tag — CI deploys on tags, so each version (including patches) triggers a release.

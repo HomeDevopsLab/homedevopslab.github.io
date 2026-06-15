@@ -12,6 +12,6 @@ export const enNavbar = navbar([
     text: "Kubernetes",
     icon: "dharmachakra",
     prefix: "/en/kubernetes/",
-    children: ["k8s-install", "helmchart", "sops", "lets-encrypt"],
+    children: ["k8s-install", "kubevip", "helmchart", "sops", "lets-encrypt"],
   },
 ]);
