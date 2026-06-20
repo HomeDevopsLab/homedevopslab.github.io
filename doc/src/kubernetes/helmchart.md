@@ -1,5 +1,5 @@
 ---
-title: Helmchart
+title: HelmChart
 icon: paste
 order: 3
 category:
@@ -8,13 +8,17 @@ tag:
   - kubernetes
 ---
 
-Na potrzeby uruchamiania różnych aplikacji na klastrze kubernetes przygotowałem helmchart, który dostępny jest w repozytorium [https://github.com/HomeDevopsLab/appchart](https://github.com/HomeDevopsLab/appchart). Helmchart automatyzuje i co za tym idzie upraszcza tworzenie obiektów kubernetes. Na podstawie jednego obiektu `HelmRelease` generowanych jest wiele resource'ów kubenetes.
+Na potrzeby uruchamiania różnych aplikacji na klastrze Kubernetes dostępny jest HelmChart w repozytorium [https://github.com/HomeDevopsLab/appchart](https://github.com/HomeDevopsLab/appchart). HelmChart automatyzuje i co za tym idzie upraszcza wdrażanie aplikacji. Na podstawie jednego obiektu `HelmRelease` generowane są potrzebne do działania aplikacji zasoby Kubernetes.
 
 W tej dokumentacji będzie opis poszczególnych sekcji pliku HelmRelease.
 
 ## Specyfikacja
 
-W specyfikacji zdefiniowany jest interwał. To okres czasu, który mówi co ile flux ma przeprowadzać proces rekonsyliacji helm release. Poza nim zdefiniowane jest repozytorium git w którym znajduje się definicja helmcharta.
+W specyfikacji zdefiniowany jest interwał. To okres czasu, który mówi, co ile Flux ma przeprowadzać proces rekonsyliacji helm release. Poza nim zdefiniowane jest repozytorium git w którym znajduje się definicja HelmCharta.
+
+::: info Wersjonowanie
+W klastrze Kubernetes w obiektach `gitrepository` podłączone zostały specyficzne wersje appcharta. Pozwala to na elastyczny wybór sposobu konfiguracji aplikacji oraz uniknięcia skutków "breaking changes". Przykładowo: `appchart-320` oznacza wersję 3.2.0.
+:::
 
 ```yaml
 spec:
@@ -24,7 +28,7 @@ spec:
       chart: ./chart
       sourceRef:
         kind: GitRepository
-        name: homelab-app-chart-multiple-ingresses
+        name: appchart-320
         namespace: default
       interval: 1m
 ```
@@ -33,7 +37,11 @@ spec:
 
 ### nodeSelector
 
-Za pomocą nodeSelectora określam na której grupie nodów ma zostać uruchomiony pod z aplikacją. W moim środowisku używam rozgraniczenia na podstawie architektury procesora. Dzięki temu mogę sobie wybrać czy coś mi się uruchomi na raspberry pi, czy na vm-ce z proxmoxa.
+::: info HelmRelease
+`values.nodeSelector`
+:::
+
+Za pomocą nodeSelectora określa się, na której grupie węzłów ma zostać uruchomiony pod z aplikacją. Rozgraniczenie odbywa się na podstawie architektury procesora. Dzięki temu można wybrać, czy aplikacja uruchomi się na Raspberry Pi, czy na maszynie wirtualnej (VM) z Proxmoxa.
 
 ```yaml
 nodeSelector:
@@ -46,47 +54,150 @@ Możliwe do skonfigurowania opcje
 | ------------------ | ---------- | ------------ |
 | Platforma          | VM-Proxmox | Raspberry Pi |
 
-### startupProbes
+### K8S Probes
 
-StartupProbes odpowiedzialne są za sprawdzanie, czy aplikacja działająca w podzie już działa. W tym helmcharcie check jest bardzo prosty. Wykonuje http get na wskazany port.
+::: info HelmRelease
+- `values.startupProbe`
+- `values.livenessProbe`
+- `values.readinessProbe`
+:::
 
-```yaml
-startupProbes:
-  enabled: true
-  port: 3000
-```
+AppChart od wersji 3.2.0 obsługuje natywne Startup, Readiness, Liveness Probes. Aby pod z nich korzystał wystarczy dodać je do `values`, zgodnie z [dokumentacją Kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
 
-Jeśli nie chcemy uruchamiać startupProbes stosujemy konnfigurację poniżej:
+Więcej przykładów i opracowań w tabelce
 
-```yaml
-startupProbes:
-  enabled: false
-```
+| Nazwa artykułu / Blog | Poziom | Główny wyróżnik | Link do artykułu |
+| :--- | :--- | :--- | :--- |
+| **"Practical Guide to Kubernetes Probes"** <br>*(Civo Blog)* | 🟢 Początkujący | Bardzo proste demo na bazie NGINX, idealne na pierwszy ogień do zrozumienia składni YAML. | [Przejdź do bloga Civo](https://www.civo.com/learn/practical-guide-to-the-kubernetes-probes) |
+| **"Mastering Kubernetes Probes: Liveness, Readiness, and Startup"** <br>*(Medium / Steffin Issac)* | 🟡 Średni | Wyjaśnia nowoczesne podejście, w tym sondy oparte o protokół **gRPC** oraz architekturę zależności. | [Przejdź do Medium](https://medium.com/@iamsteffinissac/mastering-kubernetes-probes-liveness-readiness-and-startup-your-guide-to-healthy-deployments-744f9f45a210) |
+| **"Kubernetes Probes Deep Dive"** <br>*(iam-rayees / GitHub)* | 🟡 Średni | Podejście czysto warsztatowe. Pokazuje, jak zepsuć aplikację wewnątrz kontenera i obserwować reakcję k8s. | [Przejdź do GitHub/Blog](https://github.com/iam-rayees/Kubernetes-Health-Probes) |
+| **"Kubernetes Liveness Probes: Tutorial & Critical Best Practices"** <br>*(Octopus Deploy)* | 🔴 Zaawansowany | Skupia się na tym, jak **nie** zabić produkcji złymi czasami timeoutów i jak optymalizować sondy pod kątem wydajności. | [Przejdź do Octopus Deploy](https://octopus.com/devops/kubernetes-management/kubernetes-liveness-probes/) |
 
 ### replicaCount
 
-ReplicaCount jest bardzo prostym parametrem. Za jego pomocą na sztywno można określić na ilu podach ma zostać uruchomiona aplikacja. W środowisku domowym zazwyczaj będzie to wartość: 1 aby zaoszczędzić zasoby. W środowiskach produkcyjnych można użyć większej liczby aby zapewnić aplikacji większą moc obliczeniową i HA.
+::: info HelmRelease
+`values.replicaCount`
+:::
+
+ReplicaCount jest bardzo prostym parametrem. Za jego pomocą statycznie można określić, na ilu podach ma zostać uruchomiona aplikacja. W środowisku domowym zazwyczaj będzie to wartość: 1, aby zaoszczędzić zasoby. W środowiskach produkcyjnych można użyć większej liczby, aby zapewnić aplikacji większą moc obliczeniową i HA.
+
+::: tip
+Warto też zweryfikować czy aplikacja może być uruchomiona w tym trybie. Są przypadki w których jeden proces nie może mieć dostępu do tych samych plików w tym samym czasie
+:::
 
 ```yaml
 replicaCount: 1
 ```
 
-### database
+### ServiceAccount
 
-Opcja database służy do uruchomienia hooków, które mają za zadanie stworzyć bazę danych mysql oraz wygenerować secret dla aplikacji. Uruchamiane są podczas instalacji aplikacji z helmcharta.
+Niektóre aplikacje mogą potrzebować dodatkowych uprawnień w klastrze. Przykładowo: może to być aplikacja, która ma odczytywać informacje na temat podów w Kubernetes. Taka operacja wymaga ustawienie odpowiednich polityk RBAC oraz wskazania nazwy użytkownika serwisowego (Service Account).
+
+::: normal-demo Konfiguracja RBAC
 
 ```yaml
-database:
-  enabled: true
+# 1. Tożsamość: Tworzymy konto serwisowe (ServiceAccount)
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: default
+  name: pod-reader-sa
+
+---
+
+# 2. Uprawnienia: Definiujemy, co można zrobić (odczyt podów)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: pod-reader
+rules:
+- apiGroups: [""]       # Pusta grupa to "core" API (m.in. pody, konfiguracyjne)
+  resources: ["pods"]   # Zasób, do którego chcemy dać dostęp
+  verbs: ["get"]        # Dopuszczalne akcje
+
+---
+
+# 3. Powiązanie: Łączymy konto serwisowe z uprawnieniami
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: default
+  name: read-pods-binding
+subjects:
+- kind: ServiceAccount
+  name: pod-reader-sa    # Musi zgadzać się z nazwą powyższego ServiceAccount
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: pod-reader       # Musi zgadzać się z nazwą powyższej roli
+  apiGroup: rbac.authorization.k8s.io
 ```
-
-Jeśli nie chcemy używać tych pre-hooków ustawiamy `enabled: false`.
-
-::: warning Deprecation warning
-Obsługa database zostanie usunięta w kolejnych wersjach helmcharta. Utrzymanie tego modelu wymaga zbyt dużo pracy związanej z aktualizacją infrastruktury.
 :::
 
+Plik yaml z uprawnieniami (konto serwisowe i polityka RBAC) umieszczamy w tym samym miejscu co HelmRelease z aplikacją. W Pliku HelmRelease wystarczy wskazać nazwę utworzonego użytkownika serwisowego, z którego ma korzystać aplikacja.
+
+```yaml
+serviceAccountName: pod-reader-sa
+```
+
+### Env
+
+::: info HelmRelease
+`values.env`
+:::
+
+Zmienne środowiskowe potrzebne do uruchomienia aplikacji.
+
+Definicja plain text
+
+```yaml
+- name: foo
+  value: bar
+```
+
+Pobranie wartości zmiennej z secretu
+
+```yaml
+- name: foo
+  valueFrom:
+    secretKeyRef:
+      name: app-secret
+      key: foo
+```
+
+W przypadku zmiennych z secretami, trzeba stworzyć manifest z secretem obok pliku helmrelease z konfiguracją aplikacji
+
+```yaml title="Przykładowy secret"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secret
+  namespace: default
+type: Opaque
+data:
+  foo: base64hash
+```
+
+### SecurityContext
+
+::: info HelmRelease
+`values.securityContext`
+:::
+
+Parametr ten został wdrożony na potrzeby uruchomienia HashiCorp Vault, było to wymagane do jego działania. Dzięki niemu aplikacja uzyskała dostęp do funkcji `mlock()`, która nie zezwala na zapisywanie na dysku niezaszyfrowanym poufnych informacji.
+
+```yaml
+securityContext:
+  capabilities:
+    add: ["IPC_LOCK"]
+```
+
 ### image
+
+::: info HelmRelease
+`values.image`
+:::
 
 Opcja `image` służy do wskazania kontenera, który ma zostać uruchomiony.
 
@@ -96,18 +207,28 @@ image:
   imagePolicy: true
   repository: private.registry.address/homelab/documentation
   tag: 2.4.0 # {"$imagepolicy": "flux-system:homelab-doc:tag"}
+  command: ["gotenberg"]
+  args:
+    - --chromium-disable-javascript=true
+    - --chromium-allow-list=file:///tmp/.*
 ```
 
 | Opcja          | Wymagane | Opis                                                                                                                |
 | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| repository     | Tak      | Wskazanie registry z kontenerami dockera                                                                            |
+| tag            | Tak      | wskazanie na wersję aplikacji. W przypadku imagepolicy, trzeba podać specjalny string dla Fluxa po znaku komentarza |
+| imagePolicy    | Nie      | **false** image policy off, **true** image policy on                                                                |
 | registrySecret | Nie      | Opcji używamy w przypadku rejestru prywatnego, który wymaga zalogowania się do niego. Opcja wskazuje nazwę secretu  |
-| imagePolicy    | tak      | **false** image policy off, **true** image policy on                                                                |
-| repository     | tak      | Wskazanie registry z kontenerami dockera                                                                            |
-| tag            | tak      | wskazanie na wersję aplikacji. W przypadku imagepolicy, trzeba podać specjalny string dla fluxa po znaku komentarza |
+| command        | Nie      | Niektóre kontenery wymagają do uruchomienia customowego polecenia. Parametr command jest typu: list                 |
+| args           | Nie      | Dodatkowe argumenty dla `command` lub dla `ENTRYPOINT` kontenera - cokolwiek jest wymagane                          |  
 
 #### Image Policy
 
-Image policy to specjalny typ resource'u (CRD), który jest dostarczany przez Fluxa. Odpowiada on za wdrożenie najnowszego dostępnego taga/ W homelabie posługuję się patternem [semver](https://semver.org/lang/pl/).
+::: info HelmRelease
+`values.image.imagePolicy`
+:::
+
+Image policy to specjalny typ zasobu (CRD), który jest dostarczany przez Fluxa. Odpowiada on za wdrożenie najnowszego dostępnego taga. W homelabie stosowany jest wzorzec [semver](https://semver.org/lang/pl/).
 
 ```yaml
 policy:
@@ -117,13 +238,66 @@ policy:
 
 Aby można było śledzić wersje w deploymencie, trzeba dodać do linijki `tag` specjalny komentarz: `# {"$imagepolicy": "flux-system:homelab-doc:tag"}`. Wskazuje on namespace oraz nazwę resource'a ImagePolicy, który ma zostać utworzony.
 
+### imagePullSecrets
+
+::: info HelmRelease
+`values.imagePullSecrets`
+:::
+
+```yaml
+imagePullSecrets:
+  - name: regcred
+```
+
+Działa podobnie do `registrySecret`. Chociaż ma on z definicji bardziej wszechstronne zastosowanie, w appchart został wykorzystany do tworzenia obiektów `cronJob`, jeśli mają pobierać obraz z wewnętrznego repozytorium kontenerów.
+
 ### resources
 
-Całe `resources` jest wczytywane bezpośrednio do deploymentu. Jest to standardowa konfiguracja kubernetes. Pozwala ustawić limity na użycie procesora i ramu w aplikacji.
+::: info HelmRelease
+`values.resources`
+:::
+
+Pozwala ustawić limity na użycie procesora i ramu przez aplikację.
+
+```yaml title="Przykładowa konfiguracja limitów"
+resources:
+  limits:
+    memory: "512Mi"
+    cpu: "1"
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+```
+
+Requests pomagają Kubernetes wybrać odpowiedni węzeł klastra, który będzie w stanie uruchomić aplikację. Deklarujemy tutaj ile aplikacja potrzebuje zasobów do działania. Limits określa twardy limit, którego nie możemy przekroczyć. Kiedy zostanie przekroczony CPU limit, aplikacja zaczyna wolniej pracować, włącza się tzw. throttling. W przypadku braku pamięci, aplikacja jest zatrzymywana (OOMKill)
+
+![Infografika Kubernetes Limits](/assets/image/k8s-limits.jpg)
 
 ### services
 
-Opcja `services` odpowiedzialna jest za stworzenie obiektu (lub obiektów) typu service w klastrze kubernetes. Jest to yamlowa tablica obiektów.
+::: info HelmRelease
+`values.services`
+:::
+
+Services służy do komunikacji aplikacji ze środowiskiem wewnątrz Kubernetes oraz ze światem zewnętrznym. Z obiektem typu service może komunikować się inna aplikacja działająca w tym samym klastrze lub ingress. W zależności od ustawionego typu możemy zrealizować pożądany scenariusz.
+
+| Przykład użycia | Typ | Obiekt zależny |
+| ----------------| ----| ---------------|
+| Usługa SMTP | LoadBalancer | LoadBalancer |
+| Aplikacja www wystawiona przez cloudflare | ClusterIP | Brak |
+| Aplikacja www hostowana lokalnie | ClusterIP | Ingress |
+
+#### Wystawienie aplikacji poprzez usługę Cloudflare
+
+![Cloudflare Service Przykład](/assets/image/k8s-cf-service.svg)
+
+#### Wewnętrzna usługa SMTP
+
+![SMTP Service Przykład](/assets/image/k8s-lb-service.svg)
+
+#### Aplikacja wykorzystująca Ingress
+
+![Aplikacja z Ingress Przykład](/assets/image/k8s-ingress-service.svg)
 
 ```yaml
 services:
@@ -137,19 +311,27 @@ services:
 
 | Opcja       | Opis                                                                                                                                                                                                                          |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| name        | Do nazwy dokładany jest prefix z nazwą HelmRelease'a. Np: na podstawie `name: ssh` zostanie utworzony serwis: gitlab-ssh                                                                                                      |
-| type        | **ClusterIP** - służy do komunikacji wewnętrznej: service - kontener. Używam go do komunikacji z serwerami www działającymi w podach. **LoadBalancer** - mapuje servicePort do IPków wystawianych przez load balancer         |
+| name        | Nazwa serwisu                                                                                                      |
+| type        | **ClusterIP** - służy do komunikacji wewnętrznej: service - kontener. Służy do komunikacji z serwerami www działającymi w podach. **LoadBalancer** - mapuje servicePort do IPków wystawianych przez load balancer         |
 | protocol    | **TCP** lub **UDP**                                                                                                                                                                                                           |
-| servicePort | Port, który wystaia serwis. Korzysta z niego Ingress (w przypadku ClusterIP) lub jest on wystawiony do LoadBalancera (type: LoadBalancer), dzięki czemu możemy np. na porcie: 2222 połączyć się do ssh działającego w podzie. |
+| servicePort | Port, który wystawia serwis. Korzysta z niego Ingress (w przypadku ClusterIP) lub jest on wystawiony do LoadBalancera (type: LoadBalancer), dzięki czemu możemy np. na porcie: 2222 połączyć się do ssh działającego w podzie. |
 | targetPort  | Port wystawiony przez kontener z aplikacją                                                                                                                                                                                    |
 
 ::: tip Service
 Jedna aplikacja może mieć kilka usług, które potrzebują komunikacji ze światem. Najlepszym przykładem jest gitlab, który posiada serwer www, serwer ssh oraz dodatkowo registry kontenerów dockera.
 :::
 
+::: important Service name
+Obecna wersja AppChart posiada ograniczenie co do nazwy serwisu do 15 znaków.
+:::
+
 ### ingress
 
-Ingress jest odpowiedzialny za serwowanie aplikacji webowej pod wybranym adresem domenowym. Ostatnia wersja helmcharta umożliwia utworzenie więcej niż jednego ingressu dla aplikacji. Przykładem jest Gitlab, który wymaga wystawienia GUI gitlaba oraz registry doockerowego.
+::: info HelmRelease
+`values.ingress`
+:::
+
+Ingress jest odpowiedzialny za serwowanie aplikacji webowej pod wybranym adresem domenowym. Ostatnia wersja HelmCharta umożliwia utworzenie więcej niż jednego ingressu dla aplikacji. Przykładem jest Gitlab, który wymaga wystawienia GUI gitlaba oraz registry dockerowego.
 
 ```yaml
 ingress:
@@ -171,107 +353,84 @@ ingress:
 
 ### volumes
 
-Klucz volumes służy do pomontowywania przestrzeni dyskowej do aplikacji, jeśli jest to wymagane.
+::: info HelmRelease
+`values.volumes`
+:::
+
+Volumes obsługuje montowanie kilku rodzajów zasobów:
+
+* NFS
+* Secrets
+* ConfigMaps
+
+Przykłady
+
+::: code-tabs#volumes
+
+@tab NFS
 
 ```yaml
 volumes:
-  enabled: true
-  mountPath:
-    - config:/etc/gitlab
-    - logs:/var/log/gitlab
-    - data:/var/opt/gitlab
-  ownership: 0:0
-  type:
-    nfs:
-      server: srv-nfs.lan
-      path: /storage
+  nfs:
+    ownership: 991:991
+    server: nas.lan
+    path: /volume1/data
+    mountPath:
+      - media:/mnt/media
+      - config:/app/config
+  rootDir: myapp-data
 ```
 
-| Opcja     | Opis                                                                         |
-| --------- | ---------------------------------------------------------------------------- |
-| mountPath | Tablica mapowań katalogu na współdzielonym storage, do katalogu w kontenerze |
-| ownership | Kto ma być właścicielem utworzonych katalogów                                |
-| type      | Obecnie jest to tylko NFS                                                    |
-
-Po ustawieniu trybu `enabled: true` uruchamiany jest w pre-install hooku skrypt, który tworzy na udziale storage odpowiednią strukturę katalogów. W przedstawionym przykładzie tworzona jest następująca struktura katalogów:
-
-```bash
-gitlab
-├── config
-├── data
-└── logs
-```
-
-W parametrze nfs ustawiony jest adres serwera nfs oraz wyeksportowany z niego katalog.
-
-## Templates
-
-Opis działania poszczególnych elementów helmcharta. Definicje obiektów znajdują się w katalogu [appchart/chart/templates](https://github.com/HomeDevopsLab/appchart/tree/multiple-ingresses/chart/templates) w repozytorium.
-
-### dbsecrets.yaml
-
-Opcja database odpowiada za stworzenie ssecretu do bazy MySQL w kubernetes oraz za uruchomienie skryptu tworzącego bazę danych i konto użytkownika na podstawie stworzonego secretu. Akcje związane z tworzeniem bazy uruchamiają się w pre-install hooku, zanim aplikacja zostanie uruchomiona.
+@tab Secret
 
 ```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ .Release.Name }}-db
-  annotations:
-    "helm.sh/hook": pre-install
-    "helm.sh/hook-weight": "-5"
-    "helm.sh/hook-delete-policy": before-hook-creation
-type: Opaque
-data:
-  login: {{ .Release.Name | trimSuffix "-www" | b64enc | quote }}
-  password: {{ randAlphaNum 32 | b64enc | quote }}
+volumes:
+  secret:
+    secretName: app-secret
+    mountPath: /app/secret.json
+    subPath: secret.json
 ```
 
-Do wygenerowania hasła wykorzyystywana jest funckcja helma: `randAlphaNum`.
+@tab ConfigMap
 
-::: important Secret
-Jeśli secret o tej nazwie już istnieje, zostanie on wygenerowany od nowa. Może to doprowadzić do problemów z działaniem aplikacji, jeśli dane konta w bazie się nie zmienią.
+```yaml
+volumes:
+  configmap:
+    configMap: app-config
+    mountPath: /conf/config.ini
+    subPath: config.ini
+```
 :::
 
-### mysqlDBhelper.yaml
+#### NFS
 
-Jest to pre-hook odpowiedzialny za utworzenie bazy danych oraz konta użytkownika na sewerze mysql. Źródłem danych, na których on operuje jest stworzony w innym pre-hooku secret kubernetes. Prehook uruchamia skrypt w bashu, który jest obudowany kontenerem dockera: mysql-initdb:0.0.1.
+| Opcja | Opis |
+| ------| -----|
+| server | Adres serwera NFS |
+| path | ścieżka do udostępnionego udziału NFS |
+| mountPath | mapa katalogów: lokalny:ścieżka w kontenerze |
+| rootDir | Parametr ten ma zastosowanie w przypadku, jeśli więcej niż jeden HelmRelease musi mieć dostęp do wspólnej struktury katalogów |
+| ownership | UID:GID procesu, który ma wykonywać operacje na udziale NFS |
 
-::: normal-demo mysql-initdb
-**run.sh**
-
-```bash
-#!/bin/bash
-
-MYSQL="/usr/bin/mysql"
-
-function mysql_cmd() {
-    $MYSQL -u ${DB_ADMIN_LOGIN} -p${DB_ADMIN_PASS} -h ${DB_HOST} -Nsre "$1"
-}
-
-function userExists() {
-    result=$(mysql_cmd "SELECT count(User) FROM mysql.user WHERE User='${APPDB_LOGIN}'")
-    echo $result
-}
-
-if [ $(userExists) == "1" ]; then
-    mysql_cmd "ALTER USER '${APPDB_LOGIN}'@'%' IDENTIFIED BY '${APPDB_PASS}'"
-    mysql_cmd "FLUSH PRIVILEGES"
-else
-    mysql_cmd "CREATE DATABASE ${APPDB_NAME}"
-    mysql_cmd "CREATE USER '${APPDB_LOGIN}'@'%' IDENTIFIED BY '${APPDB_PASS}'"
-    mysql_cmd "GRANT ALL ON ${APPDB_NAME}.* TO '${APPDB_LOGIN}'@'%'"
-fi
+::: important
+Jeśli aplikacja ma używać storage na NFS, zanim zostanie uruchomiona trzeba utworzyć dla niej strukturę katalogów. W przykładzie powyżej na serwerze nas.lan wystarczy wykonać polecenie:
+```bash :no-line-numbers
+mkdir -p /volume1/data/{media,config}
 ```
-
-**Dockerfile**
-
-```dockerfile
-FROM gitea.angrybits.pl/kkrolikowski/toolbox:0.0.1
-WORKDIR /usr/local/bin
-COPY run.sh .
-RUN chmod +x run.sh
-ENTRYPOINT [ "/bin/bash", "./run.sh" ]
-```
-
 :::
+
+#### Secret
+
+| Opcja | Opis |
+| ------| -----|
+| secretName | Nazwa secretu |
+| mountPath | ścieżka montowania w kontenerze |
+| subPath | nazwa pliku, którego treść znajduje się w secrecie |
+
+#### ConfigMap
+
+| Opcja | Opis |
+| ------| -----|
+| configMap | Nazwa configmapy |
+| mountPath | ścieżka montowania w kontenerze |
+| subPath | nazwa pliku, którego treść znajduje się w configMapie |
