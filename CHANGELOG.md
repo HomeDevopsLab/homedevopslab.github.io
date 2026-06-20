@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.3.0] - 2026-06-20
+
+### Added
+
+- HelmChart (EN): pełne tłumaczenie artykułu na język angielski.
+
+### Changed
+
+- HelmChart (PL): poprawki literówek, korekty stylistyczne (forma bezosobowa, wielkie litery nazw własnych, interpunkcja).
+
 ## [3.2.0] - 2026-06-15
 
 ### Added
