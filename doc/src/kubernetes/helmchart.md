@@ -1,5 +1,5 @@
 ---
-title: Helmchart
+title: HelmChart
 icon: paste
 order: 3
 category:
@@ -8,16 +8,16 @@ tag:
   - kubernetes
 ---
 
-Na potrzeby uruchamiania różnych aplikacji na klastrze kubernetes, przygotowałem helmchart, który dostępny jest w repozytorium [https://github.com/HomeDevopsLab/appchart](https://github.com/HomeDevopsLab/appchart). Helmchart automatyzuje i co za tym idzie upraszcza wdrażanie aplikacji. Na podstawie jednego obiektu `HelmRelease` generowane są potrzebne do działania aplikacji zasoby kubenetes.
+Na potrzeby uruchamiania różnych aplikacji na klastrze Kubernetes dostępny jest HelmChart w repozytorium [https://github.com/HomeDevopsLab/appchart](https://github.com/HomeDevopsLab/appchart). HelmChart automatyzuje i co za tym idzie upraszcza wdrażanie aplikacji. Na podstawie jednego obiektu `HelmRelease` generowane są potrzebne do działania aplikacji zasoby Kubernetes.
 
 W tej dokumentacji będzie opis poszczególnych sekcji pliku HelmRelease.
 
 ## Specyfikacja
 
-W specyfikacji zdefiniowany jest interwał. To okres czasu, który mówi co ile flux ma przeprowadzać proces rekonsyliacji helm release. Poza nim zdefiniowane jest repozytorium git w którym znajduje się definicja helmcharta.
+W specyfikacji zdefiniowany jest interwał. To okres czasu, który mówi, co ile Flux ma przeprowadzać proces rekonsyliacji helm release. Poza nim zdefiniowane jest repozytorium git w którym znajduje się definicja HelmCharta.
 
 ::: info Wersjonowanie
-W klastrze kubernetes w obiektach `gitrepository` podłączone zostały specyficzne wersje appcharta. Pozwala to na elastyczny wybór sposobu konfiguracji aplikacji oraz uniknięcia skutków "breaking changes". Przykładowo: `appchart-320` oznacza wersję 3.2.0.
+W klastrze Kubernetes w obiektach `gitrepository` podłączone zostały specyficzne wersje appcharta. Pozwala to na elastyczny wybór sposobu konfiguracji aplikacji oraz uniknięcia skutków "breaking changes". Przykładowo: `appchart-320` oznacza wersję 3.2.0.
 :::
 
 ```yaml
@@ -41,7 +41,7 @@ spec:
 `values.nodeSelector`
 :::
 
-Za pomocą nodeSelectora określam na której grupie nodów ma zostać uruchomiony pod z aplikacją. W moim środowisku używam rozgraniczenia na podstawie architektury procesora. Dzięki temu mogę sobie wybrać czy aplikacja uruchomi się na raspberry pi, czy na vm-ce z proxmoxa.
+Za pomocą nodeSelectora określa się, na której grupie nodów ma zostać uruchomiony pod z aplikacją. Rozgraniczenie odbywa się na podstawie architektury procesora. Dzięki temu można wybrać, czy aplikacja uruchomi się na Raspberry Pi, czy na maszynie wirtualnej (VM) z Proxmoxa.
 
 ```yaml
 nodeSelector:
@@ -62,7 +62,7 @@ Możliwe do skonfigurowania opcje
 - `values.readinessProbe`
 :::
 
-AppChart od wersji 3.2.0 obsługuje natywne Startup, Readiness, Liveness Probes. Aby pod z nich korzystał wystarczy dodać je do `values`, zgodnie z [dokumentacją kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
+AppChart od wersji 3.2.0 obsługuje natywne Startup, Readiness, Liveness Probes. Aby pod z nich korzystał wystarczy dodać je do `values`, zgodnie z [dokumentacją Kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
 
 Więcej przykładów i opracowań w tabelce
 
@@ -79,10 +79,10 @@ Więcej przykładów i opracowań w tabelce
 `values.replicaCount`
 :::
 
-ReplicaCount jest bardzo prostym parametrem. Za jego pomocą na sztywno można określić na ilu podach ma zostać uruchomiona aplikacja. W środowisku domowym zazwyczaj będzie to wartość: 1 aby zaoszczędzić zasoby. W środowiskach produkcyjnych można użyć większej liczby aby zapewnić aplikacji większą moc obliczeniową i HA.
+ReplicaCount jest bardzo prostym parametrem. Za jego pomocą statycznie można określić, na ilu podach ma zostać uruchomiona aplikacja. W środowisku domowym zazwyczaj będzie to wartość: 1, aby zaoszczędzić zasoby. W środowiskach produkcyjnych można użyć większej liczby, aby zapewnić aplikacji większą moc obliczeniową i HA.
 
 ::: tip
-Warto też zweryfikować czy aplikacja może być uruchomiona w tym trybie. Są przypadki w których jednen proces nie może mieć dostępu do tych samych plików w tym samym czasie
+Warto też zweryfikować czy aplikacja może być uruchomiona w tym trybie. Są przypadki w których jeden proces nie może mieć dostępu do tych samych plików w tym samym czasie
 :::
 
 ```yaml
@@ -91,7 +91,7 @@ replicaCount: 1
 
 ### ServiceAccount
 
-Niektóre aplikacje mogą potrzebować dodatkowych uprawnień w klastrze. Przykładowo: może to być aplikacja, która ma odczytywać informacje na temat podów w kubernetes. Taka operacja wymaga ustawienie odpowiednich polityk RBAC oraz wskazanina nazwy użytkownika serwisowego (Service Account).
+Niektóre aplikacje mogą potrzebować dodatkowych uprawnień w klastrze. Przykładowo: może to być aplikacja, która ma odczytywać informacje na temat podów w Kubernetes. Taka operacja wymaga ustawienie odpowiednich polityk RBAC oraz wskazania nazwy użytkownika serwisowego (Service Account).
 
 ::: normal-demo Konfiguracja RBAC
 
@@ -135,7 +135,7 @@ roleRef:
 ```
 :::
 
-Plik yaml z uprawnieniami (konto serwisowe i polityka RBAC) umieszczamy w tym samym miejscu co HelmRelease z aplikacją. W Pliku HelmRelease wystarczy wskazać nazwę utworzonego uśytkownika serwisowego, z którego ma korzystać aplikacja.
+Plik yaml z uprawnieniami (konto serwisowe i polityka RBAC) umieszczamy w tym samym miejscu co HelmRelease z aplikacją. W Pliku HelmRelease wystarczy wskazać nazwę utworzonego użytkownika serwisowego, z którego ma korzystać aplikacja.
 
 ```yaml
 serviceAccountName: pod-reader-sa
@@ -216,7 +216,7 @@ image:
 | Opcja          | Wymagane | Opis                                                                                                                |
 | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
 | repository     | Tak      | Wskazanie registry z kontenerami dockera                                                                            |
-| tag            | Tak      | wskazanie na wersję aplikacji. W przypadku imagepolicy, trzeba podać specjalny string dla fluxa po znaku komentarza |
+| tag            | Tak      | wskazanie na wersję aplikacji. W przypadku imagepolicy, trzeba podać specjalny string dla Fluxa po znaku komentarza |
 | imagePolicy    | Nie      | **false** image policy off, **true** image policy on                                                                |
 | registrySecret | Nie      | Opcji używamy w przypadku rejestru prywatnego, który wymaga zalogowania się do niego. Opcja wskazuje nazwę secretu  |
 | command        | Nie      | Niektóre kontenery wymagają do uruchomienia customowego polecenia. Parametr command jest typu: list                 |
@@ -228,7 +228,7 @@ image:
 `values.image.imagePolicy`
 :::
 
-Image policy to specjalny typ zasobu (CRD), który jest dostarczany przez Fluxa. Odpowiada on za wdrożenie najnowszego dostępnego taga/ W homelabie posługuję się patternem [semver](https://semver.org/lang/pl/).
+Image policy to specjalny typ zasobu (CRD), który jest dostarczany przez Fluxa. Odpowiada on za wdrożenie najnowszego dostępnego taga. W homelabie stosowany jest wzorzec [semver](https://semver.org/lang/pl/).
 
 ```yaml
 policy:
@@ -249,7 +249,7 @@ imagePullSecrets:
   - name: regcred
 ```
 
-Działa podobnie do `registrySecret`. Chociaż ma on z definicji bardziej wszechstronne zastosowanie, w appchart został wykorzystany do tworzenia obiektów `cronJob`, jeśli mają pobierać obraz z wewnętrznego repozytorium konternerów.
+Działa podobnie do `registrySecret`. Chociaż ma on z definicji bardziej wszechstronne zastosowanie, w appchart został wykorzystany do tworzenia obiektów `cronJob`, jeśli mają pobierać obraz z wewnętrznego repozytorium kontenerów.
 
 ### resources
 
@@ -269,7 +269,7 @@ resources:
     cpu: "250m"
 ```
 
-Requests pomagają kubernetes wybrać odpowiedni węzeł klastra, który będzie w stanie uruchomić aplikację. Deklarujemy tutaj ile aplikacja potrzebuje zasobów do działania. Limits określa twardy limit, którego nie możemy przekroczyć. Kiedy zostanie przekroczony CPU limit, aplikacja zaczyna wolniej pracować, włącza się tzw. throttling. W przypadku braku pamięci, aplikacja jest ubijana (OOMKill)
+Requests pomagają Kubernetes wybrać odpowiedni węzeł klastra, który będzie w stanie uruchomić aplikację. Deklarujemy tutaj ile aplikacja potrzebuje zasobów do działania. Limits określa twardy limit, którego nie możemy przekroczyć. Kiedy zostanie przekroczony CPU limit, aplikacja zaczyna wolniej pracować, włącza się tzw. throttling. W przypadku braku pamięci, aplikacja jest zatrzymywana (OOMKill)
 
 ![Infografika Kubernetes Limits](/assets/image/k8s-limits.jpg)
 
@@ -279,7 +279,7 @@ Requests pomagają kubernetes wybrać odpowiedni węzeł klastra, który będzi
 `values.services`
 :::
 
-Services służy do komunikacji aplikacji ze środowiskiem wewnątrz kuberetes oraz ze światem zewnętrznym. Z obiektem typu service może komunikować się inna aplikacja działająca w tym samym klastrze lub ingress. W zależności od ustawionego typu możemy zrealizować porządany scenariusz.
+Services służy do komunikacji aplikacji ze środowiskiem wewnątrz Kubernetes oraz ze światem zewnętrznym. Z obiektem typu service może komunikować się inna aplikacja działająca w tym samym klastrze lub ingress. W zależności od ustawionego typu możemy zrealizować pożądany scenariusz.
 
 | Przykład użycia | Typ | Obiekt zależny |
 | ----------------| ----| ---------------|
@@ -312,7 +312,7 @@ services:
 | Opcja       | Opis                                                                                                                                                                                                                          |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | name        | Nazwa serwisu                                                                                                      |
-| type        | **ClusterIP** - służy do komunikacji wewnętrznej: service - kontener. Używam go do komunikacji z serwerami www działającymi w podach. **LoadBalancer** - mapuje servicePort do IPków wystawianych przez load balancer         |
+| type        | **ClusterIP** - służy do komunikacji wewnętrznej: service - kontener. Służy do komunikacji z serwerami www działającymi w podach. **LoadBalancer** - mapuje servicePort do IPków wystawianych przez load balancer         |
 | protocol    | **TCP** lub **UDP**                                                                                                                                                                                                           |
 | servicePort | Port, który wystawia serwis. Korzysta z niego Ingress (w przypadku ClusterIP) lub jest on wystawiony do LoadBalancera (type: LoadBalancer), dzięki czemu możemy np. na porcie: 2222 połączyć się do ssh działającego w podzie. |
 | targetPort  | Port wystawiony przez kontener z aplikacją                                                                                                                                                                                    |
@@ -331,7 +331,7 @@ Obecna wersja AppChart posiada ograniczenie co do nazwy serwisu do 15 znaków.
 `values.ingress`
 :::
 
-Ingress jest odpowiedzialny za serwowanie aplikacji webowej pod wybranym adresem domenowym. Ostatnia wersja helmcharta umożliwia utworzenie więcej niż jednego ingressu dla aplikacji. Przykładem jest Gitlab, który wymaga wystawienia GUI gitlaba oraz registry doockerowego.
+Ingress jest odpowiedzialny za serwowanie aplikacji webowej pod wybranym adresem domenowym. Ostatnia wersja HelmCharta umożliwia utworzenie więcej niż jednego ingressu dla aplikacji. Przykładem jest Gitlab, który wymaga wystawienia GUI gitlaba oraz registry dockerowego.
 
 ```yaml
 ingress:
@@ -360,7 +360,7 @@ ingress:
 Volumes obsługuje montowanie kilku rodzajów zasobów:
 
 * NFS
-* Screts
+* Secrets
 * ConfigMaps
 
 Przykłady
