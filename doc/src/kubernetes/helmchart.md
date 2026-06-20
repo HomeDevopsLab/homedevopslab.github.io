@@ -41,7 +41,7 @@ spec:
 `values.nodeSelector`
 :::
 
-Za pomocą nodeSelectora określa się, na której grupie nodów ma zostać uruchomiony pod z aplikacją. Rozgraniczenie odbywa się na podstawie architektury procesora. Dzięki temu można wybrać, czy aplikacja uruchomi się na Raspberry Pi, czy na maszynie wirtualnej (VM) z Proxmoxa.
+Za pomocą nodeSelectora określa się, na której grupie węzłów ma zostać uruchomiony pod z aplikacją. Rozgraniczenie odbywa się na podstawie architektury procesora. Dzięki temu można wybrać, czy aplikacja uruchomi się na Raspberry Pi, czy na maszynie wirtualnej (VM) z Proxmoxa.
 
 ```yaml
 nodeSelector:
