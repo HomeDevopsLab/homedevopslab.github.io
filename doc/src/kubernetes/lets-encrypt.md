@@ -10,8 +10,7 @@ tag:
 
 ## Certmanager
 
-Certmanager jest odpowiedzialny za instalację certyfikatów SSL dla aplikacji, które mają skonfigurowaną obsługę SSL. Zainstalowane
-certyfikaty znajdują się w namespace `default`, tam gdzie uruchomione są aplikacje.
+Certmanager jest odpowiedzialny za instalację certyfikatów SSL dla aplikacji, które mają skonfigurowaną obsługę SSL. Zainstalowane certyfikaty znajdują się w namespace `default`, tam gdzie uruchomione są aplikacje.
 
 ```yaml {3}
 ingress:
@@ -21,23 +20,34 @@ ingress:
 
 ### Instalacja
 
-```bash
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.11.0/cert-manager.yaml
+::: note
+W trakcie pisania dokumentacji, aktualną wersją certmanagera jest `v1.20.2`. W przypadku stawiania nowego klastra warto wybrać najnowszą
+https://cert-manager.io/docs/installation/kubectl/
+:::
+
+```bash :no-line-numbers
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.20.2/cert-manager.yaml
 ```
 
 Certnamager instaluje się w namespace `cert-manager`.
 
+```bash :no-line-numbers title="🖥️ kubectl get pods --namespace cert-manager"
+NAME                                       READY   STATUS    RESTARTS   AGE
+cert-manager-69c7fcbf78-hdvl4              1/1     Running   0          3h4m
+cert-manager-cainjector-69f8c8cdbf-rcfjq   1/1     Running   0          3h4m
+cert-manager-webhook-84fd89df64-z9gtp      1/1     Running   0          3h4m
+```
+
 ## Cluster issuer
 
-W trakcie uruchamiania aplikacji w klastrze, jednocześnie uruchamia się pod **cluster-issuer**, który wystawia wygenerowany w imieniu
-aplikacji CSR (Certificate Sign Request). Jest on wystawiony pod adresem `http://aplikacja.domena.com/.well-known/`. Let's encrypt pobiera z
-tego adresu CSR, następnie podpisuje go i udostępnia do pobrania. Cert manager instaluje podpisany certyfikat w clustrze.
+### Opis działania
+
+W trakcie uruchamiania aplikacji w klastrze, jednocześnie uruchamia się pod **cluster-issuer**, który wystawia wygenerowany w imieniu aplikacji CSR (Certificate Sign Request). Jest on wystawiony pod adresem `http://aplikacja.domena.com/.well-known/`. Let's encrypt pobiera z tego adresu CSR, następnie podpisuje go i udostępnia do pobrania. Cert manager instaluje podpisany certyfikat w clustrze.
 
 ![Lets encrypt infrastructure](/assets/image/letsencrypt-infra.png)
 
 ::: important DNS
-W obecnej architekturze, do poprawnego działania certmanagera musiałem zastosować wewnętrzną strefę dns `example.com`, która odpowiada
-wewnętrznym adresem ip dla subdomen.
+W obecnej architekturze, do poprawnego działania certmanagera musiałem zastosować wewnętrzną strefę dns `example.com`, która odpowiada wewnętrznym adresem ip dla subdomen.
 :::
 Konfiguracja ClusterIssuera
 
