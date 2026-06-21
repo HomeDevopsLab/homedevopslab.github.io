@@ -1,7 +1,7 @@
 ---
 title: Let's encrypt
 icon: lock
-order: 3
+order: 5
 category:
   - Guide
 tag:

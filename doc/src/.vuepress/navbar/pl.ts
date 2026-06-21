@@ -12,6 +12,6 @@ export const plNavbar = navbar([
     text: "Kubernetes",
     icon: "dharmachakra",
     prefix: "/kubernetes/",
-    children: ["k8s-install", "kubevip", "helmchart", "sops", "lets-encrypt"],
+    children: ["k8s-install", "kubevip", "flux", "helmchart", "sops", "lets-encrypt"],
   },
 ]);

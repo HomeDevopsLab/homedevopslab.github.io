@@ -139,6 +139,7 @@ export default hopeTheme({
     imgSize: true,
     include: true,
     mark: true,
+    markmap: true,
     plantuml: true,
     preview: true,
     spoiler: true,
@@ -194,9 +195,9 @@ export default hopeTheme({
     // sandpack: true,
 
     // install @vuepress/plugin-revealjs and uncomment these if you need slides
-    // revealjs: {
-    //   plugins: ["highlight", "math", "search", "notes", "zoom"],
-    // },
+    revealjs: {
+      plugins: ["highlight", "math", "search", "notes", "zoom"],
+    },
   },
 
   plugins: {
