@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.4.0] - 2026-06-22
+
+### Added
+
+- FluxCD (EN): full English translation of the FluxCD article.
+
+### Changed
+
+- FluxCD (PL): style fixes — typos, consistent capitalisation of proper nouns, punctuation, impersonal form throughout.
+
 ## [3.3.0] - 2026-06-20
 
 ### Added
