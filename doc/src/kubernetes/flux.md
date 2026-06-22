@@ -10,7 +10,7 @@ tag:
 
 ## Opis
 
-[FluxCD](https://fluxcd.io/flux/) jest narzędziem realizującym obszar continous delivery. W moim środowisku homelab używam go do wdrażania wszystkich aplikacji na klastrze kubernetes. Dzięki komponentowi `ImageUpdateAutomation` mogę zautomatyzować wdrażanie nowych wersji aplikacji - jeśli zostanie zbudowany kontener w odpowiedniej wersji.
+[FluxCD](https://fluxcd.io/flux/) jest narzędziem realizującym obszar continuous delivery. W moim środowisku homelab używam go do wdrażania wszystkich aplikacji na klastrze Kubernetes. Dzięki komponentowi `ImageUpdateAutomation` mogę zautomatyzować wdrażanie nowych wersji aplikacji - jeśli zostanie zbudowany kontener w odpowiedniej wersji.
 
 ### Instalacja fluxa
 
@@ -38,9 +38,9 @@ choco install flux
 
 ## Bootstrap fluxa
 
-### Github PAT token
+### Token PAT (GitHub)
 
-Wchodzimy na link: [https://github.com/settings/tokens](https://github.com/settings/tokens)
+Przejdź pod adres: [https://github.com/settings/tokens](https://github.com/settings/tokens)
 
 @slidestart
 
@@ -70,24 +70,24 @@ Kliknij aby powiększyć
 
 @slideend
 
-W ostatnim kroku ustawiamy:
+W ostatnim kroku skonfiguruj:
 
 - nazwę tokena
-- Ile czasu ma być ważny token
-- Uprawnienia. Wybieramy całą gałąź repo
+- czas ważności tokena
+- uprawnienia — zaznacz całą gałąź repozytorium
 
-Po kliknięciu "Generate token" postępując zgodnie z instrukcjami skopiować wartość tokena
+Po kliknięciu "Generate token", postępuj zgodnie z instrukcjami i skopiuj wartość tokena.
 
 ::: warning PAT
 Jeśli zakładka zostanie zamknięta lub odświeżona przed skopiowaniem tokena, trzeba będzie powtórzyć operację. Nie ma możliwości odczytania wartości tokena w późniejszym momencie.
 :::
 
-### Deployment fluxa
+### Wdrożenie Fluxa
 
-Aby rozpocząć korzystanie z Fluxa należy wykonać operację bootstrap. W tym procesie flux generuje i wdraża swoje manifesty na klastrze kubernetes i publikuje je we wskazanym repozytorium. Miejscem przechowywania konfiguracji klastra mojego środowiska jest Github. Lista dostępnych opcji znajduje się w [dokumentacji procesu bootstrap](https://fluxcd.io/flux/installation/bootstrap/)
+Aby rozpocząć korzystanie z Fluxa należy wykonać operację bootstrap. W tym procesie Flux generuje i wdraża swoje manifesty na klastrze Kubernetes i publikuje je we wskazanym repozytorium. Miejscem przechowywania konfiguracji klastra mojego środowiska jest GitHub. Lista dostępnych opcji znajduje się w [dokumentacji procesu bootstrap](https://fluxcd.io/flux/installation/bootstrap/).
 
 ::: important Kubernetes
-Zanim wykonamy polecenie flux należy być zalogowanym do klastra kubernetes w którym chcemy mieć zainstalowanego fluxa.
+Przed wykonaniem polecenia flux należy być zalogowanym do klastra Kubernetes, w którym chcemy mieć zainstalowanego Fluxa.
 :::
 
 ```bash :no-line-numbers
@@ -102,7 +102,7 @@ flux bootstrap github \
   --personal
 ```
 
-Powwyższe polecenie publikuje w repozytorium manifesty fluxa jednocześnie instalując je w klastrze kubernetes. W efekcie działania w repozytorium stworzony jest katalog clusters/k3s-test, który zawiera obiekty fluxa.
+Powyższe polecenie publikuje w repozytorium manifesty Fluxa, jednocześnie instalując je w klastrze Kubernetes. W efekcie działania w repozytorium tworzony jest katalog clusters/k3s-test, zawierający obiekty Fluxa.
 
 Dodatkowymi komponentami, które są wykorzystywane w klastrze są:
 
@@ -113,7 +113,7 @@ Służą one do wykrywania i wdrażania nowych wersji kontenerów.
 
 ## Aktualizacja tokenu PAT
 
-Token PAT zainstalowany jest w kubernetes w namespace: `flux-system` jako secret o nazwie: `flux-system`
+Token PAT zainstalowany jest w Kubernetes w namespace: `flux-system` jako secret o nazwie: `flux-system`
 
 ```yaml
 apiVersion: v1
@@ -127,7 +127,7 @@ data:
   username: git
 ```
 
-Po aktualizacji tokenu PAT, usuwamy stary secret i wdrażamy nowy
+Po aktualizacji tokenu PAT, usuń stary secret i wdróż nowy.
 
 ```bash
 kubectl -n flux-system delete secret flux-system
@@ -135,12 +135,12 @@ kubectl -n flux-system apply -f flux-secret.yaml
 ```
 
 ::: tip Base64
-Wartości kluczy password oraz username muszą być zakodowane base64
+Wartości kluczy `password` oraz `username` muszą być zakodowane w Base64.
 :::
 
 ## Kustomization
 
-Wdrażanie aplikacji (oraz innych konfiguracji) z użyciem FluxCD zaczniemy od przygotowania manifestu `Kustomization`, którym wskażemy katalog apps.
+Wdrażanie aplikacji (oraz innych konfiguracji) z użyciem FluxCD zacznij od przygotowania manifestu `Kustomization`, którym wskażesz katalog apps.
 
 ::: tip apps
 Aby uniknąć błędu `Kustomization` należy stworzyć katalog apps i opublikować go w repozytorium wraz z manifestem `Kustomization`.
@@ -170,17 +170,17 @@ spec:
   timeout: 1m0s
 ```
 
-W tym momencie każdy manifest, który pojawi się w katalogu `apps` zostanie automatycznie wdrożony przez fluxa.
+W tym momencie każdy manifest, który pojawi się w katalogu `apps`, zostanie automatycznie wdrożony przez Fluxa.
 
 ## Obsługa HelmChart
 
-HelmChart znacznie przyspiesza uruchomienie aplikacji w kubernetes, jednocześnie dajac swobodę wyboru obiektów, z jakich składa się środowisko aplikacji, którą chcemy uruchomić. W tym celu stworzony został [AppChart](https://github.com/HomeDevopsLab/appchart) - uniwersalny szablon do uruchamiania różnego typu aplikacji.
+HelmChart znacznie przyspiesza uruchomienie aplikacji w Kubernetes, jednocześnie dając swobodę wyboru obiektów, z jakich składa się środowisko aplikacji, którą chcemy uruchomić. W tym celu stworzony został [AppChart](https://github.com/HomeDevopsLab/appchart) - uniwersalny szablon do uruchamiania różnego typu aplikacji.
 
-Aby z niego skorzystać trzeba w klustrze skonfigurować obiekt `GitRepository`
+Aby z niego skorzystać, trzeba w klastrze skonfigurować obiekt `GitRepository`.
 
 ### GitRepository
 
-Dla zachowania porządku wszystkie manifesty `GitRepository` publikujemy w katalogu `apps/gitrepos`. Każda wersja appchart posiada unikalny `name` oraz wyróżniający ją tag lub branch
+Dla zachowania porządku wszystkie manifesty `GitRepository` publikujemy w katalogu `apps/gitrepos`. Każda wersja AppChart posiada unikalny `name` oraz wyróżniający ją tag lub branch.
 
 Definicja manifestu dla wersji `3.2.0`
 
@@ -217,11 +217,11 @@ spec:
       interval: 1m
 ```
 
-W Helmrelease aplikacji używamy `name` aby powiązać oba obiekty.
+W HelmRelease aplikacji używamy `name`, aby powiązać oba obiekty.
 
 ### Aktualizacja AppChart
 
-Testowanie nowych funkcjonalności helmcharta wykonujemy wdrażając dodatkowy obiekt gitrepository, który wskazuje na feature branch w repozytorium.
+Testowanie nowych funkcjonalności AppCharta wykonaj, wdrażając dodatkowy obiekt GitRepository, który wskazuje na feature branch w repozytorium.
 
 ```yaml {4,10}
 apiVersion: source.toolkit.fluxcd.io/v1
@@ -239,22 +239,22 @@ spec:
 
 #### Wdrożenie nowej wersji HelmChart
 
-Jeśli wszystkie zmiany działają poprawnie wykonujemy następujące czynności.
+Jeśli wszystkie zmiany działają poprawnie, wykonaj następujące czynności.
 
-1. Przygotowujemy release helmcharta.
-2. Zmieniamy we wszystkich manifestach HelmRelease nazwę dowiązanego HelmCharta na tą, która jest powiązana z nowym tagiem
-3. Usuwamy plik z `apps-repository/gitrepos`, który jest powiązany z branchem
-4. Usuwamy branch z repozytorium.
+1. Przygotuj release AppCharta.
+2. Zmień we wszystkich manifestach HelmRelease nazwę dowiązanego HelmCharta na tę, która jest powiązana z nowym tagiem.
+3. Usuń plik z `apps/gitrepos`, który jest powiązany z branchem.
+4. Usuń branch z repozytorium.
 
-Jeśli okaże się, że jakaś aplikacja nie działa prawidłowo z nową wersją - wracamy do poprzedniej wersji appchart, ale tylko w tym jednym konkretnym HelmRelease.
+Jeśli okaże się, że jakaś aplikacja nie działa prawidłowo z nową wersją — wróć do poprzedniej wersji AppCharta, ale tylko w tym jednym konkretnym HelmRelease.
 
 ## Image automation
 
-[ImageAutomation](https://fluxcd.io/flux/components/image/) automatyzuje wdrażanie nowych wersji aplikacji. Funckjonalność ta jest wspierana w wykorzysytwanym HelmCharcie. Jeśli chcemy z niej skorzystać należy skonfigurować `imagePolicy: true` w przeciwnym razie trzeba ustawić wartość `false`. 
+[ImageAutomation](https://fluxcd.io/flux/components/image/) automatyzuje wdrażanie nowych wersji aplikacji. Funkcjonalność ta jest wspierana w wykorzystywanym HelmCharcie. Jeśli chcemy z niej skorzystać, należy skonfigurować `imagePolicy: true` w przeciwnym razie trzeba ustawić wartość `false`. 
 
 ### Registry secret (regcred)
 
-ImageAutomation wymaga wdrożenia secretu, który umożliwi pobieranie obrazow dockera z registry w gitlabie.
+ImageAutomation wymaga wdrożenia secretu, który umożliwi pobieranie obrazów Dockera z registry w GitLabie.
 
 ```bash :no-line-numbers
 kubectl create secret -n flux-system docker-registry regcred \
@@ -264,7 +264,7 @@ kubectl create secret -n flux-system docker-registry regcred \
   --docker-server=registry.git.domena.pl
 ```
 
-To samo musimy zrobić w namespace `default`.
+To samo należy zrobić w namespace `default`.
 
 ### Konfiguracja
 
@@ -276,7 +276,7 @@ image:
   tag: 2.5.1 # {"$imagepolicy": "flux-system:doc:tag"}
 ```
 
-Jeśli registry wymaga zalogowania się do niego, należy zdeployować odpowiedni secret i użyć go w opcji `registrySecret`. Aby image policy działało prawidłowo w linijce `tag` należy dodać specjalny komentarz.
+Jeśli registry wymaga zalogowania się do niego, należy wdrożyć odpowiedni secret i użyć go w opcji `registrySecret`. Aby image policy działało prawidłowo w linijce `tag` należy dodać specjalny komentarz.
 
 ``` :no-line-numbers
 # {"$imagepolicy": "flux-system:doc:tag"}
@@ -285,7 +285,7 @@ Jeśli registry wymaga zalogowania się do niego, należy zdeployować odpowiedn
 | ----------| -------------| ------|
 | flux-system | doc | tag |
 
-W namespace `flux-system` zdeployowany jest obiekt imagePolicy, doc jest nazwą aplikacji zdefiniowaną w HelmRelase w którym się znajduje ta konfiguracja. Tag jest polem, które jeset aktualizowane przez fluxa
+W namespace `flux-system` wdrożony jest obiekt imagePolicy, doc jest nazwą aplikacji zdefiniowaną w HelmRelease, w którym się znajduje ta konfiguracja. Tag jest polem, które jest aktualizowane przez Fluxa.
 
 ::: important ReleaseName
 Nazwa aplikacji w imagepolicy musi być taka sama jak ReleaseName.
