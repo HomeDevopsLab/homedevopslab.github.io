@@ -250,7 +250,23 @@ Jeśli okaże się, że jakaś aplikacja nie działa prawidłowo z nową wersją
 
 ## Image automation
 
-[ImageAutomation](https://fluxcd.io/flux/components/image/) jest funkcjonalnością, która pozwala na automatyzację wdrażania nowych wersji aplikacji. Funckjonalność ta jest wspierana w wykorzysytwanym HelmCharcie. Jeśli chcemy z niej skorzystać należy skonfigurować `imagePolicy: true` w przeciwnym razie trzeba ustawić wartość `false`.
+[ImageAutomation](https://fluxcd.io/flux/components/image/) automatyzuje wdrażanie nowych wersji aplikacji. Funckjonalność ta jest wspierana w wykorzysytwanym HelmCharcie. Jeśli chcemy z niej skorzystać należy skonfigurować `imagePolicy: true` w przeciwnym razie trzeba ustawić wartość `false`. 
+
+### Registry secret (regcred)
+
+ImageAutomation wymaga wdrożenia secretu, który umożliwi pobieranie obrazow dockera z registry w gitlabie.
+
+```bash :no-line-numbers
+kubectl create secret -n flux-system docker-registry regcred \
+  --docker-email=admin@domena.pl \
+  --docker-username=gitlab_user \
+  --docker-password=glpat-xxxxxxxxxxxxxx \
+  --docker-server=registry.git.domena.pl
+```
+
+To samo musimy zrobić w namespace `default`.
+
+### Konfiguracja
 
 ```yaml {2,3,5}
 image:
@@ -262,7 +278,7 @@ image:
 
 Jeśli registry wymaga zalogowania się do niego, należy zdeployować odpowiedni secret i użyć go w opcji `registrySecret`. Aby image policy działało prawidłowo w linijce `tag` należy dodać specjalny komentarz.
 
-```
+``` :no-line-numbers
 # {"$imagepolicy": "flux-system:doc:tag"}
 ```
 | namespace | release name | field |
@@ -278,5 +294,5 @@ Nazwa aplikacji w imagepolicy musi być taka sama jak ReleaseName.
 Dzięki tej konfiguracji nie trzeba ręcznie aktualizować taga w HelmReleasie, zrobi to za nas Flux.
 
 ::: warning git pull
-Należy pamiętać o zrobieniu git pull na repozytorium w którym operuje flux, w przeciwnym razie nie uda się poprawnie wykonywać dalszych zmian.
+Aby uniknąć konfliktów w repozytorium należy pamiętać o zrobieniu git pull.
 :::
