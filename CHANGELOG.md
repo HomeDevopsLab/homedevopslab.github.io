@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.4.1] - 2026-06-22
+
+### Added
+
+- Let's Encrypt (EN): full English translation of the Let's Encrypt article.
+
+### Changed
+
+- Let's Encrypt (PL): style fixes — typos, consistent use of `cert-manager` name, capitalisation of proper nouns (Kubernetes, Traefik, Flux, DNS, IP), impersonal form throughout, duplicate section title resolved, punctuation.
+
 ## [3.4.0] - 2026-06-22
 
 ### Added
