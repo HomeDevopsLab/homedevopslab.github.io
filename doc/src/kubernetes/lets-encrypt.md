@@ -1,7 +1,7 @@
 ---
 title: Let's encrypt
 icon: lock
-order: 5
+order: 4
 category:
   - Guide
 tag:
@@ -38,18 +38,18 @@ cert-manager-cainjector-69f8c8cdbf-rcfjq   1/1     Running   0          3h4m
 cert-manager-webhook-84fd89df64-z9gtp      1/1     Running   0          3h4m
 ```
 
+
 ## Cluster issuer
 
-### Opis działania
-
-W trakcie uruchamiania aplikacji w klastrze, jednocześnie uruchamia się pod **cluster-issuer**, który wystawia wygenerowany w imieniu aplikacji CSR (Certificate Sign Request). Jest on wystawiony pod adresem `http://aplikacja.domena.com/.well-known/`. Let's encrypt pobiera z tego adresu CSR, następnie podpisuje go i udostępnia do pobrania. Cert manager instaluje podpisany certyfikat w clustrze.
+W trakcie instalacji aplikacji w klastrze, jednocześnie uruchamia się pod **cluster-issuer**, który wystawia wygenerowany w imieniu aplikacji CSR (Certificate Sign Request). Jest on wystawiony pod adresem `http://aplikacja.domena.com/.well-known/`. Let's encrypt pobiera z tego adresu CSR, następnie podpisuje go i udostępnia do pobrania. Cert manager instaluje podpisany certyfikat w clustrze. Dzieje się to automatycznie. Po wykonanym zadaniu pod cert-managera kończy działanie.
 
 ![Lets encrypt infrastructure](/assets/image/letsencrypt-infra.png)
 
 ::: important DNS
 W obecnej architekturze, do poprawnego działania certmanagera musiałem zastosować wewnętrzną strefę dns `example.com`, która odpowiada wewnętrznym adresem ip dla subdomen.
 :::
-Konfiguracja ClusterIssuera
+
+Aby działało generowanie certyfikatów SSL, trzeba zainstalować na klastrze zasób ClusterIssuer.
 
 ```yaml
 apiVersion: cert-manager.io/v1
@@ -74,7 +74,7 @@ spec:
 Komponent Middleware jest używany do automatycznego ustawiania przekierowania `HTTP -> HTTPS`
 
 ```yaml
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: redirect-https
@@ -84,6 +84,10 @@ spec:
     scheme: https
     permanent: true
 ```
+
+## Instalacja
+
+Dzięki temu, że klaster ma uruchomionego fluxa, wystarczy stworzyć katalog `apps/certmanager` a w nim utworzyć oba manifesty: `ClusterIssuer` oraz `Middleware`. Po opublikowaniu plików w repozytorium, flux wykona autokatycznie wdrożenie.
 
 ## Traefik
 
@@ -103,3 +107,7 @@ metadata:
 
 Dzięki tej konfiguracji traefik komunikuje się z cluster-issuerem, żeby zarządać wystawienia certyfikatu a także konfiguruje redirect na
 https dla aplikacji za pomocą middleware'a.
+
+::: info HelmChart
+Ta komnfiguracja jest automatycznie generowana przez helmchart, jeśli zostanie włączona opcja `ssl: true` w kofniguracji ingress.
+:::
