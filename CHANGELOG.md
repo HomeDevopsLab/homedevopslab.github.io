@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.6.0] - 2026-06-27
+
+### Added
+
+- SOPS (EN): full English translation of the SOPS article.
+
+### Changed
+
+- SOPS (PL): style fixes — typos (`żadnuch` → `żadnych`, `pasującą co wzorca` → `pasującą do wzorca`), consistent use of `szyfrowanie` instead of `enkrypcja`, capitalisation of proper nouns (Kubernetes), correct Polish genitive `klastra` instead of `clustra`.
+
 ## [3.5.0] - 2026-06-22
 
 ### Added

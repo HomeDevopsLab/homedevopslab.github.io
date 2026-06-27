@@ -8,7 +8,7 @@ tag:
   - kubernetes
 ---
 
-[SOPS](https://getsops.io/) jest narzędziem, które wykorzystuję do szyfrowania secretów kubernetes. Potrafi wykonać enkrypcję w oparciu o mechanizmy dostarczane przez chmury publiczne oraz lokalne narzędzia takie jak PGP oraz [Age](https://github.com/FiloSottile/age).
+[SOPS](https://getsops.io/) jest narzędziem, które wykorzystuję do szyfrowania secretów Kubernetes. Potrafi wykonać szyfrowanie w oparciu o mechanizmy dostarczane przez chmury publiczne oraz lokalne narzędzia takie jak PGP oraz [Age](https://github.com/FiloSottile/age).
 
 ## Instalacja
 
@@ -22,8 +22,8 @@ Jeśli mamy inny system operacyjny niż linux oraz inną architekturę procesora
 
 ```bash
 curl -LO https://github.com/getsops/sops/releases/download/v3.9.0/sops-v3.9.0.linux.amd64
-mv sops-v3.9.0.linux.amd64 /usr/local/bin/sops
-chmod +x /usr/local/bin/sops
+sudo mv sops-v3.9.0.linux.amd64 /usr/local/bin/sops
+sudo chmod +x /usr/local/bin/sops
 ```
 
 @tab Age
@@ -33,7 +33,7 @@ chmod +x /usr/local/bin/sops
 brew install age
 
 # Linux
-apt install age
+sudo apt install age
 
 # Windows
 choco install age.portable
@@ -53,7 +53,15 @@ kubectl create secret generic sops-age \
 
 ## Konfiguracja w repozytorium
 
-W głównym katalogu repozytorium należy utworzyć plik `.sops.yaml` z zawartością
+Klucz `age` zawiera string będący kluczem publicznym age. Można go odczytać z utworzonego wcześniej secretu
+
+```yaml  :no-line-numbers title="🖥️ kubectl get secret sops-age -n flux-system -o json | jq '.data | map_values(@base64d)'"
+{
+  "age.agekey": "# created: 2026-06-25T22:40:53+02:00\n# public key: agexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\nAGE-SECRET-KEY-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxZ\n"
+}
+```
+
+W głównym katalogu repozytorium należy utworzyć plik `.sops.yaml` wykorzystując pozyskany we wcześniejszym kroku klucz publiczny.
 
 ```yaml
 creation_rules:
@@ -61,15 +69,10 @@ creation_rules:
     age: agexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-klucz `age` zawiera string będący kluczem publicznym age. Można go odczytać z utworzonego wcześniej secretu
-
-```bash
-kubectl get secret sops-age -n flux-system -o json | jq '.data | map_values(@base64d)'
-```
 
 Konfigurację pliku `clusters/raspberry/apps.yaml` wzbogacamy o konfigurację dekrypcji
 
-```yaml {11-14}
+```yaml {12-15}
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
@@ -93,7 +96,7 @@ spec:
 
 ## Szyfrowanie secretów
 
-W repozytorium clustra przyjęta została zasada, że pliki z secretami mają nazwę pasującą co wzorca: `*-secrets-clear.yaml` oraz `*-secrets-enc.yaml`. Te z **clear** w nazwie pliku nie są publikowane w repozytorium.
+W repozytorium klastra przyjęta została zasada, że pliki z secretami mają nazwę pasującą do wzorca: `*-secrets-clear.yaml` oraz `*-secrets-enc.yaml`. Te z **clear** w nazwie pliku nie są publikowane w repozytorium.
 
 ```yaml
 apiVersion: v1
@@ -103,8 +106,13 @@ metadata:
   namespace: default
 type: Opaque
 data:
-  secret_password: jkahd99831xx
+  secret_password: U3VwZXJTZWNyZXRQYXNzd29yZA==
 ```
+
+
+::: important .gitignore
+Koniecznie należy zaktualizować plik .gitignore aby przypadkowo nie ujawnić żadnych secretów. Wystarczy wpis: `**/*-secrets-clear.yaml`
+:::
 
 Aby zaszyfrować dany secret, należy wejść do katalogu z manifestem secretu i wykonać polecenie:
 
@@ -112,4 +120,4 @@ Aby zaszyfrować dany secret, należy wejść do katalogu z manifestem secretu i
 sops -e app-secrets-clear.yaml | tee app-secrets-enc.yaml
 ```
 
-Spowoduje to utworzenie pliku app-secrets-enc.yaml, który jest zaszyfrowany z użyciem Age. Tak przygotowany plik można opublikować w repozytorium clustra. Zostanie on automatycznie wdrożony przez fluxa.
+Spowoduje to utworzenie pliku app-secrets-enc.yaml, który jest zaszyfrowany z użyciem Age. Tak przygotowany plik można opublikować w repozytorium klastra. Zostanie on automatycznie wdrożony przez fluxa.
