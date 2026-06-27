@@ -38,19 +38,17 @@ Po uzyskaniu akceptacji merge requesta
 1. Zrób merge
 2. Stwórz taga zgodnego z najnowszym wpisem (semver) w CHANGELOG i opublikuj go w repozytorium
 
-# Zasady nadawania wersji
+# Zasady nadawania wersji (SemVer)
 
-## Major version
+## Major version (X.0.0)
 
-Duże zmiany typu: 
-- Nowa wersja językowa
-- Dodanie nowej sekcji takich jak Kubernetes, Proxmox
+- Krytyczne zmiany strukturalne repozytorium (np. zmiana frameworka dokumentacji, reorganizacja całej architektury katalogów).
 
-## Minor version
+## Minor version (0.X.0)
 
-- Aktualizacja istniejącej wersji pliku
-- Aktualizacja wersji językowej
+- Dodanie nowej sekcji tematycznej (np. instrukcje do Kubernetes, Proxmox).
+- Dodanie całkowicie nowej wersji językowej dla istniejącego dokumentu.
 
-## Patch version
+## Patch version (0.0.X)
 
-- drobne poprawki, typu literówki, reorganizacja testu, np. zmiana kolejności sekcji.
+- Aktualizacja treści w istniejącym pliku, poprawki literówek, formatowania Markdown, drobne poprawki tłumaczeń.
