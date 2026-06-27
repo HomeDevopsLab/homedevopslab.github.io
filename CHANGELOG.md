@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.1] - 2026-06-27
+
+### Fixed
+
+- Homepage: fixed horizontal overflow of the "Wirtualizacja & High Availability" section on laptop screens by introducing a responsive breakpoint (≥1400px) for the full-width layout and reducing fixed dimensions for smaller viewports.
+
 ## [3.6.0] - 2026-06-27
 
 ### Added
