@@ -5,6 +5,9 @@ argument_hint: [filename] [language]
 arguments:
   - filename
   - language
+allowed_tools:
+  - git
+  - gh
 ---
 
 # Wprowadź poprawki w dokumentacji
@@ -25,6 +28,7 @@ Kroki należy wykonać po uzyskaniu akceptacji w poprzedniej sekcji
 ## Merge request
 
 1. Opublikuj feature branch w repozytorium i przygotuj Merge Request
+  - merge request powinien mieć od razu ustawioną flagę, która usunie branch po wykonaniu merge
 2. Podeślij link do Merge Request i poproś o review.
 
 ## Opublikowanie zmian 
