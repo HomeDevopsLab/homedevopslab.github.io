@@ -63,3 +63,7 @@ The project follows semantic versioning (`MAJOR.MINOR.PATCH`) with these rules:
 Adding a translation of an existing article is `patch`; adding a translated version of a new article follows the same bump as the article itself.
 
 Every bump gets a git tag — CI deploys on tags, so each version (including patches) triggers a release.
+
+## CHANGELOG rules
+
+- Avoid low-level details. Keep it to 1–2 sentences that clearly describe the business impact.
