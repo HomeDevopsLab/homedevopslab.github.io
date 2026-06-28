@@ -20,7 +20,7 @@ allowed-tools:
 
 Kroki należy wykonać po uzyskaniu akceptacji w poprzedniej sekcji
 
-1. Przetłumacz $filename i zapisz plik pod tą samą nazwą w angielskiej wersji dokumentacji.
+1. Przetłumacz $filename i zapisz plik pod tą samą nazwą w $language wersji dokumentacji.
 2. upewnij się, że nie jesteś na branchu main.
 3. jeśli jesteś na branchu main, stwórz feature branch
 4. Zaktualizuj CHANGELOG.md, z nową wersją w formacie semver.
