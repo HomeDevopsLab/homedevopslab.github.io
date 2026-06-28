@@ -6,8 +6,8 @@ arguments:
   - filename
   - language
 allowed-tools:
-  - git
-  - gh
+  - Bash(git *)
+  - Bash(gh *)
 ---
 
 # Wprowadź poprawki w dokumentacji
