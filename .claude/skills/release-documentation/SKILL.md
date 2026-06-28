@@ -1,12 +1,8 @@
 ---
 name: release-documentation
 description: Ten skill służy do publikacji zmian w dokumentacji. Powinien być uruchamiany kiedy użytkownik poprosi o opublikowanie nowej wersji pliku nad którym aktualnie pracował.
-arguments:
-  - filename
-  - language
-allowed-tools:
-  - Bash(git *)
-  - Bash(gh *)
+arguments: filename language
+allowed-tools: Bash(git *) Bash(gh *)
 ---
 
 # Wprowadź poprawki w dokumentacji
