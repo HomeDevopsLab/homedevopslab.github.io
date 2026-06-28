@@ -1,7 +1,6 @@
 ---
 name: release-documentation
 description: Ten skill służy do publikacji zmian w dokumentacji. Powinien być uruchamiany kiedy użytkownik poprosi o opublikowanie nowej wersji pliku nad którym aktualnie pracował.
-argument-hint: [filename] [language]
 arguments:
   - filename
   - language
