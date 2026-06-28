@@ -1,0 +1,84 @@
+{
+  "skill_name": "release-documentation",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Opublikuj plik doc/src/kubernetes/flux.md po angielsku. Wersja angielska już istnieje w doc/src/en/kubernetes/flux.md.",
+      "expected_output": "Skill powinien: (1) przejrzeć i poprawić flux.md pod kątem błędów stylistycznych, (2) zaktualizować angielską wersję doc/src/en/kubernetes/flux.md, (3) stworzyć branch docs/flux, (4) zaktualizować CHANGELOG.md po angielsku z bump patch (bo aktualizacja istniejącego tłumaczenia), (5) przygotować Merge Request przez glab mr create --remove-source-branch --fill.",
+      "assertions": [
+        {
+          "name": "branch_naming_convention",
+          "description": "Feature branch follows docs/<basename> convention (e.g. docs/flux)",
+          "type": "contains"
+        },
+        {
+          "name": "changelog_in_english",
+          "description": "CHANGELOG.md entry is written in English",
+          "type": "contains"
+        },
+        {
+          "name": "correct_semver_patch",
+          "description": "CHANGELOG bump is patch (0.0.X) because EN translation already exists — updating it",
+          "type": "contains"
+        },
+        {
+          "name": "glab_used_not_gh",
+          "description": "glab mr create is used instead of gh pr create",
+          "type": "contains"
+        },
+        {
+          "name": "remove_source_branch_flag",
+          "description": "MR creation uses --remove-source-branch flag",
+          "type": "contains"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "chcę wypuścić zmiany w proxmox/vmmachines.md, angielska wersja już jest",
+      "expected_output": "Skill powinien zidentyfikować właściwą ścieżkę (doc/src/proxmox/vmmachines.md), poprawić dokument PL, zaktualizować EN wersję, stworzyć branch docs/vmmachines, dodać patch entry do CHANGELOG po angielsku i przygotować MR.",
+      "assertions": [
+        {
+          "name": "skill_triggers_on_informal_phrasing",
+          "description": "Skill activates even with casual phrasing 'chcę wypuścić zmiany'",
+          "type": "contains"
+        },
+        {
+          "name": "branch_naming_convention",
+          "description": "Feature branch named docs/vmmachines",
+          "type": "contains"
+        },
+        {
+          "name": "correct_semver_patch",
+          "description": "CHANGELOG bump is patch since EN already exists",
+          "type": "contains"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "push my documentation changes for the sops article to EN",
+      "expected_output": "Skill triggers on English phrasing. Skill should identify doc/src/kubernetes/sops.md, update EN translation at doc/src/en/kubernetes/sops.md, use patch bump, write CHANGELOG in English, use glab.",
+      "assertions": [
+        {
+          "name": "skill_triggers_on_english_phrasing",
+          "description": "Skill activates on English 'push my documentation changes' phrasing",
+          "type": "contains"
+        },
+        {
+          "name": "glab_used_not_gh",
+          "description": "glab mr create is used",
+          "type": "contains"
+        },
+        {
+          "name": "changelog_in_english",
+          "description": "CHANGELOG entry written in English",
+          "type": "contains"
+        }
+      ],
+      "files": []
+    }
+  ]
+}
