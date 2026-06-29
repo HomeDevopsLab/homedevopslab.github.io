@@ -47,6 +47,10 @@ highlights:
         icon: dharmachakra
         details: Building a local Kubernetes cluster
         link: ./kubernetes/
+      - title: GitOps
+        icon: infinity
+        details: Git-driven environment management
+        link: ./gitops/
 
   - header: Virtualization & High Availability
     description: An ultra-reliable computing environment based on a 3-node Proxmox VE hypervisor cluster. Thanks to full hyper-converged integration, a single server failure does not interrupt the operation of critical services.

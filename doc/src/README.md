@@ -1,5 +1,4 @@
 ---
-
 home: true
 icon: house
 title: Home
@@ -91,3 +90,13 @@ highlights:
     - title: <strong>Helm & Kustomize</strong>
       icon: cubes
       details: Pełna standaryzacja, reużywalność kodu i separacja środowisk
+- header: Centralizacja GitOps & Automatyzacja
+  description: „Single Source of Truth” dla całego ekosystemu. Infrastruktura zarządzana jest w pełni deklaratywnie, co zapewnia pełną powtarzalność i pełną kontrolę nad cyklem życia usług.
+  image: /assets/image/gitlab-gitops.png
+  highlights:
+    - title: <strong>GitOps Driven</strong> - Zarządzanie infrastrukturą poprzez kod (IaC).
+      icon: code-branch
+    - title: <strong>Automated Hygiene</strong> - Cykliczne aktualizacje i utrzymanie aplikacji
+      icon: gear
+    - title: <strong>Custom Observability & Remediation</strong> - Autorskie API do monitoringu backupów, alertowania na Matrix oraz automatycznej remediacji problemów w Grafanie zamykają pętlę operacyjną, minimalizując potrzebę ręcznej interwencji.
+      icon: stethoscope
