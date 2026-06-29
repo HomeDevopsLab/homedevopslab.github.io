@@ -49,6 +49,10 @@ highlights:
       icon: dharmachakra
       details: Budowa lokalnego clustra kubernetes
       link: ./kubernetes/
+    - title: GitOps
+      icon: infinity
+      details: Zarządzanie środowiskiem w oparciu o repozytoria git
+      link: ./gitops/
 
 - header: Wirtualizacja & High Availability
   description: Ultra-niezawodne środowisko obliczeniowe oparte o 3-węzłowy klaster hypervisorów Proxmox VE. Dzięki pełnej integracji hiperkonwergentnej, awaria pojedynczego serwera nie przerywa działania krytycznych usług.

@@ -14,4 +14,10 @@ export const enNavbar = navbar([
     prefix: "/en/kubernetes/",
     children: ["k8s-install", "kubevip", "flux", "helmchart", "sops", "lets-encrypt"],
   },
+  {
+    text: "Gitops",
+    icon: "infinity",
+    prefix: "/en/gitops/",
+    children: ["gitlab"],
+  }
 ]);
