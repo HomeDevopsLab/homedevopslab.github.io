@@ -3,7 +3,7 @@ home: true
 icon: house
 title: Home
 heroImage: /assets/image/homelab-logo2.png
-bgImage: /assets/image/hero-bg.svg
+bgImage: /assets/image/hero-bg-light.svg
 bgImageDark: /assets/image/hero-bg.svg
 bgImageStyle:
   background-attachment: fixed
@@ -12,7 +12,7 @@ bgImageStyle:
   background-repeat: no-repeat # Zabezpieczenie przed kafelkowaniem
   filter: brightness(0.80) contrast(0.7)
 heroText: Angrybits Homelab
-tagline: My homelab environment documentation
+tagline: Infrastructure as code, automation as standard
 
 highlights:
   - header: Milestones

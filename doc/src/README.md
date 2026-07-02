@@ -12,7 +12,7 @@ bgImageStyle:
   background-repeat: no-repeat
   filter: brightness(0.80) contrast(0.7)
 heroText: Angrybits Homelab
-tagline: Dokumentacja mojego środowiska homelab
+tagline: Infrastruktura jako kod, automatyzacja jako standard
 
 highlights:
 
