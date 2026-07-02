@@ -54,7 +54,7 @@ highlights:
       link: ./gitops/
 
 - header: Wirtualizacja & High Availability
-  description: Ultra-niezawodne środowisko obliczeniowe oparte o 3-węzłowy klaster hypervisorów Proxmox VE. Dzięki pełnej integracji hiperkonwergentnej, awaria pojedynczego serwera nie przerywa działania krytycznych usług.
+  description: 'Ultra-niezawodne środowisko obliczeniowe oparte o 3-węzłowy klaster hypervisorów Proxmox VE. Dzięki pełnej integracji hiperkonwergentnej, awaria pojedynczego serwera nie przerywa działania krytycznych usług.<br/><br/><a href="./proxmox/" class="vp-section-cta">Zobacz architekturę Proxmox →</a>'
   image: /assets/image/rack.jpg
   bgImage: /assets/image/virtualization-bg-light.svg
   bgImageDark: /assets/image/virtualization-bg.svg
@@ -71,7 +71,7 @@ highlights:
       icon: hard-drive
 
 - header: Orkiestracja & GitOps (Kubernetes)
-  description: Główne, wysoce dostępne środowisko aplikacyjne klastra k3s. Całość infrastruktury oraz cykl życia usług są zarządzane w pełni deklaratywnie, eliminując potrzebę ręcznej konfiguracji i wdrażania zmian przez SSH.
+  description: 'Główne, wysoce dostępne środowisko aplikacyjne klastra k3s. Całość infrastruktury oraz cykl życia usług są zarządzane w pełni deklaratywnie, eliminując potrzebę ręcznej konfiguracji i wdrażania zmian przez SSH.<br/><br/><a href="./kubernetes/" class="vp-section-cta">Zobacz dokumentację Kubernetes →</a>'
   image: /assets/image/k3s.jpg
   bgImage: /assets/image/cloudy-light.svg
   bgImageDark: /assets/image/cloudy.svg
@@ -90,13 +90,23 @@ highlights:
     - title: <strong>Helm & Kustomize</strong>
       icon: cubes
       details: Pełna standaryzacja, reużywalność kodu i separacja środowisk
-- header: Centralizacja GitOps & Automatyzacja
-  description: „Single Source of Truth” dla całego ekosystemu. Infrastruktura zarządzana jest w pełni deklaratywnie, co zapewnia pełną powtarzalność i pełną kontrolę nad cyklem życia usług.
-  image: /assets/image/gitlab-gitops.png
+
+- header: Ekosystem GitOps — Repozytoria Infrastruktury
+  description: 'Całe środowisko homelab utrzymywane jest w oparciu o rozproszony ekosystem repozytoriów Git, gdzie każde z nich odpowiada za osobny etap cyklu życia infrastruktury — od provisioningu, przez utrzymanie, aż po obserwowalność. Dzięki takiemu podziałowi każda zmiana jest w pełni wersjonowana, powtarzalna i łatwa do audytu.<br/><br/><a href="./gitops/" class="vp-section-cta">Zobacz repozytoria GitOps →</a>'
+  image: /assets/image/gitops-ecosystem.jpg
+  bgImage: /assets/image/gitops-bg-light.svg
+  bgImageDark: /assets/image/gitops-bg.svg
+  bgImageStyle:
+    background-size: cover
+    background-position: center
+    filter: brightness(0.5) contrast(0.8)
   highlights:
-    - title: <strong>GitOps Driven</strong> - Zarządzanie infrastrukturą poprzez kod (IaC).
-      icon: code-branch
-    - title: <strong>Automated Hygiene</strong> - Cykliczne aktualizacje i utrzymanie aplikacji
-      icon: gear
-    - title: <strong>Custom Observability & Remediation</strong> - Autorskie API do monitoringu backupów, alertowania na Matrix oraz automatycznej remediacji problemów w Grafanie zamykają pętlę operacyjną, minimalizując potrzebę ręcznej interwencji.
-      icon: stethoscope
+    - title: <strong>Infrastructure as Code</strong>
+      icon: layer-group
+      details: angrybits-homelab — 3-warstwowy kod IaC zarządzający VM, kontenerami Docker, firewallem, DNS i inventory
+    - title: <strong>Provisioning & Utrzymanie</strong>
+      icon: arrows-rotate
+      details: proxmox-vm-templates (obrazy cloud-init) oraz homelab-tasks (aktualizacje, dystrybucja kluczy SSH)
+    - title: <strong>Monitoring & Auto-remediation</strong>
+      icon: bell
+      details: proxmox-metrix, grafana-matrix-api, grafana-alerts-remediate — alerty progowe i częściowa autoremediacja
