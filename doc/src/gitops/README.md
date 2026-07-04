@@ -6,4 +6,4 @@ category:
   - Guide
 ---
 
-TODO
+![Homelab repositories graph](/assets/image/homelab-ecosystem.svg)
