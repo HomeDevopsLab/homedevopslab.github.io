@@ -32,7 +32,7 @@ Host gitlab.example.com
   IdentityFile ~/.ssh/id_rsa_homelab
 ```
 
-W związku z tym, że gitlab uruchomiony jest w kontenerze, zostało wykonane mapowanie portu z wysokiego na docelowy: `22` na którym oczekuje połączęń demon sshd pracujący w środku.
+W związku z tym, że gitlab uruchomiony jest w kontenerze, zostało wykonane mapowanie portu z wysokiego na docelowy: `22` na którym oczekuje połączeń demon sshd pracujący w środku.
 
 ## Kontener gitlab-ce
 
@@ -53,12 +53,8 @@ Ustawienie zmiennej `GITLAB_OMNIBUS_CONFIG`
 ```yaml
 env:
   - name: GITLAB_OMNIBUS_CONFIG
-    value: "external_url 'http://gitlab.example.com'"
+    value: "external_url 'https://gitlab.example.com'"
 ```
-
-::: important HTTPS
-Zmienna external_url celowo została skonfigurowana z urlem http, ze względu na to, że ssl jest zaterminowany na poziomie traefika (proxy). Jest to workaround, który rozwiązuje problem z dostępem do gitlaba przez przeglądarkę.
-:::
 
 Katalogi, które są przechowywane na współdzielonym storage.
 
@@ -72,7 +68,7 @@ volumes:
 ```
 
 ::: info Syntax
-Powyższa składnia nie jest częścią standardowych manifestów kubernetes. Jest to mój autoski helmchart
+Powyższa składnia nie jest częścią standardowych manifestów kubernetes. Jest to mój autorski helmchart
 :::
 
 ## Konfiguracja Gitlaba
