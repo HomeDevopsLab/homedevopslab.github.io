@@ -12,49 +12,65 @@ category:
 
 Homelab składa się z kilku mniej lub bardziej zależnych od siebie repozytoriów. Dzięki temu podejściu jestem w stanie z użyciem kodu konfigurować i monitorować całe środowisko. Poza repozytorium dla Fluxa wszystko znajduje się na lokalnym gitlabie.
 
-## Scenariusze
-::: details Nowa maszyna wirtualna
+## Repozytoria
 
-#### Template'y cloud-init
+### Provisioning & Utrzymanie
+::: details proxmox-vm-templates
 
-Do twoerzenia template'ów służy repozytorium `proxmox-vm-templates`. Dzięki niemu można tworzyć template'y dla każdej dystrybucji linuksa, która udostępnia obrazy cloud-init. Cloud-init oferuje możliwość wgrania kluczy ssh, instalację oprogramowania oraz wstępna konfigurację usług.
+Służy do tworzenia template'ów maszyn wirtualnych dla każdej dystrybucji linuksa, która udostępnia obrazy cloud-init. Cloud-init oferuje możliwość wgrania kluczy ssh, instalację oprogramowania oraz wstępna konfigurację usług.
 
 [Dokumentacja](/proxmox/vmtemplates)
-
-#### Tworzenie VM
-
-Maszyny wirtualne tworzone są z kodu w repozytorium `angrybit-homelab`. Funchonalność umożliwia stworzenie maszyny wirtualnej o dowolych parametrach (CPU/RAM/Dysk) na jednym z trzech węzłów klastra proxmox.
-
-[Dokumentacja](/proxmox/vmmachines)
 :::
 
-::: details Uruchomienie kontenera z postgres
-aaaaa
+::: details homelab-tasks
+
+Repozytorium łączy się z netboxem aby zbudować dynamic inventory.
+
+- zarządzanie kluczami ssh na serwerach (pipeline)
+- aktualizacja oprogramowania `apt dist-upgrade` z użyciem scheduled pipeline. Aktualizacje wykonywane są raz w tygodniu.
+
 :::
 
-## Kontenery dockera
+::: details db-backups
+Obsługiwane systemy:
 
-::: info Repozytoria
-- angrybit-homelab
+- postgresql
+- mysql (mariadb)
+- mongodb
+- hashicorp vault
+
+Mechanizm jest używany w definicji cronjoba w Kubernetes
 :::
 
-Kontenery dockera uruchomione są na warstwie wirtualizacji. Pełnią one takie role jak
+### Infrastructure as Code
+::: details angrybits-homelab
+Umożliwia:
 
-- bazy danych dla aplikacji
-- dns
-- monitoring
-- obsługa pipeline
+- Tworzenie maszyn vm i kontenerów dockera 
+- konfigurację DNS, firewalla i pozostałych usług, które posiadają provider do terraforma.
 
-Zarządzanie kontenerami odbywa się z poziomu repozytorium `angrybit-homelab`.
+Kod IaC w tym repozytorium wykorzystuje trzy technologie: Terragrunt, Terraform i Ansible.
+Wdrożenia wykonywane są z użyciem pipeline.
 
-::: important DNS
-Mechanizm uruchamiania kontenerów dockera na wybranej maszynie wirtualnej oczekuje istniejącego wpisu w DNS. Przykładowo: uruchomienie bazy postgres wymaga stworzenia wpisu w DNS dla srv-db.
+Więcej szczegółów można znaleźć w [dokumentacji tworzenia maszyn wirtualnych](/proxmox/vmmachines)
 :::
 
-## Aplikacje
+### Monitoring & Auto-remediation
 
-::: info Repozytoria
-- angrybit-homelab
+::: details proxmox-metrics
+Kod API, które odbiera statystyki na temat wykonanych backupów z klastra proxmox i wystawa je w forme metryk dla prometheusa.
 :::
 
+::: details grafana-matrix-api
+API, które odbiera alerty z alertmanagera w grafanie. Przetwarza informacje i wysyła na dedykowany konał na serwerze chatu (matrix)
+:::
 
+::: details grafana-alerts-remediate
+API, które odbiera alerty z grafany. Obsługuje alerty typu `NoData` i wykonuje akcję remediacyjną, która polega na ustaleniu aktualnego adresu IP node-exportera w kubernetes i przygotowuje MR ze zmianą w repozytorium `angrybits-homelab`.
+:::
+
+### Dokumentacja
+
+::: details documentation
+Repozytorium z kodem, który generuje stronę z dokumentacją.
+:::
