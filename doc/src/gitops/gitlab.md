@@ -271,7 +271,7 @@ Generowanie tokena robi się poprzez: `Edit Profile / Access Tokens`.
 Wygenerowany token Zapisany jest w lokalnej instancji HashiCorp Vault w ścieżce: `kv/platforms/docker/DOCKER_REGISTRY_TOKEN` 
 :::
 
-Przykładowy pipeline
+Wykorzystanie tokena w pipeline.
 
 ::: code-tabs#pipeline
 
