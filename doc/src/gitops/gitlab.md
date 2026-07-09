@@ -7,32 +7,31 @@ category:
 tag:
   - cicd
 ---
-Gitlab jest miejscem przechowywania i wdrażania kodu IaC usług, które uruchomione są na platformie wirtualizacyjnej proxmox i infrastrukturze w AWS.
 
 ## Architektura
 
 ![Architektura wdrożenia Gitlaba](/assets/image/gitlab-infra.svg)
 
-W HomeLAB'ie używam Gitlaba w wersji CE (Community Edition). Posiada on wystarczające funkcjonalności na potrzeby zbudowania pełnego środowiska CI/CD. Posiada on zintegrowaną funkcjonalność registry dla kontenerów dockera oraz współpracującego z nim zewnętrznej instancji runnera. Runner uruchomiony jest na oddzielnej vm-ce w kontenerze dockerowym.
+W HomeLAB'ie używam Gitlaba w wersji CE (Community Edition). Jest to zintegrowane narzędzie, które zapewnia mi potrzebne funkcjonalności:
+
+- rejestr kontenerów dockera (registry)
+- pipelines
+- terraform states
 
 ## Dostęp do repozytoriów
-Gitlab daje możliwość pracy z repozytoriami użyciem protokołów **https** oraz **ssh**. Dostęp ssh jest wygodniejszą formą dostępu, ale wymaga kilku czynności na początek.
-
-* Dodatnie publicznego klucza ssh do profilu w Gitlabie.
-* Skonfigurowanie połączenia ssh
+Gitlab daje możliwość pracy z repozytoriami użyciem protokołów **https** oraz **ssh**. Dostęp ssh wymaga skonfigurowania klienta.
 
 ### Konfiguracja ssh
 
 Do pliku `~/.ssh/config` należy wprowadzić wpis analogiczny do poniższego
 
-```
+``` :no-line-numbers
 Host gitlab.example.com
   HostName gitlab.example.com
   Port 2223
   IdentityFile ~/.ssh/id_rsa_homelab
 ```
 
-W związku z tym, że gitlab uruchomiony jest w kontenerze, zostało wykonane mapowanie portu z wysokiego na docelowy: `22` na którym oczekuje połączeń demon sshd pracujący w środku.
 
 ## Kontener gitlab-ce
 
@@ -46,7 +45,12 @@ Kontener z [gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce) jest dostarcza
 * serwer registry
 
 ### Konfiguracja kontenera
+
 Kontener z Gitlabem nie wymaga wielu ustawień w Kubernetes. Najważniejsze opcje to ustawienie zmiennej środowiskowej oraz podmontowania trwałych katalogów znajdujących się na współdzielonej przestrzeni dyskowej.
+
+::: info HelmRelease
+Fragmenty konfiguracji poniżej opierają się na składni [appchart](https://github.com/HomeDevopsLab/appchart)
+:::
 
 Ustawienie zmiennej `GITLAB_OMNIBUS_CONFIG`
 
@@ -67,19 +71,17 @@ volumes:
     - data:/var/opt/gitlab
 ```
 
-::: info Syntax
-Powyższa składnia nie jest częścią standardowych manifestów kubernetes. Jest to mój autorski helmchart
-:::
-
 ## Konfiguracja Gitlaba
+
 Głównym plikiem konfiguracyjnym jest plik `/storage/gitlab/config/gitlab.rb`. Plik możemy edytować bezpośrednio z serwera storage, który udostępnia współdzieloną przestrzeń dla aplikacji dziających na klastrze kubernetes w HomeLAB.
 
 Po wykonaniu konfiguracji należy wykonać polecenia:
 
-```bash
+```bash :no-line-numbers
 gitlab-ctl reconfigure
 gitlab-ctl restart
 ```
+
 Pierwsze polecenie powoduje wygenerowanie standardowych plików konfiguracyjnych dla usług działających w kontenerze. Drugie znich wykonujemy aby zrestartować usługi, których konfiguracja uległa zmianie.
 
 polecenia wykonujemy będąc wewnątrz poda gitlaba
@@ -196,8 +198,9 @@ validation:
 Zanim wykonamy polecenie `gitlab-ctl restart` należy upewnić się, że w config.yml w realm: ustawiony jest url https. W przeciwnym razie kubernetes będzie miało problemy z pobieraniem obrazów dockera.
 :::
 
-### Zbędne usługi
-Po przeglądzie konfiguracji w pliku **gitlab.rb** wyłączyłem usługi z których nie korzystam.
+### Tuning
+
+Aby zaoszczędzić pamięć wyłączone zostały poniższe usługi:
 
 * Promotheus
 * Prometheus Alert Manager
@@ -209,7 +212,8 @@ alertmanager['enable'] = false
 ```
 
 ## Gitlab Runner
-Gitlab runner uruchomiony jest na osobnej vm-ce: gitlab-runner w konenerze dockera. Runner w mojej instancji gitlaba jest typu **instance**. Dzięki temu mogę go używać we wszystkich projektach bez potrzeby dodawania go do nich.
+
+Gitlab runner uruchomiony jest na osobnej vm-ce: gl-runner w konenerze dockera. Runner w mojej instancji gitlaba jest typu **instance**. Dzięki temu mogę go używać we wszystkich projektach bez potrzeby dodawania go do nich.
 
 Gitlab runner został dodany w sekcji: `Admin Area / Runners`. Aby dodać runnera klikamy **New instance runner**. W dalszym kroku wybieramy platform: Linux
 Po kliknięciu **Create runner** pojawia się instrukcja, która opisuje jak zarejestrować runnera. Zawiera ona informacje potrzebne w dalszych krokach.
@@ -237,39 +241,43 @@ Po wykonaniu polecenia należy postępować zgodnie z instrukcjami wyświetlanym
 
 ### Konfiguracja DIND
 Do budowania kontenerów dockera poprzez runnera, który jest uruchomiony jako kontener dockera potrzebne jest skonfigurowanie funkcjonalności DIND (Docker IN Docker).
-W pliku **/home/ubuntu/containers/gitlab-runner/config/config.toml** w sekcji `[[runners]]` zastępujemy obecny blok `[runners.docker]` poniższą konfiguracją.
+W pliku **/home/ubuntu/docker-data/gitlab-runner/config/config.toml** w sekcji `[[runners]]` zastępujemy obecny blok `[runners.docker]` poniższą konfiguracją.
 
 ```bash
 [runners.docker]
-  tls_verify = false
-  image = "docker:24.0.5"
+  tls = false
+  image = "docker:28.5.2"
   privileged = true
+  disable_entrypoint_overwrite = false
+  oom_kill_disable = false
   disable_cache = false
-  volumes = ["/certs/client", "/cache"]
+  volumes = ["/cache", "/var/run/docker.sock:/var/run/docker.sock"]
 ```
 
-Aby to zadziałało naley zrestartować proces runnera w kontenerze, lub cały kontener.
+Aby to zadziałało należy zrestartować proces runnera w kontenerze, lub cały kontener.
 
 ```bash
 docker restart gitlab-runner
 ```
 
 ## Container Registry
-Container Registry używane w mojej instacji gitlaba wymaga zalogowania się do niego. W tym celu wygenerowałem w ramach swojego konta gitlab personal token.
-Generowanie tokena robi się poprzez: `Edit Profile/ Access Tokens`.
+
+Container Registry wymaga zalogowania się do niego. W tym celu używany jest personal token.
+Generowanie tokena robi się poprzez: `Edit Profile / Access Tokens`.
 
 ### Pipeline
-Wygenerowany w ten sposób token mam dodany jako zmienną środowiskową w ustawieniach grupy HomeLAB. Zmienna nazywa się `DOCKER_REGISTRY_TOKEN` i jest użyta w pipeline, który buduje kontener dockera.
 
-![CI/CD Variables](/assets/image/cicd-vars.png)
+::: tip Vault
+Wygenerowany token Zapisany jest w lokalnej instancji HashiCorp Vault w ścieżce: `kv/platforms/docker/DOCKER_REGISTRY_TOKEN` 
+:::
 
 Przykładowy pipeline
 
-::: normal-demo .gitlab-ci.yml
-```yaml
-stages:
-  - deploy
+::: code-tabs#pipeline
 
+@tab x86_64
+
+```yaml
 publish to docker registry:
   stage: deploy
   image: docker:latest
@@ -285,15 +293,52 @@ publish to docker registry:
     - branches
 
 ```
+
+@tab multiarch
+
+```yaml
+publish to docker registry:
+  stage: deploy
+  needs:
+    - vault secret
+
+  image: jdrouet/docker-with-buildx:stable
+
+  variables:
+    DOCKER_HOST: unix:///var/run/docker.sock
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_DRIVER: overlay2
+
+  script:
+    - source secrets.env
+    - rm -f secret.env
+    - echo "$DOCKER_REGISTRY_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+    - docker buildx create --use
+    - docker buildx build
+      --build-arg GIT_TAG=$CI_COMMIT_TAG
+      --build-arg BUILD_DATE=$(date +'%d.%m.%Y')
+      --platform linux/arm64/v8,linux/amd64
+      --tag ${CI_REGISTRY_IMAGE}:$CI_COMMIT_TAG
+      --push .
+  only:
+    - tags
+  except:
+    - branches
+
+```
+```
+```
 :::
 
 Powyższy pipeline uruchamia budowanie dockera po wystawieniu nowego taga na branchu main. Zmienne zaczynające się od `$CI_` są wbudowane w gitlaba i nie trzeba ich nigdzie wcześniej definiować
+
 * **CI_REGISTRY**: ścieżka do registry pod którą zostaną opublikowane kontenery (przykład: registry.lab/nazwa_grupy)
 * **CI_REGISTRY_USER**: login naszego konta gitlab
 * **CI_REGISTRY_IMAGE**: nazwa obrazu kontenera, jest to pełna ścieżka do obrazu dockera (przykład: registry.lab/nazwa_grupy/nazwa_repozytorium)
 * **CI_COMMIT_TAG**: ostatnio zacommitowany tag.
 
 ### Kubernetes
+
 Za komunikację z registry odpoowiedzialne są w moim klastrze kubernetes dwa komponenty:
 
 * ImageRepository
@@ -345,7 +390,7 @@ spec:
 ```
 :::
 
-W przypadku użycia mojego helmcharta wystarczy w definicji HelmRelease ustawić odpowiednio klucz values
+W przypadku użycia [appchart](https://github.com/HomeDevopsLab/appchart) wystarczy w definicji HelmRelease ustawić odpowiednio klucz values
 
 ```yaml
 values:
@@ -357,3 +402,36 @@ values:
 ```
 
 Helmchart odpowiednio skonfiguruje obiekty ImageRepository oraz Deployment za nas.
+
+## Terraform
+
+Terraform states obsługiwany jest poprzez backend typu `http` w terraformie. Dostęp do niego realizowany jest z wykorzystaniem Personal Access Token (PAT)
+
+```hcl
+generate "backend" {
+  path      = "backend.tf"
+  if_exists = "overwrite_terragrunt"
+  contents  = <<EOF
+terraform {
+  backend "http" {
+    address        = "https://gitlab.local/api/v4/projects/76/terraform/state/${local.tfstate_name}"
+    lock_address   = "https://gitlab.local/api/v4/projects/76/terraform/state/${local.tfstate_name}/lock"
+    unlock_address = "https://gitlab.local/api/v4/projects/76/terraform/state/${local.tfstate_name}/lock"
+    username       = "${local.gitlab_username}"
+    password       = "${local.gitlab_access_token}"
+    lock_method    = "POST"
+    unlock_method  = "DELETE"
+    retry_wait_min = 5
+  }
+}
+EOF
+}
+```
+
+
+### Uprawnienia tokena
+
+| Nazwa tokena | Uprawnienia |
+| -------------| ------------|
+| terraform-state | api, read_api, read_registry, write_registry |
+
