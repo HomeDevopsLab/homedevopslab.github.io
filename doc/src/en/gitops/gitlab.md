@@ -7,60 +7,61 @@ category:
 tag:
   - cicd
 ---
-Gitlab jest miejscem przechowywania i wdrażania kodu IaC usług, które uruchomione są na platformie wirtualizacyjnej proxmox i infrastrukturze w AWS.
 
-## Architektura
+## Architecture
 
-![Architektura wdrożenia Gitlaba](/assets/image/gitlab-infra.svg)
+![Gitlab deployment architecture](/assets/image/gitlab-infra.svg)
 
-W HomeLAB'ie używam Gitlaba w wersji CE (Community Edition). Posiada on wystarczające funkcjonalności na potrzeby zbudowania pełnego środowiska CI/CD. Posiada on zintegrowaną funkcjonalność registry dla kontenerów dockera oraz współpracującego z nim zewnętrznej instancji runnera. Runner uruchomiony jest na oddzielnej vm-ce w kontenerze dockerowym.
+I run Gitlab CE (Community Edition) in the HomeLAB. It's an integrated tool that provides all the functionality I need:
 
-## Dostęp do repozytoriów
-Gitlab daje możliwość pracy z repozytoriami użyciem protokołów **https** oraz **ssh**. Dostęp ssh jest wygodniejszą formą dostępu, ale wymaga kilku czynności na początek.
+- docker container registry
+- pipelines
+- terraform states
 
-* Dodatnie publicznego klucza ssh do profilu w Gitlabie.
-* Skonfigurowanie połączenia ssh
+## Repository access
 
-### Konfiguracja ssh
+Gitlab lets you work with repositories using the **https** and **ssh** protocols. SSH access requires configuring the client.
 
-Do pliku `~/.ssh/config` należy wprowadzić wpis analogiczny do poniższego
+### SSH configuration
 
-```
+Add an entry like the one below to `~/.ssh/config`.
+
+``` :no-line-numbers
 Host gitlab.example.com
   HostName gitlab.example.com
   Port 2223
   IdentityFile ~/.ssh/id_rsa_homelab
 ```
 
-W związku z tym, że gitlab uruchomiony jest w kontenerze, zostało wykonane mapowanie portu z wysokiego na docelowy: `22` na którym oczekuje połączęń demon sshd pracujący w środku.
 
-## Kontener gitlab-ce
+## The gitlab-ce container
 
-Kontener z [gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce) jest dostarczany wraz z wszystkimi komponentami potrzebnymi do działania. W skład kontenera wchodzi:
+The [gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce) container ships with all the components required to run. It includes:
 
 * nginx
 * postgresql
 * redis
 * sshd
-* serwer gitlab
-* serwer registry
+* the gitlab server
+* the registry server
 
-### Konfiguracja kontenera
-Kontener z Gitlabem nie wymaga wielu ustawień w Kubernetes. Najważniejsze opcje to ustawienie zmiennej środowiskowej oraz podmontowania trwałych katalogów znajdujących się na współdzielonej przestrzeni dyskowej.
+### Container configuration
 
-Ustawienie zmiennej `GITLAB_OMNIBUS_CONFIG`
+The Gitlab container doesn't need much configuration on Kubernetes. The most important settings are the environment variable and mounting persistent directories located on shared storage.
+
+::: info HelmRelease
+The configuration snippets below are based on the [appchart](https://github.com/HomeDevopsLab/appchart) syntax.
+:::
+
+Setting the `GITLAB_OMNIBUS_CONFIG` variable.
 
 ```yaml
 env:
   - name: GITLAB_OMNIBUS_CONFIG
-    value: "external_url 'http://gitlab.example.com'"
+    value: "external_url 'https://gitlab.example.com'"
 ```
 
-::: important HTTPS
-Zmienna external_url celowo została skonfigurowana z urlem http, ze względu na to, że ssl jest zaterminowany na poziomie traefika (proxy). Jest to workaround, który rozwiązuje problem z dostępem do gitlaba przez przeglądarkę.
-:::
-
-Katalogi, które są przechowywane na współdzielonym storage.
+Directories stored on shared storage.
 
 ```yaml
 volumes:
@@ -71,22 +72,20 @@ volumes:
     - data:/var/opt/gitlab
 ```
 
-::: info Syntax
-Powyższa składnia nie jest częścią standardowych manifestów kubernetes. Jest to mój autoski helmchart
-:::
+## Configuring Gitlab
 
-## Konfiguracja Gitlaba
-Głównym plikiem konfiguracyjnym jest plik `/storage/gitlab/config/gitlab.rb`. Plik możemy edytować bezpośrednio z serwera storage, który udostępnia współdzieloną przestrzeń dla aplikacji dziających na klastrze kubernetes w HomeLAB.
+The main configuration file is `/storage/gitlab/config/gitlab.rb`. We can edit it directly from the storage server, which exposes shared space for applications running on the Kubernetes cluster in the HomeLAB.
 
-Po wykonaniu konfiguracji należy wykonać polecenia:
+After making changes, run the following commands:
 
-```bash
+```bash :no-line-numbers
 gitlab-ctl reconfigure
 gitlab-ctl restart
 ```
-Pierwsze polecenie powoduje wygenerowanie standardowych plików konfiguracyjnych dla usług działających w kontenerze. Drugie znich wykonujemy aby zrestartować usługi, których konfiguracja uległa zmianie.
 
-polecenia wykonujemy będąc wewnątrz poda gitlaba
+The first command regenerates the standard configuration files for the services running in the container. We run the second one to restart the services whose configuration changed.
+
+We run these commands from inside the Gitlab pod.
 
 ```bash
 kubectl get pods | grep gitlab
@@ -99,7 +98,7 @@ root@gitlab-55c57f6844-cvz95:/#
 
 ### SMTP
 
-Gitlab został skonfigurowany w taki sposób aby wysyłać maile na mój lokalny serwer SMTP.
+Gitlab is configured to send emails through my local SMTP server.
 
 ```bash
 gitlab_rails['smtp_enable'] = true
@@ -111,19 +110,19 @@ gitlab_rails['gitlab_email_display_name'] = 'Gitlab'
 gitlab_rails['gitlab_email_reply_to'] = 'noreply@angrybits.example'
 ```
 ### Nginx (Gitlab)
-Za działanie serwera gitlab odpowiada usługa **gitlab-workhorse**. Komunikuje się ona ze środowiskiem zewnętrznym poprzez instancję nginx'a, która nasłuchuje na porcie `80` w kontenerze.
+The **gitlab-workhorse** service handles the Gitlab server. It communicates with the outside world through an nginx instance listening on port `80` inside the container.
 
-Konfiguracja w **gitlab.rb**
+Configuration in **gitlab.rb**
 
 ```bash
 nginx['referrer_policy'] = 'false'
 nginx['listen_port'] = 80
 nginx['listen_https'] = false
 ```
-Na podstawie tej konfiguracji generowany jest plik: **/storage/gitlab/data/nginx/conf/gitlab-http.conf**.
+Based on this configuration, the following file is generated: **/storage/gitlab/data/nginx/conf/gitlab-http.conf**.
 
 ### Registry
-Serwer registry zintegrowany z gitlabem współdzieli z nim część konfiguracji. Jeśli chcemy aby kontenery dla określonego projektu były dostępne publicznie, musimy ustawić w opcjach repozytorium dostęp publiczny. Jeśli repozytorium będzie miało ustawiony poziom dostępu: **Internal**, dostęp do kontenerów będzie wymagał zalogowania się do registry. Taki poziom dostępu mają repozytoria w środowisku HomeLAB.
+The registry server, integrated with Gitlab, shares part of its configuration. If we want a project's containers to be publicly accessible, we need to set the repository's visibility to public. If a repository has the **Internal** visibility level, access to its containers requires logging in to the registry. This is the visibility level used by repositories in the HomeLAB environment.
 
 ```bash
 registry_external_url 'https://registry.lab'
@@ -157,9 +156,9 @@ nginx['real_ip_header'] = 'X-Real-IP'
 nginx['real_ip_recursive'] = 'on'
 ```
 
-Usługa registstry uruchomiona jest na porcie `5000`. Jest to domyślny port i nie ma potrzeby jego definiowania, chyba, że chcielibyśmy to z jakiegoś powodu zmienić. Registry jest udostępniane poza koneter za pomocą dedykowanego procesu nginx'a, który działa na porcie: `5050`.
+The registry service runs on port `5000`. This is the default port and there's no need to define it explicitly unless we want to change it for some reason. The registry is exposed outside the container through a dedicated nginx process listening on port `5050`.
 
-Na podstawie pliku `gitlab.rb` powstają pliki konfiguracyjne usługi registry: 
+Based on the `gitlab.rb` file, the following registry configuration files are generated:
 
 * /storage/gitlab/data/registry/config.yml
 * /storage/gitlab/data/nginx/conf/gitlab-registry.conf
@@ -197,13 +196,14 @@ validation:
 :::
 
 ::: warning Realm
-Zanim wykonamy polecenie `gitlab-ctl restart` należy upewnić się, że w config.yml w realm: ustawiony jest url https. W przeciwnym razie kubernetes będzie miało problemy z pobieraniem obrazów dockera.
+Before running `gitlab-ctl restart`, make sure the realm: value in config.yml is set to an https url. Otherwise Kubernetes will have trouble pulling docker images.
 :::
 
-### Zbędne usługi
-Po przeglądzie konfiguracji w pliku **gitlab.rb** wyłączyłem usługi z których nie korzystam.
+### Tuning
 
-* Promotheus
+To save memory, the following services have been disabled:
+
+* Prometheus
 * Prometheus Alert Manager
 
 ```bash
@@ -213,16 +213,17 @@ alertmanager['enable'] = false
 ```
 
 ## Gitlab Runner
-Gitlab runner uruchomiony jest na osobnej vm-ce: gitlab-runner w konenerze dockera. Runner w mojej instancji gitlaba jest typu **instance**. Dzięki temu mogę go używać we wszystkich projektach bez potrzeby dodawania go do nich.
 
-Gitlab runner został dodany w sekcji: `Admin Area / Runners`. Aby dodać runnera klikamy **New instance runner**. W dalszym kroku wybieramy platform: Linux
-Po kliknięciu **Create runner** pojawia się instrukcja, która opisuje jak zarejestrować runnera. Zawiera ona informacje potrzebne w dalszych krokach.
+The Gitlab runner runs on a separate VM: gl-runner, inside a docker container. The runner in my Gitlab instance is of the **instance** type. That lets me use it across all projects without adding it to each one individually.
+
+The Gitlab runner was added in the `Admin Area / Runners` section. To add a runner, we click **New instance runner**. Next, we select the platform: Linux.
+After clicking **Create runner**, instructions appear describing how to register the runner. They contain the information needed for the next steps.
 
 ```bash
 gitlab-runner register  --url http://gitlab.angrybits.pl  --token glrt-xxxxxxxxx
 ```
 
-### Uruchomienie
+### Running it
 
 ```bash
 docker run -d --name gitlab-runner --restart always \
@@ -231,49 +232,53 @@ docker run -d --name gitlab-runner --restart always \
   gitlab/gitlab-runner:latest
 ```
 
-### Rejestracja
-Następnym krokiem jest rejestracja runnera w gitlabie, aby mógł on przyjmować zadania.
+### Registration
+The next step is registering the runner with Gitlab so it can start accepting jobs.
 
 ```bash
 docker exec -it gitlab-runner gitlab-runner register
 ```
-Po wykonaniu polecenia należy postępować zgodnie z instrukcjami wyświetlanymi na ekranie.
+After running the command, follow the instructions shown on screen.
 
-### Konfiguracja DIND
-Do budowania kontenerów dockera poprzez runnera, który jest uruchomiony jako kontener dockera potrzebne jest skonfigurowanie funkcjonalności DIND (Docker IN Docker).
-W pliku **/home/ubuntu/containers/gitlab-runner/config/config.toml** w sekcji `[[runners]]` zastępujemy obecny blok `[runners.docker]` poniższą konfiguracją.
+### DIND configuration
+To build docker containers through a runner that itself runs as a docker container, the DIND (Docker IN Docker) feature needs to be configured.
+In the **/home/ubuntu/docker-data/gitlab-runner/config/config.toml** file, in the `[[runners]]` section, replace the existing `[runners.docker]` block with the configuration below.
 
 ```bash
 [runners.docker]
-  tls_verify = false
-  image = "docker:24.0.5"
+  tls = false
+  image = "docker:28.5.2"
   privileged = true
+  disable_entrypoint_overwrite = false
+  oom_kill_disable = false
   disable_cache = false
-  volumes = ["/certs/client", "/cache"]
+  volumes = ["/cache", "/var/run/docker.sock:/var/run/docker.sock"]
 ```
 
-Aby to zadziałało naley zrestartować proces runnera w kontenerze, lub cały kontener.
+For this to take effect, restart the runner process in the container, or the entire container.
 
 ```bash
 docker restart gitlab-runner
 ```
 
 ## Container Registry
-Container Registry używane w mojej instacji gitlaba wymaga zalogowania się do niego. W tym celu wygenerowałem w ramach swojego konta gitlab personal token.
-Generowanie tokena robi się poprzez: `Edit Profile/ Access Tokens`.
+
+The Container Registry requires logging in. A personal token is used for this.
+Tokens are generated through: `Edit Profile / Access Tokens`.
 
 ### Pipeline
-Wygenerowany w ten sposób token mam dodany jako zmienną środowiskową w ustawieniach grupy HomeLAB. Zmienna nazywa się `DOCKER_REGISTRY_TOKEN` i jest użyta w pipeline, który buduje kontener dockera.
 
-![CI/CD Variables](/assets/image/cicd-vars.png)
+::: tip Vault
+The generated token is stored in the local HashiCorp Vault instance at path: `kv/platforms/docker/DOCKER_REGISTRY_TOKEN`
+:::
 
-Przykładowy pipeline
+Using the token in a pipeline.
 
-::: normal-demo .gitlab-ci.yml
+::: code-tabs#pipeline
+
+@tab x86_64
+
 ```yaml
-stages:
-  - deploy
-
 publish to docker registry:
   stage: deploy
   image: docker:latest
@@ -289,24 +294,59 @@ publish to docker registry:
     - branches
 
 ```
+
+@tab multiarch
+
+```yaml
+publish to docker registry:
+  stage: deploy
+  needs:
+    - vault secret
+
+  image: jdrouet/docker-with-buildx:stable
+
+  variables:
+    DOCKER_HOST: unix:///var/run/docker.sock
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_DRIVER: overlay2
+
+  script:
+    - source secrets.env
+    - rm -f secret.env
+    - echo "$DOCKER_REGISTRY_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+    - docker buildx create --use
+    - docker buildx build
+      --build-arg GIT_TAG=$CI_COMMIT_TAG
+      --build-arg BUILD_DATE=$(date +'%d.%m.%Y')
+      --platform linux/arm64/v8,linux/amd64
+      --tag ${CI_REGISTRY_IMAGE}:$CI_COMMIT_TAG
+      --push .
+  only:
+    - tags
+  except:
+    - branches
+
+```
 :::
 
-Powyższy pipeline uruchamia budowanie dockera po wystawieniu nowego taga na branchu main. Zmienne zaczynające się od `$CI_` są wbudowane w gitlaba i nie trzeba ich nigdzie wcześniej definiować
-* **CI_REGISTRY**: ścieżka do registry pod którą zostaną opublikowane kontenery (przykład: registry.lab/nazwa_grupy)
-* **CI_REGISTRY_USER**: login naszego konta gitlab
-* **CI_REGISTRY_IMAGE**: nazwa obrazu kontenera, jest to pełna ścieżka do obrazu dockera (przykład: registry.lab/nazwa_grupy/nazwa_repozytorium)
-* **CI_COMMIT_TAG**: ostatnio zacommitowany tag.
+The pipeline above builds the docker image whenever a new tag is created on the main branch. Variables starting with `$CI_` are built into Gitlab and don't need to be defined anywhere beforehand.
+
+* **CI_REGISTRY**: path to the registry under which the containers will be published (example: registry.lab/group_name)
+* **CI_REGISTRY_USER**: our Gitlab account login
+* **CI_REGISTRY_IMAGE**: the container image name, i.e. the full path to the docker image (example: registry.lab/group_name/repository_name)
+* **CI_COMMIT_TAG**: the most recently committed tag.
 
 ### Kubernetes
-Za komunikację z registry odpoowiedzialne są w moim klastrze kubernetes dwa komponenty:
+
+Two components in my Kubernetes cluster are responsible for communicating with the registry:
 
 * ImageRepository
 * kubelet
 
-ImageRepository jest to CRD (Custom Resource Definition) od Flux'a, który zapenia warstę delivery w całym pipeline. ImageRepository co 1m (timer zdefiniowany w manifeście) skanuje registry w poszukiwaniu nowych tagów kontenerów do wdrożenia. Jeśli takowe się pojawią, wtedy zaczyna się cały proces proces aktualizacji aplikacji pracującej w kontenerze. 
-Aby kubernetes był w stanie współpracować z private registry, trzeba w pierwszej kolejności utworzyć secret w odpowiednim namespace.
+ImageRepository is a CRD (Custom Resource Definition) from Flux that provides the delivery layer across the whole pipeline. Every 1m (an interval defined in the manifest), ImageRepository scans the registry for new container tags to deploy. If any are found, the whole update process for the application running in the container begins.
+For Kubernetes to be able to work with a private registry, a secret must first be created in the appropriate namespace.
 
-ImageRepository uruchomiony jest w namepace flux-system, natomiast aplikacje, które działają na klastrze działają w namespace: default. W związku z tym secret zawierający token do registry trzeba utworzyć w obu tych namespace'ach.
+ImageRepository runs in the flux-system namespace, while the applications running on the cluster run in the default namespace. Because of this, the secret containing the registry token needs to be created in both namespaces.
 
 ```bash
 kubectl create secret docker-registry regcred \
@@ -317,7 +357,7 @@ kubectl create secret docker-registry regcred \
   -n default
 ```
 
-Dodatkowo należy skonfigurować odpowiednio manifesty
+The manifests also need to be configured accordingly.
 
 ::: code-tabs#secret
 @tab ImageRepository
@@ -349,7 +389,7 @@ spec:
 ```
 :::
 
-W przypadku użycia mojego helmcharta wystarczy w definicji HelmRelease ustawić odpowiednio klucz values
+If you're using [appchart](https://github.com/HomeDevopsLab/appchart), it's enough to set the appropriate values key in the HelmRelease definition.
 
 ```yaml
 values:
@@ -360,4 +400,37 @@ values:
     repository: registry.lab/groupname/appimage
 ```
 
-Helmchart odpowiednio skonfiguruje obiekty ImageRepository oraz Deployment za nas.
+Helmchart will configure the ImageRepository and Deployment objects for us accordingly.
+
+## Terraform
+
+The Terraform state is handled through a backend of type `http` in Terraform. Access to it is done using a Personal Access Token (PAT).
+
+```hcl
+generate "backend" {
+  path      = "backend.tf"
+  if_exists = "overwrite_terragrunt"
+  contents  = <<EOF
+terraform {
+  backend "http" {
+    address        = "https://gitlab.local/api/v4/projects/76/terraform/state/${local.tfstate_name}"
+    lock_address   = "https://gitlab.local/api/v4/projects/76/terraform/state/${local.tfstate_name}/lock"
+    unlock_address = "https://gitlab.local/api/v4/projects/76/terraform/state/${local.tfstate_name}/lock"
+    username       = "${local.gitlab_username}"
+    password       = "${local.gitlab_access_token}"
+    lock_method    = "POST"
+    unlock_method  = "DELETE"
+    retry_wait_min = 5
+  }
+}
+EOF
+}
+```
+
+
+### Token permissions
+
+| Token name | Permissions |
+| -----------| ------------|
+| terraform-state | api, read_api, read_registry, write_registry |
+

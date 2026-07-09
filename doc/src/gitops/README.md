@@ -17,7 +17,7 @@ Homelab składa się z kilku mniej lub bardziej zależnych od siebie repozytori�
 ### Provisioning & Utrzymanie
 ::: details proxmox-vm-templates
 
-Służy do tworzenia template'ów maszyn wirtualnych dla każdej dystrybucji linuksa, która udostępnia obrazy cloud-init. Cloud-init oferuje możliwość wgrania kluczy ssh, instalację oprogramowania oraz wstępna konfigurację usług.
+Służy do tworzenia template'ów maszyn wirtualnych dla każdej dystrybucji linuksa, która udostępnia obrazy cloud-init. Cloud-init oferuje możliwość wgrania kluczy ssh, instalację oprogramowania oraz wstępną konfigurację usług.
 
 [Dokumentacja](/proxmox/vmtemplates)
 :::
@@ -58,11 +58,11 @@ Więcej szczegółów można znaleźć w [dokumentacji tworzenia maszyn wirtualn
 ### Monitoring & Auto-remediation
 
 ::: details proxmox-metrics
-Kod API, które odbiera statystyki na temat wykonanych backupów z klastra proxmox i wystawa je w forme metryk dla prometheusa.
+Kod API, które odbiera statystyki na temat wykonanych backupów z klastra Proxmox i wystawia je w formie metryk dla Prometheusa.
 :::
 
 ::: details grafana-matrix-api
-API, które odbiera alerty z alertmanagera w grafanie. Przetwarza informacje i wysyła na dedykowany konał na serwerze chatu (matrix)
+API, które odbiera alerty z alertmanagera w grafanie. Przetwarza informacje i wysyła na dedykowany kanał na serwerze chatu (Matrix)
 :::
 
 ::: details grafana-alerts-remediate

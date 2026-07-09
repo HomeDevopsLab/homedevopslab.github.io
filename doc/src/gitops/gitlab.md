@@ -19,7 +19,7 @@ W HomeLAB'ie używam Gitlaba w wersji CE (Community Edition). Jest to zintegrowa
 - terraform states
 
 ## Dostęp do repozytoriów
-Gitlab daje możliwość pracy z repozytoriami użyciem protokołów **https** oraz **ssh**. Dostęp ssh wymaga skonfigurowania klienta.
+Gitlab daje możliwość pracy z repozytoriami z użyciem protokołów **https** oraz **ssh**. Dostęp ssh wymaga skonfigurowania klienta.
 
 ### Konfiguracja ssh
 
@@ -73,7 +73,7 @@ volumes:
 
 ## Konfiguracja Gitlaba
 
-Głównym plikiem konfiguracyjnym jest plik `/storage/gitlab/config/gitlab.rb`. Plik możemy edytować bezpośrednio z serwera storage, który udostępnia współdzieloną przestrzeń dla aplikacji dziających na klastrze kubernetes w HomeLAB.
+Głównym plikiem konfiguracyjnym jest plik `/storage/gitlab/config/gitlab.rb`. Plik możemy edytować bezpośrednio z serwera storage, który udostępnia współdzieloną przestrzeń dla aplikacji działających na klastrze Kubernetes w HomeLAB.
 
 Po wykonaniu konfiguracji należy wykonać polecenia:
 
@@ -82,9 +82,9 @@ gitlab-ctl reconfigure
 gitlab-ctl restart
 ```
 
-Pierwsze polecenie powoduje wygenerowanie standardowych plików konfiguracyjnych dla usług działających w kontenerze. Drugie znich wykonujemy aby zrestartować usługi, których konfiguracja uległa zmianie.
+Pierwsze polecenie powoduje wygenerowanie standardowych plików konfiguracyjnych dla usług działających w kontenerze. Drugie z nich wykonujemy, aby zrestartować usługi, których konfiguracja uległa zmianie.
 
-polecenia wykonujemy będąc wewnątrz poda gitlaba
+Polecenia wykonujemy, będąc wewnątrz poda Gitlaba.
 
 ```bash
 kubectl get pods | grep gitlab
@@ -109,7 +109,7 @@ gitlab_rails['gitlab_email_display_name'] = 'Gitlab'
 gitlab_rails['gitlab_email_reply_to'] = 'noreply@angrybits.example'
 ```
 ### Nginx (Gitlab)
-Za działanie serwera gitlab odpowiada usługa **gitlab-workhorse**. Komunikuje się ona ze środowiskiem zewnętrznym poprzez instancję nginx'a, która nasłuchuje na porcie `80` w kontenerze.
+Za działanie serwera Gitlab odpowiada usługa **gitlab-workhorse**. Komunikuje się ona ze środowiskiem zewnętrznym poprzez instancję nginx'a, która nasłuchuje na porcie `80` w kontenerze.
 
 Konfiguracja w **gitlab.rb**
 
@@ -121,7 +121,7 @@ nginx['listen_https'] = false
 Na podstawie tej konfiguracji generowany jest plik: **/storage/gitlab/data/nginx/conf/gitlab-http.conf**.
 
 ### Registry
-Serwer registry zintegrowany z gitlabem współdzieli z nim część konfiguracji. Jeśli chcemy aby kontenery dla określonego projektu były dostępne publicznie, musimy ustawić w opcjach repozytorium dostęp publiczny. Jeśli repozytorium będzie miało ustawiony poziom dostępu: **Internal**, dostęp do kontenerów będzie wymagał zalogowania się do registry. Taki poziom dostępu mają repozytoria w środowisku HomeLAB.
+Serwer registry zintegrowany z Gitlabem współdzieli z nim część konfiguracji. Jeśli chcemy aby kontenery dla określonego projektu były dostępne publicznie, musimy ustawić w opcjach repozytorium dostęp publiczny. Jeśli repozytorium będzie miało ustawiony poziom dostępu: **Internal**, dostęp do kontenerów będzie wymagał zalogowania się do registry. Taki poziom dostępu mają repozytoria w środowisku HomeLAB.
 
 ```bash
 registry_external_url 'https://registry.lab'
@@ -155,7 +155,7 @@ nginx['real_ip_header'] = 'X-Real-IP'
 nginx['real_ip_recursive'] = 'on'
 ```
 
-Usługa registstry uruchomiona jest na porcie `5000`. Jest to domyślny port i nie ma potrzeby jego definiowania, chyba, że chcielibyśmy to z jakiegoś powodu zmienić. Registry jest udostępniane poza koneter za pomocą dedykowanego procesu nginx'a, który działa na porcie: `5050`.
+Usługa registry uruchomiona jest na porcie `5000`. Jest to domyślny port i nie ma potrzeby jego definiowania, chyba, że chcielibyśmy to z jakiegoś powodu zmienić. Registry jest udostępniane poza kontener za pomocą dedykowanego procesu nginx'a, który działa na porcie: `5050`.
 
 Na podstawie pliku `gitlab.rb` powstają pliki konfiguracyjne usługi registry: 
 
@@ -195,14 +195,14 @@ validation:
 :::
 
 ::: warning Realm
-Zanim wykonamy polecenie `gitlab-ctl restart` należy upewnić się, że w config.yml w realm: ustawiony jest url https. W przeciwnym razie kubernetes będzie miało problemy z pobieraniem obrazów dockera.
+Zanim wykonamy polecenie `gitlab-ctl restart` należy upewnić się, że w config.yml w realm: ustawiony jest url https. W przeciwnym razie Kubernetes będzie miało problemy z pobieraniem obrazów dockera.
 :::
 
 ### Tuning
 
 Aby zaoszczędzić pamięć wyłączone zostały poniższe usługi:
 
-* Promotheus
+* Prometheus
 * Prometheus Alert Manager
 
 ```bash
@@ -213,9 +213,9 @@ alertmanager['enable'] = false
 
 ## Gitlab Runner
 
-Gitlab runner uruchomiony jest na osobnej vm-ce: gl-runner w konenerze dockera. Runner w mojej instancji gitlaba jest typu **instance**. Dzięki temu mogę go używać we wszystkich projektach bez potrzeby dodawania go do nich.
+Gitlab runner uruchomiony jest na osobnej vm-ce: gl-runner w kontenerze dockera. Runner w mojej instancji Gitlaba jest typu **instance**. Dzięki temu mogę go używać we wszystkich projektach bez potrzeby dodawania go do nich.
 
-Gitlab runner został dodany w sekcji: `Admin Area / Runners`. Aby dodać runnera klikamy **New instance runner**. W dalszym kroku wybieramy platform: Linux
+Gitlab runner został dodany w sekcji: `Admin Area / Runners`. Aby dodać runnera, klikamy **New instance runner**. W dalszym kroku wybieramy platformę: Linux.
 Po kliknięciu **Create runner** pojawia się instrukcja, która opisuje jak zarejestrować runnera. Zawiera ona informacje potrzebne w dalszych krokach.
 
 ```bash
@@ -268,7 +268,7 @@ Generowanie tokena robi się poprzez: `Edit Profile / Access Tokens`.
 ### Pipeline
 
 ::: tip Vault
-Wygenerowany token Zapisany jest w lokalnej instancji HashiCorp Vault w ścieżce: `kv/platforms/docker/DOCKER_REGISTRY_TOKEN` 
+Wygenerowany token zapisany jest w lokalnej instancji HashiCorp Vault w ścieżce: `kv/platforms/docker/DOCKER_REGISTRY_TOKEN` 
 :::
 
 Wykorzystanie tokena w pipeline.
@@ -326,8 +326,6 @@ publish to docker registry:
     - branches
 
 ```
-```
-```
 :::
 
 Powyższy pipeline uruchamia budowanie dockera po wystawieniu nowego taga na branchu main. Zmienne zaczynające się od `$CI_` są wbudowane w gitlaba i nie trzeba ich nigdzie wcześniej definiować
@@ -339,15 +337,15 @@ Powyższy pipeline uruchamia budowanie dockera po wystawieniu nowego taga na bra
 
 ### Kubernetes
 
-Za komunikację z registry odpoowiedzialne są w moim klastrze kubernetes dwa komponenty:
+Za komunikację z registry odpowiedzialne są w moim klastrze Kubernetes dwa komponenty:
 
 * ImageRepository
 * kubelet
 
-ImageRepository jest to CRD (Custom Resource Definition) od Flux'a, który zapenia warstę delivery w całym pipeline. ImageRepository co 1m (timer zdefiniowany w manifeście) skanuje registry w poszukiwaniu nowych tagów kontenerów do wdrożenia. Jeśli takowe się pojawią, wtedy zaczyna się cały proces proces aktualizacji aplikacji pracującej w kontenerze. 
-Aby kubernetes był w stanie współpracować z private registry, trzeba w pierwszej kolejności utworzyć secret w odpowiednim namespace.
+ImageRepository jest to CRD (Custom Resource Definition) od Flux'a, który zapewnia warstwę delivery w całym pipeline. ImageRepository co 1m (timer zdefiniowany w manifeście) skanuje registry w poszukiwaniu nowych tagów kontenerów do wdrożenia. Jeśli takowe się pojawią, wtedy zaczyna się cały proces aktualizacji aplikacji pracującej w kontenerze. 
+Aby Kubernetes był w stanie współpracować z private registry, trzeba w pierwszej kolejności utworzyć secret w odpowiednim namespace.
 
-ImageRepository uruchomiony jest w namepace flux-system, natomiast aplikacje, które działają na klastrze działają w namespace: default. W związku z tym secret zawierający token do registry trzeba utworzyć w obu tych namespace'ach.
+ImageRepository uruchomiony jest w namespace flux-system, natomiast aplikacje uruchomione na klastrze działają w namespace: default. W związku z tym secret zawierający token do registry trzeba utworzyć w obu tych namespace'ach.
 
 ```bash
 kubectl create secret docker-registry regcred \
@@ -405,7 +403,7 @@ Helmchart odpowiednio skonfiguruje obiekty ImageRepository oraz Deployment za na
 
 ## Terraform
 
-Terraform states obsługiwany jest poprzez backend typu `http` w terraformie. Dostęp do niego realizowany jest z wykorzystaniem Personal Access Token (PAT)
+Terraform state obsługiwany jest poprzez backend typu `http` w Terraformie. Dostęp do niego realizowany jest z wykorzystaniem Personal Access Token (PAT).
 
 ```hcl
 generate "backend" {
