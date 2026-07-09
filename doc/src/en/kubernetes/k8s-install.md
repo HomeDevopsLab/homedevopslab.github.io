@@ -1,7 +1,7 @@
 ---
 title: Cluster Installation
 icon: download
-order: 3
+order: 1
 category:
   - Guide
 tag:

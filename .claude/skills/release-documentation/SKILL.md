@@ -20,6 +20,12 @@ Kroki należy wykonać po uzyskaniu akceptacji w poprzedniej sekcji.
 3. Jeśli jesteś na branchu `main`, stwórz feature branch o nazwie `docs/<basename-pliku>` (np. dla `kubernetes/sops.md` → `docs/sops`).
 4. Zaktualizuj `CHANGELOG.md` z nową wersją w formacie semver. Wpisuj zmiany po angielsku, w 1–2 zdaniach opisujących efekt biznesowy.
 
+## Optymalizacja obrazków
+
+1. Odczytaj ścieżki do obrazków w treści $filename
+2. Skompresuj obrazki przy użyciu squoosh.
+3. Jeśli zmienią się nazwy plików z obrazkami pamiętaj o ich aktualizacji w $filename.
+
 ## Merge Request
 
 1. Wypchnij feature branch do repozytorium i utwórz Merge Request za pomocą:

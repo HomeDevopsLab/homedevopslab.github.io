@@ -2,7 +2,6 @@ import { sidebar } from "vuepress-theme-hope";
 
 export const enSidebar = sidebar({
   "/en/": [
-    "",
     {
       text: "Proxmox",
       icon: "server",
@@ -15,6 +14,13 @@ export const enSidebar = sidebar({
       icon: "dharmachakra",
       prefix: "kubernetes/",
       link: "kubernetes/",
+      children: "structure",
+    },
+    {
+      text: "Gitops",
+      icon: "infinity",
+      prefix: "gitops/",
+      link: "gitops/",
       children: "structure",
     },
   ],

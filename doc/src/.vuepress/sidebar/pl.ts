@@ -16,5 +16,12 @@ export const plSidebar = sidebar({
       link: "kubernetes/",
       children: "structure",
     },
+    {
+      text: "Gitops",
+      icon: "infinity",
+      prefix: "gitops/",
+      link: "gitops/",
+      children: "structure",
+    },
   ],
 });

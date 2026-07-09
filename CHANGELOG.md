@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.0.0] - 2026-07-09
+
+### Added
+
+- Gitops: new top-level section documenting the homelab's repository ecosystem and the Gitlab CI/CD platform, published in both Polish and English.
+
+### Fixed
+
+- Kubernetes (EN): corrected article ordering in the sidebar so the English section matches the Polish one.
+
 ## [3.6.1] - 2026-06-27
 
 ### Fixed
