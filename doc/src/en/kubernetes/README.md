@@ -27,6 +27,7 @@ Due to limited hardware performance, I do not plan to add any more of these devi
 | k3s-aarch64-worker2 | worker | raspberry pi |
 | k3s-amd64-worker3 | worker | proxmox |
 | k3s-amd64-worker4 | worker | proxmox |
+| k3s-amd64-worker5 | worker | hp2 |
 
 
 <Catalog />
