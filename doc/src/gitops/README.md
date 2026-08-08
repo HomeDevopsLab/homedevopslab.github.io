@@ -55,7 +55,7 @@ Wdrożenia wykonywane są z użyciem pipeline.
 Więcej szczegółów można znaleźć w [dokumentacji tworzenia maszyn wirtualnych](/proxmox/vmmachines)
 :::
 
-### Monitoring & Auto-remediation
+### Monitoring
 
 ::: details proxmox-metrics
 Kod API, które odbiera statystyki na temat wykonanych backupów z klastra Proxmox i wystawia je w formie metryk dla Prometheusa.
@@ -63,10 +63,6 @@ Kod API, które odbiera statystyki na temat wykonanych backupów z klastra Proxm
 
 ::: details grafana-matrix-api
 API, które odbiera alerty z alertmanagera w grafanie. Przetwarza informacje i wysyła na dedykowany kanał na serwerze chatu (Matrix)
-:::
-
-::: details grafana-alerts-remediate
-API, które odbiera alerty z grafany. Obsługuje alerty typu `NoData` i wykonuje akcję remediacyjną, która polega na ustaleniu aktualnego adresu IP node-exportera w kubernetes i przygotowuje MR ze zmianą w repozytorium `angrybits-homelab`.
 :::
 
 ### Dokumentacja

@@ -55,7 +55,7 @@ Deployments are run through a pipeline.
 More details can be found in the [virtual machine creation documentation](/en/proxmox/vmmachines.md).
 :::
 
-### Monitoring & Auto-remediation
+### Monitoring
 
 ::: details proxmox-metrics
 API code that collects statistics about completed backups from the Proxmox cluster and exposes them as metrics for Prometheus.
@@ -63,10 +63,6 @@ API code that collects statistics about completed backups from the Proxmox clust
 
 ::: details grafana-matrix-api
 API that receives alerts from Grafana's alertmanager. It processes the information and sends it to a dedicated channel on the chat server (Matrix).
-:::
-
-::: details grafana-alerts-remediate
-API that receives alerts from Grafana. It handles `NoData` alerts and performs a remediation action that determines the current IP address of the node-exporter in Kubernetes and prepares an MR with the change in the `angrybits-homelab` repository.
 :::
 
 ### Documentation
