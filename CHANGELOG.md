@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.0.2] - 2026-08-09
+
+### Changed
+
+- Gitlab: opis wdrożenia zaktualizowany do aktualnego stanu środowiska — konfiguracja kontenera dla pracy za reverse proxy, montowanie katalogów z NFS, nowy port ssh oraz nazwa tokena registry w Vault (PL/EN).
+- Kubernetes: tabela rozmieszczenia nodów uzupełniona o nowy worker na hoście hp2 (PL/EN).
+
+### Removed
+
+- Gitops: repozytorium `grafana-alerts-remediate` wycofane z ekosystemu — usunięty opis, zaktualizowany graf architektury i sekcja na stronie głównej (PL/EN).
+- Gitlab: usunięte nieaktualne fragmenty — listing konfiguracji registry oraz osobna sekcja o nginx, której ustawienia trafiły do konfiguracji kontenera (PL/EN).
+
 ## [4.0.0] - 2026-07-09
 
 ### Added
