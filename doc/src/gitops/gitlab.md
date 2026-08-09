@@ -61,6 +61,7 @@ env:
       external_url 'https://gitlab.example.com';
       nginx['listen_port'] = 80;
       nginx['listen_https'] = false;
+      nginx['referrer_policy'] = 'false';
       nginx['proxy_set_headers'] = {
         "Host" => "gitlab.example.com",
         "X-Forwarded-Proto" => "https",
@@ -119,17 +120,6 @@ gitlab_rails['gitlab_email_from'] = 'gitlab@angrybits.example'
 gitlab_rails['gitlab_email_display_name'] = 'Gitlab'
 gitlab_rails['gitlab_email_reply_to'] = 'noreply@angrybits.example'
 ```
-### Nginx (Gitlab)
-Za działanie serwera Gitlab odpowiada usługa **gitlab-workhorse**. Komunikuje się ona ze środowiskiem zewnętrznym poprzez instancję nginx'a, która nasłuchuje na porcie `80` w kontenerze.
-
-Konfiguracja w **gitlab.rb**
-
-```bash
-nginx['referrer_policy'] = 'false'
-nginx['listen_port'] = 80
-nginx['listen_https'] = false
-```
-Na podstawie tej konfiguracji generowany jest plik: **/storage/gitlab/data/nginx/conf/gitlab-http.conf**.
 
 ### Registry
 Serwer registry zintegrowany z Gitlabem współdzieli z nim część konfiguracji. Jeśli chcemy aby kontenery dla określonego projektu były dostępne publicznie, musimy ustawić w opcjach repozytorium dostęp publiczny. Jeśli repozytorium będzie miało ustawiony poziom dostępu: **Internal**, dostęp do kontenerów będzie wymagał zalogowania się do registry. Taki poziom dostępu mają repozytoria w środowisku HomeLAB.
