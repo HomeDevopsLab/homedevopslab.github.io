@@ -107,6 +107,6 @@ highlights:
     - title: <strong>Provisioning & Utrzymanie</strong>
       icon: arrows-rotate
       details: proxmox-vm-templates (obrazy cloud-init) oraz homelab-tasks (aktualizacje, dystrybucja kluczy SSH)
-    - title: <strong>Monitoring & Auto-remediation</strong>
+    - title: <strong>Monitoring</strong>
       icon: bell
-      details: proxmox-metrix, grafana-matrix-api, grafana-alerts-remediate — alerty progowe i częściowa autoremediacja
+      details: proxmox-metrics, grafana-matrix-api — alerty progowe
