@@ -74,14 +74,14 @@ Directories stored on shared storage.
 
 ```yaml
 volumes:
-ownership: 0:0
-nfs:
-  server: persistent-storage.host
-  path: /storage
-  mountPath:
-    - config:/etc/gitlab
-    - logs:/var/log/gitlab
-    - data:/var/opt/gitlab
+  ownership: 0:0
+  nfs:
+    server: persistent-storage.host
+    path: /storage
+    mountPath:
+      - config:/etc/gitlab
+      - logs:/var/log/gitlab
+      - data:/var/opt/gitlab
 ```
 
 ## Configuring Gitlab
