@@ -63,7 +63,7 @@ env:
       nginx['listen_port'] = 80;
       nginx['listen_https'] = false;
       nginx['proxy_set_headers'] = {
-        "Host" => "code.angrybits.pl",
+        "Host" => "gitlab.example.com",
         "X-Forwarded-Proto" => "https",
         "X-Forwarded-Ssl" => "on"
       };
@@ -195,7 +195,7 @@ The Gitlab runner was added in the `Admin Area / Runners` section. To add a runn
 After clicking **Create runner**, instructions appear describing how to register the runner. They contain the information needed for the next steps.
 
 ```bash
-gitlab-runner register  --url http://gitlab.angrybits.pl  --token glrt-xxxxxxxxx
+gitlab-runner register  --url http://gitlab.example.com  --token glrt-xxxxxxxxx
 ```
 
 ### Running it
