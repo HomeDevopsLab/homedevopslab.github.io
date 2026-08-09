@@ -28,7 +28,7 @@ Do pliku `~/.ssh/config` należy wprowadzić wpis analogiczny do poniższego
 ``` :no-line-numbers
 Host gitlab.example.com
   HostName gitlab.example.com
-  Port 2223
+  Port 2224
   IdentityFile ~/.ssh/id_rsa_homelab
 ```
 
@@ -57,18 +57,30 @@ Ustawienie zmiennej `GITLAB_OMNIBUS_CONFIG`
 ```yaml
 env:
   - name: GITLAB_OMNIBUS_CONFIG
-    value: "external_url 'https://gitlab.example.com'"
+    value: |
+      external_url 'https://gitlab.example.com';
+      nginx['listen_port'] = 80;
+      nginx['listen_https'] = false;
+      nginx['referrer_policy'] = 'false';
+      nginx['proxy_set_headers'] = {
+        "Host" => "gitlab.example.com",
+        "X-Forwarded-Proto" => "https",
+        "X-Forwarded-Ssl" => "on"
+      };
 ```
 
 Katalogi, które są przechowywane na współdzielonym storage.
 
 ```yaml
 volumes:
-  enabled: true
-  mountPath:
-    - config:/etc/gitlab
-    - logs:/var/log/gitlab
-    - data:/var/opt/gitlab
+  ownership: 0:0
+  nfs:
+    server: persistent-storage.host
+    path: /storage
+    mountPath:
+      - config:/etc/gitlab
+      - logs:/var/log/gitlab
+      - data:/var/opt/gitlab
 ```
 
 ## Konfiguracja Gitlaba
@@ -108,17 +120,6 @@ gitlab_rails['gitlab_email_from'] = 'gitlab@angrybits.example'
 gitlab_rails['gitlab_email_display_name'] = 'Gitlab'
 gitlab_rails['gitlab_email_reply_to'] = 'noreply@angrybits.example'
 ```
-### Nginx (Gitlab)
-Za działanie serwera Gitlab odpowiada usługa **gitlab-workhorse**. Komunikuje się ona ze środowiskiem zewnętrznym poprzez instancję nginx'a, która nasłuchuje na porcie `80` w kontenerze.
-
-Konfiguracja w **gitlab.rb**
-
-```bash
-nginx['referrer_policy'] = 'false'
-nginx['listen_port'] = 80
-nginx['listen_https'] = false
-```
-Na podstawie tej konfiguracji generowany jest plik: **/storage/gitlab/data/nginx/conf/gitlab-http.conf**.
 
 ### Registry
 Serwer registry zintegrowany z Gitlabem współdzieli z nim część konfiguracji. Jeśli chcemy aby kontenery dla określonego projektu były dostępne publicznie, musimy ustawić w opcjach repozytorium dostęp publiczny. Jeśli repozytorium będzie miało ustawiony poziom dostępu: **Internal**, dostęp do kontenerów będzie wymagał zalogowania się do registry. Taki poziom dostępu mają repozytoria w środowisku HomeLAB.
@@ -162,42 +163,6 @@ Na podstawie pliku `gitlab.rb` powstają pliki konfiguracyjne usługi registry:
 * /storage/gitlab/data/registry/config.yml
 * /storage/gitlab/data/nginx/conf/gitlab-registry.conf
 
-::: normal-demo /storage/gitlab/data/registry/config.yml
-```yaml
-version: 0.1
-log:
-  level: info
-  formatter: text
-  fields:
-    service: registry
-    environment: production
-storage: {"filesystem":{"rootdirectory":"/var/opt/gitlab/gitlab-rails/shared/registry"},"cache":{"blobdescriptor":"inmemory"},"delete":{"enabled":true}}
-http:
-  addr: 127.0.0.1:5000
-  secret: "**********************************"
-  headers:
-    X-Content-Type-Options: [nosniff]
-health:
-  storagedriver:
-    enabled: true
-    interval: 10s
-    threshold: 3
-auth:
-  token:
-    realm: https://gitlab.lab/jwt/auth
-    service: container_registry
-    issuer: omnibus-gitlab-issuer
-    rootcertbundle: /var/opt/gitlab/registry/gitlab-registry.crt
-    autoredirect: false
-validation:
-  disabled: true
-```
-:::
-
-::: warning Realm
-Zanim wykonamy polecenie `gitlab-ctl restart` należy upewnić się, że w config.yml w realm: ustawiony jest url https. W przeciwnym razie Kubernetes będzie miało problemy z pobieraniem obrazów dockera.
-:::
-
 ### Tuning
 
 Aby zaoszczędzić pamięć wyłączone zostały poniższe usługi:
@@ -219,7 +184,7 @@ Gitlab runner został dodany w sekcji: `Admin Area / Runners`. Aby dodać runner
 Po kliknięciu **Create runner** pojawia się instrukcja, która opisuje jak zarejestrować runnera. Zawiera ona informacje potrzebne w dalszych krokach.
 
 ```bash
-gitlab-runner register  --url http://gitlab.angrybits.pl  --token glrt-xxxxxxxxx
+gitlab-runner register  --url http://gitlab.example.com  --token glrt-xxxxxxxxx
 ```
 
 ### Uruchomienie
@@ -268,7 +233,7 @@ Generowanie tokena robi się poprzez: `Edit Profile / Access Tokens`.
 ### Pipeline
 
 ::: tip Vault
-Wygenerowany token zapisany jest w lokalnej instancji HashiCorp Vault w ścieżce: `kv/platforms/docker/DOCKER_REGISTRY_TOKEN` 
+Wygenerowany token zapisany jest w lokalnej instancji HashiCorp Vault w ścieżce: `kv/platforms/docker/DOCKER_CODE_REGISTRY_TOKEN` 
 :::
 
 Wykorzystanie tokena w pipeline.
@@ -284,7 +249,7 @@ publish to docker registry:
   services:
     - docker:dind
   script:
-    - echo "$DOCKER_REGISTRY_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+    - echo "$DOCKER_CODE_REGISTRY_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - docker build -t ${CI_REGISTRY_IMAGE}:$CI_COMMIT_TAG .
     - docker push ${CI_REGISTRY_IMAGE}:$CI_COMMIT_TAG
   only:
@@ -312,7 +277,7 @@ publish to docker registry:
   script:
     - source secrets.env
     - rm -f secret.env
-    - echo "$DOCKER_REGISTRY_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+    - echo "$DOCKER_CODE_REGISTRY_TOKEN" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - docker buildx create --use
     - docker buildx build
       --build-arg GIT_TAG=$CI_COMMIT_TAG

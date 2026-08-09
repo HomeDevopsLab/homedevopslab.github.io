@@ -105,6 +105,6 @@ highlights:
       - title: <strong>Provisioning & Maintenance</strong>
         icon: arrows-rotate
         details: proxmox-vm-templates builds cloud-init images, while homelab-tasks handles recurring updates and SSH key distribution
-      - title: <strong>Monitoring & Auto-remediation</strong>
+      - title: <strong>Monitoring</strong>
         icon: bell
-        details: proxmox-metrix, grafana-matrix-api, grafana-alerts-remediate — threshold alerts and partial automatic remediation
+        details: proxmox-metrics, grafana-matrix-api — threshold alerts

@@ -225,7 +225,7 @@ SSH client configuration
 ```bash title="~/.ssh/confg"
 Host gitlab.domena.pl
   HostName gitlab.domena.pl
-  Port 2223
+  Port 2224
   IdentityFile ~/.ssh/id_rsa
 ```
 
