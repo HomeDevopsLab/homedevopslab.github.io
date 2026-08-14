@@ -1,6 +1,5 @@
 import { defineUserConfig } from "vuepress";
 import { viteBundler } from "@vuepress/bundler-vite";
-import { markdownIncludePlugin } from '@vuepress/plugin-markdown-include'
 
 import theme from "./theme.js";
 
@@ -38,11 +37,7 @@ export default defineUserConfig({
       }
     }
   }),
-  plugins: [
-    markdownIncludePlugin({
-      // options
-    }),
-  ],
+
   // Enable it with pwa
   // shouldPrefetch: false,
 });
