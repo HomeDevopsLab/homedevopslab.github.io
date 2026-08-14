@@ -1,7 +1,7 @@
 ---
 title: SOPS
 icon: key
-order: 6
+order: 7
 category:
   - Guide
 tag:

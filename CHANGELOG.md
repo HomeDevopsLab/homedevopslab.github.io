@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.1.0] - 2026-08-14
+
+### Added
+
+- Kubernetes: new article describing the cluster upgrade procedure — sequential, node-by-node update of control-plane and worker nodes with ETCD snapshot and drain/uncordon steps, published in both Polish and English.
+
 ## [4.0.2] - 2026-08-09
 
 ### Changed
