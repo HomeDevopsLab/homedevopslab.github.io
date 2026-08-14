@@ -1,7 +1,7 @@
 ---
 title: Kube-VIP
 icon: network-wired
-order: 2
+order: 3
 category:
   - Guide
 tag:

@@ -1,7 +1,7 @@
 ---
 title: HelmChart
 icon: paste
-order: 5
+order: 6
 category:
   - Guide
 tag:
