@@ -32,7 +32,7 @@ Backup maszyn wirutalnych na tą chwilę nie zabezpiecza na wypadek utraty danyc
 
 ### Powiadomienia
 
-Po wykonaniu zadania backupu wysyłany jest email z raportem i wyzwalany skrypt, który generuje statystyki dla prometeusza. Są one później wykoszystywane do wizualizacji w grafanie.
+Po wykonaniu zadania backupu wysyłany jest email z raportem i wyzwalany skrypt, który generuje statystyki dla prometeusza. Są one później wykorzystywane do wizualizacji w grafanie.
 
 #### Metryki
 
