@@ -19,5 +19,11 @@ export const plNavbar = navbar([
     icon: "infinity",
     prefix: "/gitops/",
     children: ["gitlab"],
+  },
+  {
+    text: "Security",
+    icon: "shield",
+    prefix: "/security/",
+    children: ["backups"],
   }
 ]);
