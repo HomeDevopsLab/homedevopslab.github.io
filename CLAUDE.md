@@ -52,6 +52,14 @@ CI (`.gitlab-ci.yml`) triggers only on git tags. It:
 
 The `Dockerfile` is a two-stage build: Node 22 Alpine builds the static files, then copies them into an `nginx:latest` image.
 
+## Illustration assets
+
+Section illustrations and their light/dark SVG backgrounds follow a fixed
+recipe — generation parameters, the shared visual canon, the watermark and
+compression pipeline, the background palette, and how a new section is wired
+into the homepage and `config.scss`. See `doc/ILLUSTRATIONS.md` before creating
+one, so new artwork matches the existing set.
+
 ## Versioning scheme
 
 The project follows semantic versioning (`MAJOR.MINOR.PATCH`) with these rules:
