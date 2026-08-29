@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.0] - 2026-08-29
+
+### Added
+
+- Security: new top-level section documenting how the homelab protects its data — VM snapshot backups on the Proxmox cluster and database backups following the 3-2-1 strategy, with schedules and monitoring, published in both Polish and English.
+- Homepage: new "Security & Business Continuity" section giving the backup strategy a visible entry point from the landing page (PL/EN).
+
 ## [4.1.0] - 2026-08-14
 
 ### Added

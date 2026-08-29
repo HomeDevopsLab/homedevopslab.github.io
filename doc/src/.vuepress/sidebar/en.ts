@@ -23,5 +23,12 @@ export const enSidebar = sidebar({
       link: "gitops/",
       children: "structure",
     },
+    {
+      text: "Security",
+      icon: "shield",
+      prefix: "security/",
+      link: "security/",
+      children: "structure",
+    },
   ],
 });

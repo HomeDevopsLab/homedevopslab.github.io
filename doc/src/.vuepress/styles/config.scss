@@ -32,7 +32,8 @@ $proxmox-orange: #f26422;
   // Przypisane jawnie per sekcja (a nie przez nth-child), bo sekcja "Baza Wiedzy"
   // (typ features) zajmuje własny slot w DOM i psuje naiwną parzystość.
   .vp-highlight:has(img[src*="highlights-img"]),
-  .vp-highlight:has(img[src*="k3s.jpg"]) {
+  .vp-highlight:has(img[src*="k3s.jpg"]),
+  .vp-highlight:has(img[src*="homelab-security"]) {
     flex-direction: row !important;
   }
 
@@ -437,6 +438,93 @@ $proxmox-orange: #f26422;
   }
 }
 
+/* Sekcja Bezpieczeństwo & Ciągłość Działania (ten sam boks-layout co GitOps, akcent turkusowy) */
+.vp-highlight:has(img[src*="homelab-security"]) {
+
+  /* Nagłówek i opis — tło security-bg.svg jest ciemne i zróżnicowane tonalnie,
+     więc wymuszamy ten sam wysoki kontrast co w pozostałych sekcjach */
+  .vp-highlight-header,
+  h2 {
+    color: #ffffff !important;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  }
+
+  .vp-highlight-description,
+  p {
+    color: #cbd5e1 !important;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Przestrzeń z listą highlights */
+  .vp-highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-top: 1rem;
+  }
+
+  /* Stylizacja pojedynczego elementu listy na interaktywny boks */
+  .vp-highlight-item-wrapper {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .vp-highlight-item {
+    background: rgba(20, 26, 42, 0.65) !important;
+    border-left: 4px solid #2dd4bf; /* Turkus nawiązujący do tarczy 3-2-1 na ilustracji */
+    border-radius: 4px 12px 12px 4px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+
+    /* Efekt po najechaniu myszką (Hover) */
+    &:hover {
+      transform: translateX(8px);
+      background: rgba(24, 35, 62, 0.8) !important;
+      border-left-color: #34d399; /* Zielony "backup OK" przy hoverze */
+      box-shadow: 0 0 15px rgba(52, 211, 153, 0.2), 0 4px 25px rgba(0, 0, 0, 0.5);
+
+      .vp-highlight-icon {
+        color: #34d399;
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  /* Nagłówek wewnątrz elementu */
+  .vp-highlight-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.15rem;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+
+    span strong {
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+  }
+
+  /* Stylizacja ikon we wtyczce iconify */
+  .vp-highlight-icon {
+    color: #2dd4bf;
+    font-size: 1.35rem;
+    transition: all 0.3s ease;
+  }
+
+  /* Tekst opisu pod tytułem */
+  .vp-highlight-details {
+    color: #94a3b8 !important;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+}
+
 /* Przycisk "Zobacz więcej" osadzony w opisie sekcji (przez HTML w polu description) */
 .vp-highlight-description {
   .vp-section-cta {
@@ -496,6 +584,19 @@ $proxmox-orange: #f26422;
       color: #ffffff !important;
       border-color: #22d3ee !important;
       box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+    }
+  }
+}
+
+.vp-highlight:has(img[src*="homelab-security"]) {
+  .vp-section-cta {
+    color: #5eead4 !important;
+
+    &:hover {
+      background: #2dd4bf !important;
+      color: #06283d !important;
+      border-color: #34d399 !important;
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.3);
     }
   }
 }

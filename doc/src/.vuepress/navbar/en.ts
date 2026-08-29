@@ -19,5 +19,11 @@ export const enNavbar = navbar([
     icon: "infinity",
     prefix: "/en/gitops/",
     children: ["gitlab"],
+  },
+  {
+    text: "Security",
+    icon: "shield",
+    prefix: "/en/security/",
+    children: ["backups"],
   }
 ]);
