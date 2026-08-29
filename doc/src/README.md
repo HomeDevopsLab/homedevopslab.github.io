@@ -52,6 +52,10 @@ highlights:
       icon: infinity
       details: Zarządzanie środowiskiem w oparciu o repozytoria git
       link: ./gitops/
+    - title: Security
+      icon: shield
+      details: Backupy i ciągłość działania środowiska
+      link: ./security/
 
 - header: Wirtualizacja & High Availability
   description: 'Ultra-niezawodne środowisko obliczeniowe oparte o 3-węzłowy klaster hypervisorów Proxmox VE. Dzięki pełnej integracji hiperkonwergentnej, awaria pojedynczego serwera nie przerywa działania krytycznych usług.<br/><br/><a href="./proxmox/" class="vp-section-cta">Zobacz architekturę Proxmox →</a>'

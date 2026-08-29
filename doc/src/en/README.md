@@ -51,6 +51,10 @@ highlights:
         icon: infinity
         details: Git-driven environment management
         link: ./gitops/
+      - title: Security
+        icon: shield
+        details: Backups and environment continuity
+        link: ./security/
 
   - header: Virtualization & High Availability
     description: 'An ultra-reliable computing environment based on a 3-node Proxmox VE hypervisor cluster. Thanks to full hyper-converged integration, a single server failure does not interrupt the operation of critical services.<br/><br/><a href="./proxmox/" class="vp-section-cta">Explore Proxmox architecture →</a>'
