@@ -11,52 +11,55 @@ tag:
 ## Architektura
 
 Backupy w homelabie wykonywane są w dwóch wariantach:
-- Snapshot backup maszyn VM
-- Detaliczny backup baz danych
+
+- snapshotowy backup maszyn wirtualnych,
+- szczegółowy backup baz danych.
 
 ![Homelab backups diagram](/assets/image/homelab-backups.svg)
 
-## Backup Maszyn Wirtualnych
+## Backup maszyn wirtualnych
 
-Backup uruchomiony jest z poziomu klastra Proxmox jako cronjob. Backupy zapisywane są na zewnętrznym urządzeniu NAS, które jest podmontowane protokołem NFS do klastra proxmox.
+Backup uruchamiany jest z poziomu klastra Proxmox jako cronjob. Kopie zapisywane są na zewnętrznym urządzeniu NAS, zamontowanym w klastrze Proxmox przez protokół NFS.
 
 ::: warning
-Backup maszyn wirutalnych na tą chwilę nie zabezpiecza na wypadek utraty danych na serwerze NAS. Temat trzeba przeanalizować od strony kosztowej i technologicznej.
+Backup maszyn wirtualnych na tę chwilę nie zabezpiecza przed utratą danych na serwerze NAS. Temat trzeba przeanalizować od strony kosztowej i technologicznej.
 :::
 
 ### Harmonogram
 
-| Harmonogram | Maszyny Wirtualne   |
-| ------------| --------------------|
-| 0 1 * * *   | srv-storage, srv-db |
+| Harmonogram | Maszyny wirtualne   |
+| ----------- | ------------------- |
+| `0 1 * * *` | srv-storage, srv-db |
 
 ### Powiadomienia
 
-Po wykonaniu zadania backupu wysyłany jest email z raportem i wyzwalany skrypt, który generuje statystyki dla prometeusza. Są one później wykorzystywane do wizualizacji w grafanie.
+Po wykonaniu zadania backupu wysyłany jest e-mail z raportem oraz uruchamiany skrypt, który generuje statystyki dla Prometheusa. Są one później wykorzystywane do wizualizacji w Grafanie.
 
 #### Metryki
 
-- nazwa maszyny wirtualnej
-- rozmiar snapshotu
-- czas wykonywania backupu
+- nazwa maszyny wirtualnej,
+- rozmiar snapshotu,
+- czas wykonywania backupu.
 
 ## Backup baz danych
 
-Bazy dane backupowane są w dwóch lokalizacjach:
-- lokalny NAS
-- AWS S3
+Bazy danych backupowane są w dwóch lokalizacjach:
 
-Spełnia to kryteria strategi 321.
+- lokalny NAS,
+- AWS S3.
 
-::: tip Backup 321
-- **3 kopie**: Dane produkcyjne plus dwa różne backupy. Jeśli jeden z nich zostanie uszkodzony, wciąż jest możliwość odtworzenia danych
-- **2 rodzaje nośników**: Jedna kopia przechowywana jest na serwerze NAS, druga w usłudze w chmurze.
-- **1 kopia off-site**: Przechowuj co najmniej jedną kopię danych w innej fizycznej lokalizacji.
+Spełnia to kryteria strategii 3-2-1.
+
+::: tip Backup 3-2-1
+
+- **3 kopie**: dane produkcyjne oraz dwa niezależne backupy. Jeśli jeden z nich zostanie uszkodzony, wciąż jest możliwość odtworzenia danych.
+- **2 rodzaje nośników**: jedna kopia przechowywana jest na serwerze NAS, druga w usłudze chmurowej.
+- **1 kopia off-site**: co najmniej jedna kopia danych znajduje się w innej lokalizacji fizycznej.
 :::
 
 ### Harmonogram
 
-Backup uruchamiany jest codziennie o 6 rano z schedulera w kubernetes
+Backup uruchamiany jest codziennie o 6 rano ze schedulera w Kubernetes.
 
 ```yaml
 spec:
@@ -75,4 +78,3 @@ spec:
               imagePullPolicy: IfNotPresent
               command: ["python3", "/opt/app/run.py"]
 ```
-
