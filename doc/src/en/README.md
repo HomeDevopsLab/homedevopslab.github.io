@@ -108,3 +108,23 @@ highlights:
       - title: <strong>Monitoring</strong>
         icon: bell
         details: proxmox-metrics, grafana-matrix-api — threshold alerts
+
+  - header: Security & Business Continuity
+    description: 'Homelab data is protected in two layers — snapshots of entire virtual machines at the Proxmox cluster level, and fine-grained dumps of the databases. Database copies satisfy the 3-2-1 strategy, and every backup job reports its own metrics, so a broken process becomes visible before the copy is actually needed.<br/><br/><a href="./security/" class="vp-section-cta">Explore the backup strategy →</a>'
+    image: /assets/image/homelab-security.jpg
+    bgImage: /assets/image/security-bg-light.svg
+    bgImageDark: /assets/image/security-bg.svg
+    bgImageStyle:
+      background-size: cover
+      background-position: center
+      filter: brightness(0.5) contrast(0.8)
+    highlights:
+      - title: <strong>Virtual machine snapshots</strong>
+        icon: hard-drive
+        details: A nightly Proxmox cluster cronjob writing full VM images to the NAS over NFS
+      - title: <strong>3-2-1 strategy</strong>
+        icon: shield-halved
+        details: Databases copied in parallel to the local NAS and to AWS S3 — two media types, one off-site copy
+      - title: <strong>Backup observability</strong>
+        icon: chart-line
+        details: Snapshot size and duration of every job land in Prometheus and on Grafana dashboards

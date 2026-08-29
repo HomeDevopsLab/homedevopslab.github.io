@@ -110,3 +110,23 @@ highlights:
     - title: <strong>Monitoring</strong>
       icon: bell
       details: proxmox-metrics, grafana-matrix-api — alerty progowe
+
+- header: Bezpieczeństwo & Ciągłość Działania
+  description: 'Dane w homelabie chronione są dwuwarstwowo — snapshotami całych maszyn wirtualnych na poziomie klastra Proxmox oraz szczegółowymi zrzutami baz danych. Kopie baz spełniają kryteria strategii 3-2-1, a każde zadanie backupu raportuje własne metryki, dzięki czemu awaria procesu jest widoczna zanim kopia okaże się potrzebna.<br/><br/><a href="./security/" class="vp-section-cta">Zobacz strategię backupów →</a>'
+  image: /assets/image/homelab-security.jpg
+  bgImage: /assets/image/security-bg-light.svg
+  bgImageDark: /assets/image/security-bg.svg
+  bgImageStyle:
+    background-size: cover
+    background-position: center
+    filter: brightness(0.5) contrast(0.8)
+  highlights:
+    - title: <strong>Snapshoty maszyn wirtualnych</strong>
+      icon: hard-drive
+      details: Nocny cronjob klastra Proxmox zapisujący pełne obrazy VM na NAS przez NFS
+    - title: <strong>Strategia 3-2-1</strong>
+      icon: shield-halved
+      details: Bazy danych kopiowane równolegle na lokalny NAS oraz do AWS S3 — dwa nośniki, jedna kopia off-site
+    - title: <strong>Obserwowalność backupów</strong>
+      icon: chart-line
+      details: Rozmiar snapshotu i czas wykonania każdego zadania trafiają do Prometheusa i na dashboardy Grafany
