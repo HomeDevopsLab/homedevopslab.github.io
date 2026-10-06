@@ -1,5 +1,11 @@
 # Changelog
 
+## [5.1.0] - 2026-10-06
+
+### Added
+
+- Gitops: new article describing the scheduled CI/CD jobs that keep the homelab maintained automatically — weekly VM system upgrades, AI-driven pausing and resuming of Grafana disk-space alerts, and daily Cloudflare log analysis that updates the IP blacklist, published in both Polish and English.
+
 ## [5.0.0] - 2026-08-29
 
 ### Added
