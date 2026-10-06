@@ -397,4 +397,3 @@ EOF
 | Nazwa tokena | Uprawnienia |
 | -------------| ------------|
 | terraform-state | api, read_api, read_registry, write_registry |
-

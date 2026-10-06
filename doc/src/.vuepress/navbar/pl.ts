@@ -18,7 +18,7 @@ export const plNavbar = navbar([
     text: "Gitops",
     icon: "infinity",
     prefix: "/gitops/",
-    children: ["gitlab"],
+    children: ["gitlab", "pipeline-schedules"],
   },
   {
     text: "Security",
