@@ -10,7 +10,13 @@ allowed-tools: Read Edit Write Bash(git *) Bash(glab *)
 1. Jako Lead Technical Writer z ponad 10 letnim doświadczeniem, zapoznaj się z dokumentacją w $filename i napraw wszystkie błędy stylistyczne oraz literówki.
 2. Pokaż podsumowanie zmian i poproś użytkownika o zatwierdzenie.
 3. Jeśli użytkownik zgłosi poprawki, wykonaj następną iterację zmian aż nie uzyskasz akceptacji.
+4. W przypadku napotkania na adresy IP z podsieci 192.168.3.0/24 zamień je na odpowiedniki z puli testowych. (RFC 5737 i RFC 3849). Wybierz dowolną z nich:
+   - 192.0.2.0/24 (TEST-NET-1)
+   - 198.51.100.0/24 (TEST-NET-2)
+   - 203.0.113.0/24 (TEST-NET-3)
 
+   Utrzymaj konsystencję adresacji aby dokumentacja nie była chaotyczna/
+   
 ## Tłumaczenie oraz przygotowanie zmiany
 
 Kroki należy wykonać po uzyskaniu akceptacji w poprzedniej sekcji.
