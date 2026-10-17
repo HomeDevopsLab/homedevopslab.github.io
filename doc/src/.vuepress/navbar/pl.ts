@@ -15,6 +15,12 @@ export const plNavbar = navbar([
     children: ["k8s-install", "k8s-upgrade", "kubevip", "flux", "helmchart", "sops", "lets-encrypt"],
   },
   {
+    text: "Talos Cluster",
+    icon: "fa-brands fa-linux",
+    prefix: "/talos/",
+    children: [],
+  },
+  {
     text: "Gitops",
     icon: "infinity",
     prefix: "/gitops/",

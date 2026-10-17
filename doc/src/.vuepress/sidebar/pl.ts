@@ -10,6 +10,13 @@ export const plSidebar = sidebar({
       children: "structure",
     },
     {
+      text: "Talos Cluster",
+      icon: "fa-brands fa-linux",
+      prefix: "talos/",
+      link: "talos/",
+      children: "structure",
+    },
+    {
       text: "Kubernetes",
       icon: "dharmachakra",
       prefix: "kubernetes/",
