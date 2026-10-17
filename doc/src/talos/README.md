@@ -15,7 +15,26 @@ Talos Linux stosuje zupełnie inną filozofię obsługi systemu niż tradycyjne
 
 ## Diagnostyka systemu
 
-Podstawowym narzędziem do interakcji z klastrem Talos jest **talosctl**. Umożliwia ono dostęp live do logów oraz informacji o bieżącej utylizacji zasobów takich jak procesor, pamięć, dyski i sieć.
+Podstawowym narzędziem do interakcji z klastrem Talos jest **talosctl**. Umożliwia ono dostęp live do logów oraz informacji o bieżącej utylizacji zasobów takich jak procesor, pamięć, dyski i sieć. Ta dokumentacja opisuje kilka przykładów użycia tego narzędzia. Bardziej szczegółowe informacje można znaleźć w dokumentacji oraz eksperymentując z `talosctl -h`
+
+- [Reference manual](https://docs.siderolabs.com/talos/v1.14/reference/cli)
+- [Dokumentacja Talos](https://docs.siderolabs.com/talos/v1.14/overview/what-is-talos)
+
+Aby przejrzeć listę dostępnych obiektów systemu, które możemy odpytać używając `talosctl get` polecam użyć polecenia:
+
+```bash :no-line-numbers
+talosctl get rd
+```
+
+### Dashboard
+
+Talosctl udostępnia interaktywną aplikację terminalową (TUI) - dashboard.
+
+```bash :no-line-numbers
+talosctl dashboard
+```
+
+![Talos Dashboard](/assets/image/talos-dashboard.png)
 
 ### Węzły klastra
 
@@ -94,3 +113,126 @@ talosctl -n 192.168.3.36 logs --namespace=cri default/shy-garlic-5586cc58c7-skv5
 192.168.3.36: 2026-10-17T14:24:22.132365393Z stderr F time=2026-10-17T16:24:22.131+02:00 level=INFO msg="shyg starting" addr=:8080 config=/etc/shygarlic/shygarlic.yaml db=/data/shygarlic.db backgrounds=/data/bg version=0.14.0
 ...
 ```
+
+## Dyski
+
+Dostęp do informacji o dyskach w systemie:
+
+```bash :no-line-numbers
+talosctl -n 192.168.3.38 get disk
+
+NODE           NAMESPACE   TYPE   ID      VERSION   SIZE     READ ONLY   TRANSPORT   ROTATIONAL   WWID   MODEL           SERIAL
+192.168.3.38   runtime     Disk   loop0   2         4.1 kB   true
+192.168.3.38   runtime     Disk   loop1   2         819 kB   true
+192.168.3.38   runtime     Disk   loop2   2         94 MB    true
+192.168.3.38   runtime     Disk   sda     2         22 GB    false       virtio      true                QEMU HARDDISK
+192.168.3.38   runtime     Disk   sr0     2         4.2 MB   true        ata         true                QEMU DVD-ROM    QEMU_DVD-ROM_QM00002
+```
+
+Informacje o wybranym dysku.
+
+```bash :no-line-numbers
+talosctl -n 192.168.3.38 get disk sda
+
+NODE           NAMESPACE   TYPE   ID    VERSION   SIZE    READ ONLY   TRANSPORT   ROTATIONAL   WWID   MODEL           SERIAL
+192.168.3.38   runtime     Disk   sda   2         22 GB   false       virtio      true                QEMU HARDDISK
+```
+
+::: tip Szczegóły
+Aby wyświetlić więcej informacji o wskazanym dysku, trzeba użyć opcji `-o yaml`
+:::
+
+### Layout dysku
+
+Jest też możliwość pobrania listy katalogów w systemie
+
+```bash :no-line-numbers
+talosctl -n 192.168.3.38 get volumeconfigs
+
+NODE           NAMESPACE   TYPE           ID                                  VERSION
+192.168.3.38   runtime     VolumeConfig   /opt                                2
+192.168.3.38   runtime     VolumeConfig   /var/lib                            2
+192.168.3.38   runtime     VolumeConfig   /var/lib/cni                        2
+192.168.3.38   runtime     VolumeConfig   /var/lib/kubelet/seccomp            2
+192.168.3.38   runtime     VolumeConfig   /var/lib/kubelet/seccomp/profiles   2
+192.168.3.38   runtime     VolumeConfig   /var/log/audit                      2
+192.168.3.38   runtime     VolumeConfig   /var/log/audit/kube                 2
+192.168.3.38   runtime     VolumeConfig   /var/log/containers                 2
+192.168.3.38   runtime     VolumeConfig   /var/log/pods                       2
+192.168.3.38   runtime     VolumeConfig   /var/mnt                            2
+192.168.3.38   runtime     VolumeConfig   /var/run                            2
+192.168.3.38   runtime     VolumeConfig   /var/run/lock                       2
+192.168.3.38   runtime     VolumeConfig   CRI                                 2
+192.168.3.38   runtime     VolumeConfig   EPHEMERAL                           2
+192.168.3.38   runtime     VolumeConfig   ETCD                                2
+192.168.3.38   runtime     VolumeConfig   KUBELET                             2
+192.168.3.38   runtime     VolumeConfig   LOG                                 2
+192.168.3.38   runtime     VolumeConfig   META                                2
+192.168.3.38   runtime     VolumeConfig   STATE                               4
+```
+
+## Pamięć
+
+Aby sprawdzić statystyki pamięci na wybranym węźle trzeba wykonać polecenie:
+
+```bash :no-line-numbers
+talosctl -n 192.168.3.38 memory
+
+NODE           TOTAL   USED   FREE   SHARED   BUFFERS   CACHE   AVAILABLE
+192.168.3.38   3897    605    2688   104      3         599     3052
+```
+
+## Pozostałe operacje
+
+### Netstat
+
+Wyświetla wszystkie połączenia sieciowe wraz z ich statusem na wybranym węźle.
+
+```bash :no-line-numbers
+talosctl -n 192.168.3.38 netstat
+
+NODE           Proto   Recv-Q   Send-Q   Local Address        Foreign Address      State
+192.168.3.38   tcp     0        0        127.0.0.1:35238      127.0.0.1:10248      TIME_WAIT
+192.168.3.38   tcp     0        0        127.0.0.1:35244      127.0.0.1:10248      TIME_WAIT
+192.168.3.38   tcp     0        0        127.0.0.1:7445       127.0.0.1:34146      ESTABLISHED
+...
+```
+
+Wyświetla wszystkie połączenia sieciowe, jeśli połączenie jest związane z działającym podem podaje jego pełną nazwę
+
+```bash :no-line-numbers
+talosctl -n 192.168.3.38 netstat -k
+
+NODE           Proto   Recv-Q   Send-Q   Local Address        Foreign Address      State
+...
+192.168.3.38   tcp6    0        0        192.168.3.38:10250   192.168.3.37:14352   ESTABLISHED   -
+192.168.3.38   tcp6    0        0        192.168.3.38:50000   192.168.3.34:56754   ESTABLISHED   -
+192.168.3.38   tcp     0        0        10.244.4.14:42096    192.168.3.250:80     ESTABLISHED   default/shy-garlic-54fb9db499-gdzjl
+192.168.3.38   tcp     0        0        10.244.4.14:44226    188.114.96.3:443     ESTABLISHED   default/shy-garlic-54fb9db499-gdzjl
+...
+```
+
+Wyświetla połączenia w statusie LISTEN wraz z informację o podach
+
+```bash :no-line-numbers
+talosctl -n 192.168.3.38 netstat -kl
+
+NODE           Proto   Recv-Q   Send-Q   Local Address        Foreign Address      State
+...
+192.168.3.38   udp     0        0        192.168.3.38:7946    0.0.0.0:*                  -
+192.168.3.38   udp     0        0        169.254.116.108:53   0.0.0.0:*                  -
+192.168.3.38   udp     0        0        127.0.0.53:53        0.0.0.0:*                  -
+192.168.3.38   udp     0        0        0.0.0.0:4789         0.0.0.0:*                  -
+192.168.3.38   tcp6    0        0        :::8080              :::*              LISTEN   default/shy-garlic-54fb9db499-gdzjl
+...
+```
+
+### Operacje systemowe
+
+Wybrane polecenia.
+
+| Komenda | Opcje | Opis |
+| --------| ------| -----|
+| talosctl -n 192.168.3.33 list | -l / | Listuje zawartosć katalogu na węźle klastra. Odpowiednik `ls -l`. W ten sposób można przeglądać filesystem. |
+| talosctl -n 192.168.3.33 usage  /var | -H | Sprawdza ile miejsca zajmuje katalog na dysku |
+| talosctl -n 192.168.3.33 reboot | -/- | Restartuje węzeł |
