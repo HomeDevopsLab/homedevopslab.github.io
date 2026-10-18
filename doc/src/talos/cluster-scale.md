@@ -1,6 +1,6 @@
 ---
 title: Skalowanie
-order: 2
+order: 3
 icon: arrows-up-down
 category:
   - Guide
@@ -8,7 +8,7 @@ category:
 
 Klaster można w prosty sposób skalować w górę i w dół poprzez dodanie kodu konfiguracyjnego w repozytorium. Workery możemy dodawać w miarę potrzeby w dowolnej ilości. W przypadku control-plane musimy zachować nieparzystą liczbę węzłów aby zachować quorum. Dobrze jest też zadbać aby rozłożyć węzły control-plane równomiernie na fizycznych serwerach klastra proxmox.
 
-## Dołączenie węzła
+## Dołączenie węzła <Badge text="CI/CD full" type="tip" />
 
 Dodawanie węzła do klastra możemy wykonać w cyklu wrożenia zmiany z użyciem CI/CD. 
 
@@ -60,7 +60,7 @@ talos-dev-worker-node-4   Ready    <none>          16m    v1.37.1   192.168.3.39
 Jeśli Na klastrze proxmox mamy starszą wersję obrazu systemu niż zadaną w konfiguracji Talosa, provider wykona aktualizację dołączanego węzła zanim zostanie on faktycznie włączony do ruchu. W przypadku patch versions nie zauważyłem problemów z dołączaniem do klastra. Myślę, że dobrą praktyką będzie utrzymywanie takiej samej wersji Talosa w repozytorium z kodem klastra oraz repozytorium z którego tworzone są template'y maszyn wirtualnych.
 :::
 
-## Usuwanie węzła.
+## Usuwanie węzła <Badge text="CI/CD partial" type="warning" />
 
 Aby usunąć węzeł klastra należy wykonać analogiczną konfigurację - usunąć kod węzła i przeprowadzić proces wdrożenia zmiany. CI/CD wykona zadanie usunięcia zasobów.
 
@@ -93,4 +93,5 @@ kubectl delete node talos-dev-worker-node-4
 
 ::: info
 Faktyczne usunięcie maszyny wirtualnej z listy węzłów klastra Talosa może zająć nawet ok. 30 min. Nie wpływa to na pracę działających aplikacji.
+Źródło: https://github.com/siderolabs/talos/discussions/6264
 :::

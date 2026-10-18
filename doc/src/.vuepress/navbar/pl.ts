@@ -18,7 +18,7 @@ export const plNavbar = navbar([
     text: "Talos Cluster",
     icon: "fa-brands fa-linux",
     prefix: "/talos/",
-    children: ["cluster-install"],
+    children: ["cluster-install", "cluster-updates", "cluster-scale"],
   },
   {
     text: "Gitops",
