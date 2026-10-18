@@ -138,6 +138,7 @@ export default hopeTheme({
     gfm: true,
     highlighter: {
       type: "shiki",
+      notationDiff: true
     },
     imgLazyload: true,
     imgSize: true,

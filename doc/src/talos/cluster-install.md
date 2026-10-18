@@ -1,5 +1,5 @@
 ---
-title: Instalacja clustra
+title: Instalacja
 order: 1
 icon: download
 category:
@@ -46,7 +46,7 @@ Parametry konfiguracyjne zostały podzielone na trzy pliki aby poprawić czytel
 #### Common
 > Plik: common.hcl
 
-Parametry wspólne dla maszyn wirtualnych w całym klastrze. Na ten moment Zakładam, że każda maszyna wirtualna będzie miała identyczne zasoby (CPU, RAM, Dysk).
+Parametry wspólne dla maszyn wirtualnych w całym klastrze. Na ten moment zakładam, że każda maszyna wirtualna będzie miała identyczne zasoby (CPU, RAM, Dysk).
 
 * brama sieciowa i adres IP serwera dns
 * template maszyny wirtualnej
