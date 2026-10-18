@@ -11,7 +11,7 @@ export const plSidebar = sidebar({
     },
     {
       text: "Talos Cluster",
-      icon: "fa-brands fa-linux",
+      icon: "https://cdn.simpleicons.org/talos/fff",
       prefix: "talos/",
       link: "talos/",
       children: "structure",

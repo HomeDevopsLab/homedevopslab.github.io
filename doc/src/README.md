@@ -45,7 +45,7 @@ highlights:
       details: Opis architektury clustra proxmox
       link: ./proxmox/
     - title: Talos Cluster
-      icon: fa-brands fa-linux
+      icon: https://cdn.simpleicons.org/talos/fff
       details: Budowa klastra Kubernetes z wykorzystaniem dystrybucji Talos Linux
       link: ./talos/
     - title: Kubernetes Cluster

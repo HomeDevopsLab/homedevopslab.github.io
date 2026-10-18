@@ -1,7 +1,7 @@
 ---
 title: Talos Cluster
 index: false
-icon: fa-brands fa-linux
+icon: https://cdn.simpleicons.org/talos/326CE5
 category:
   - Guide
 ---
