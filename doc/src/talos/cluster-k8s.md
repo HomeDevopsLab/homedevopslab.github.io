@@ -62,3 +62,25 @@ spec:
 Adresacja dla **IPAddressPool** nie może być przez nic innego używana.
 
 ## Ingress
+
+Jako ingress klaster będzie wykorzystywał Traefik. Instalacja traefik z użyciem helm.
+
+W pierwszym kroku trzeba zainstalować wymagane CRD:
+```bash no-line-numbers
+kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/standard-install.yaml
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.5/docs/content/reference/dynamic-configuration/kubernetes-gateway-rbac.yml
+```
+
+```yaml title="values.yaml"
+providers:
+  kubernetesGateway:
+    enabled: true
+```
+
+```bash :no-line-numbers
+helm repo add traefik https://traefik.github.io/charts
+helm repo update
+helm upgrade --install traefik traefik/traefik \
+  -n traefik --create-namespace \
+  -f values.yaml
+```
