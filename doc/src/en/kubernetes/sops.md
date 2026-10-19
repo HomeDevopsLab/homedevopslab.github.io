@@ -93,6 +93,10 @@ spec:
   timeout: 1m0s
 ```
 
+::: tip Private key
+Once the configuration is complete, the **age.agekey** file can be deleted from disk. The entire secret encryption setup now lives in the Kubernetes cluster: the **sops-age** secret holds the private key, and the **.sops.yaml** file holds the public key.
+:::
+
 ## Encrypting secrets
 
 The cluster repository follows a naming convention where secret files match the pattern: `*-secrets-clear.yaml` and `*-secrets-enc.yaml`. Files with **clear** in the name are not published to the repository.

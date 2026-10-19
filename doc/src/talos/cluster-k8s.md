@@ -6,13 +6,13 @@ category:
   - Guide
 ---
 
-Klaster Kubernetes Talosa po zakończeniu procesu bootstrap nie jest jeszcze gotowy do uruchamiania na nim aplikaji. Brakuje w nim takich usług jak ingress, loadbalancer oraz monitoring. Trzeba je zainstalować w kolejnym kroku.
+Klaster Kubernetes Talosa po zakończeniu procesu bootstrap nie jest jeszcze gotowy do uruchamiania aplikacji. Brakuje w nim usług takich jak ingress, load balancer czy monitoring. Trzeba je zainstalować w kolejnym kroku.
 
 Komponenty:
 - MetalLB
 - Metrics-server
 
-Umieszczone są w katalogu **clusters/talos-dev**. Traktowane są logicznie jako usługi systemowe, które nie są związane z regularnymi  aplikacjami. Po skonfigurowaniu usług bazowych można wdrażać kolejno: [repozytorium z appchart](/kubernetes/helmchart) oraz poszczególne aplikacje. 
+Znajdują się w katalogu **clusters/talos-dev**. Logicznie traktowane są jako usługi systemowe, niezwiązane z regularnymi aplikacjami. Po skonfigurowaniu usług bazowych można wdrażać kolejno: [repozytorium z appchart](/kubernetes/helmchart) oraz poszczególne aplikacje.
 
 ## FluxCD
 
@@ -45,7 +45,7 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.16.1/confi
 
 ### Konfiguracja
 
-Trzeba skonfigurować rozgłaszanie adresów IP oraz pulę z której może korzystać MetalLB. Konfiguracja zostanie zapisana w **clusters/talos-dev/metallb**. FluxCD zajmie się wdrożeniem w klastrze.
+Trzeba skonfigurować rozgłaszanie adresów IP oraz pulę, z której może korzystać MetalLB. Konfiguracja zostanie zapisana w **clusters/talos-dev/metallb**. FluxCD zajmie się wdrożeniem w klastrze.
 
 ```yaml title="clusters/talos-dev/metallb/advertisement.yaml"
 apiVersion: metallb.io/v1beta1
@@ -63,26 +63,31 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-  - 192.168.3.170-192.168.3.179
+  - 192.0.2.170-192.0.2.179
 ```
 
-Adresacja dla **IPAddressPool** nie może być przez nic innego używana.
+Adresy z puli **IPAddressPool** nie mogą być używane przez żadne inne urządzenia ani usługi.
 
 ## Ingress
 
-Jako ingress klaster będzie wykorzystywał Traefik. Instalacja traefik z użyciem helm.
+Jako ingress klaster wykorzystuje Traefik instalowany za pomocą Helma.
 
 W pierwszym kroku trzeba zainstalować wymagane CRD:
-```bash no-line-numbers
+
+```bash :no-line-numbers
 kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/standard-install.yaml
 kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.5/docs/content/reference/dynamic-configuration/kubernetes-gateway-rbac.yml
 ```
+
+Następnie przygotowujemy plik `values.yaml` włączający obsługę Gateway API:
 
 ```yaml title="values.yaml"
 providers:
   kubernetesGateway:
     enabled: true
 ```
+
+i instalujemy chart:
 
 ```bash :no-line-numbers
 helm repo add traefik https://traefik.github.io/charts
@@ -94,7 +99,7 @@ helm upgrade --install traefik traefik/traefik \
 
 ## Metryki Kubernetes
 
-Manifest metrics-server znajduje się w katalogu: **clusters/talos-dev/metrics-server**.
+Manifest metrics-server znajduje się w katalogu: **clusters/talos-dev/metrics-server**.
 
 ```yaml :collapsed-lines=15 title="clusters/talos-dev/metrics-server/components.yaml"
 apiVersion: v1

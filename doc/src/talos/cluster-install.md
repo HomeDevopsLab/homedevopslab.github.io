@@ -6,59 +6,58 @@ category:
   - Guide
 ---
 
-Wszystkie operacje związane z klastrem Talos wykonywane są na podstawie kodu repozytorium.
+Wszystkie operacje związane z klastrem Talos wykonywane są na podstawie kodu w repozytorium.
 
 ## Wymagania wstępne
 
-Kod tworzący klaster jest zależny od istnienia template'u maszyny wirtualnej: `talos-nocloud-amd64`. Jest on tworzony z repozytorium: **proxmox-vm-templates**
+Kod tworzący klaster jest zależny od istnienia template'u maszyny wirtualnej: `talos-nocloud-amd64`. Jest on tworzony w repozytorium **proxmox-vm-templates**.
 
-![Mapa zależności providerów terraform](/assets/image/talos-code-deps.svg)
+![Mapa zależności providerów Terraform](/assets/image/talos-code-deps.svg)
 
-Dodatkowym narzędziem, które jest potrzebne to `talosctl` (https://docs.siderolabs.com/omni/getting-started/how-to-install-talosctl).
+Potrzebne jest również narzędzie `talosctl` ([instrukcja instalacji](https://docs.siderolabs.com/omni/getting-started/how-to-install-talosctl)).
 
 ### Pula adresów IP
 
-Potrzebne będą dwa zakresy adresów IP. Jeden dla maszyn wirtualnych talos. drugi dla loadbalancera Kubernetes.
+Potrzebne będą dwa zakresy adresów IP: jeden dla maszyn wirtualnych Talos, drugi dla load balancera Kubernetes.
 
-Załóżmy, że chcemy uruchomić 6-cio węzłowy klaster talos.
+Załóżmy, że chcemy uruchomić sześciowęzłowy klaster Talos:
 
 * 6 adresów IP dla wszystkich węzłów + 1 dla VIP
-* 10 adresów IP dla loadbalacera Kubernetes
+* 10 adresów IP dla load balancera Kubernetes
 
-Można uwzględnić dodatkowe adresy IP na potrzeby doskalowania klastra w przyszłości.
+Warto zarezerwować dodatkowe adresy IP na potrzeby przyszłej rozbudowy klastra.
 
 ## Przygotowanie kodu
 
-Sruktura repozytorium
+Struktura repozytorium:
 
 ![Struktura kodu klastra Talos](/assets/image/talos-cluster-repo-structure.svg)
 
-Uruchomienie nowego klastra sprowadza się do utworzenia kopi katalogu `talos-dev` pod nową nazwą, np: `talos-prod` i dostosowania konfiguracji.
+Uruchomienie nowego klastra sprowadza się do utworzenia kopii katalogu `talos-dev` pod nową nazwą, np. `talos-prod`, i dostosowania konfiguracji.
 
 ::: important Nazwa katalogu
-Nazwa każdego katalogu z konfiguracją klastra powinna zaczynać się od prefixu `talos-`. Nazwa prefixu została użyta do lokalizacji modułu Terraform.
+Nazwa każdego katalogu z konfiguracją klastra powinna zaczynać się od prefiksu `talos-`. Prefiks ten jest wykorzystywany do lokalizowania modułu Terraform.
 :::
 
 ### Konfiguracja VM
 
-Parametry konfiguracyjne zostały podzielone na trzy pliki aby poprawić czytelność kodu.
+Parametry konfiguracyjne maszyn wirtualnych zostały podzielone na trzy pliki, aby poprawić czytelność kodu.
 
 #### Common
 > Plik: common.hcl
 
-Parametry wspólne dla maszyn wirtualnych w całym klastrze. Na ten moment zakładam, że każda maszyna wirtualna będzie miała identyczne zasoby (CPU, RAM, Dysk).
+Parametry wspólne dla maszyn wirtualnych w całym klastrze. Obecnie zakładam, że każda maszyna wirtualna ma identyczne zasoby (CPU, RAM, dysk).
 
-* brama sieciowa i adres IP serwera dns
-* template maszyny wirtualnej
-* CPU / RAM / Dysk : parametry określają jak dużo zasobów mają mieć przydzielone maszyny wirtualne.
-* nazwa przestrzeni dyskowej w klastrze proxmox, która będzie przechowywać obraz dysku.
-* status maszyny wirtualnej po uruchomieniu sewera proxmox.
+* brama sieciowa i adres IP serwera DNS,
+* template maszyny wirtualnej,
+* CPU / RAM / dysk — ilość zasobów przydzielonych maszynom wirtualnym,
+* nazwa magazynu danych (storage) w klastrze Proxmox, który będzie przechowywać obraz dysku,
+* zachowanie maszyny wirtualnej po uruchomieniu serwera Proxmox (automatyczny start).
 
 #### Controlplane i Workers
 > Pliki: controlplane.hcl, workers.hcl
 
-Oba pliki wyglądają podobnie. Zawierają listę węzłów, pełniących określoną rolę: worker i control-plane.
-
+Oba pliki mają podobną strukturę. Zawierają listę węzłów pełniących określoną rolę: control-plane lub worker.
 
 ```hcl
 nodes = {
@@ -67,7 +66,7 @@ nodes = {
     template  = local.common.template
     resources = local.common.resources,
     network = merge(local.common.network, {
-      ip = "192.168.3.33/24"
+      ip = "192.0.2.33/24"
     })
     onboot = local.common.onboot
   }
@@ -75,20 +74,20 @@ nodes = {
 }
 ```
 
-Na tym poziomie określamy nazwę węzła klastra proxmox, który będzie hostem dla tej maszyny wirtualnej oraz jej stały adres IP. Pozostałe parametry dziedziczone są z `common.hcl`.
+Na tym poziomie określamy nazwę węzła klastra Proxmox, który będzie hostem dla danej maszyny wirtualnej, oraz jej stały adres IP. Pozostałe parametry dziedziczone są z `common.hcl`.
 
 #### Inputs
 > Plik: inputs.hcl
 
-Definicja parametrów wejściowych dla modułu terraform oraz konfiguracja najważniejszych parametrów klastra
+Definicja parametrów wejściowych modułu Terraform oraz konfiguracja najważniejszych parametrów klastra:
 
 ```hcl
-cluster_endpoint   = "192.168.3.100"
+cluster_endpoint   = "192.0.2.100"
 kubernetes_version = "v1.37.1"
 talos_version      = "v1.14.3"
 ```
 
-`cluster_endpoint` to VIP, który migruje pomiędzy węzłami control-plane. Zapewnia on komunikację z klastrem w przypadku awarii któregokolwiek węzła.
+`cluster_endpoint` to VIP, który migruje pomiędzy węzłami control-plane. Zapewnia on komunikację z klastrem w przypadku awarii któregokolwiek węzła.
 
 ## Stworzenie klastra
 
@@ -99,24 +98,24 @@ cd talos-prod
 terragrunt apply
 ```
 
-Podczas wdrożenia w pierwszej kolejności tworzone są maszyny wirtualne na klastrze proxmox. Po ich utworzeniu provider Talosa generuje konfiguację klastra i wgrywa ją dna stworzone maszyny wirtualne. Po kilku minutach klaster jest już gotowy.
+Podczas wdrożenia w pierwszej kolejności tworzone są maszyny wirtualne na klastrze Proxmox. Następnie provider Talosa generuje konfigurację klastra i wgrywa ją na utworzone maszyny wirtualne. Po kilku minutach klaster jest już gotowy.
 
 ::: tip Kubernetes
-Po zakończeniu apply należy poczekać jeszcze ok 1-2 min. W tym czasie Talos konfiguruje klaster kubernetes. Nie jest on dostępy od razu.
+Po zakończeniu `apply` należy poczekać jeszcze ok. 1–2 minuty. W tym czasie Talos konfiguruje klaster Kubernetes, który nie jest dostępny od razu.
 :::
 
 ## Przygotowanie środowiska
 
-Aby być w stanie wykonywać operacje na klastrze oraz obserwować jego działanie, trzeba skonfigurować swoją stację developerską.
+Aby wykonywać operacje na klastrze oraz obserwować jego działanie, trzeba skonfigurować swoją stację roboczą.
 
-Pobranie konfiguracji Talosa dla `talosctl`
+Pobranie konfiguracji Talosa dla `talosctl`:
 ```bash :no-line-numbers
-terragrunt output -raw talosonfig >~/.talos/config
+terragrunt output -raw talosconfig > ~/.talos/config
 ```
 
-Konfiguracja kubernetes
+Konfiguracja Kubernetes:
 ```bash :no-line-numbers
-talosctl -n 192.168.3.33 kubeconfig
+talosctl -n 192.0.2.33 kubeconfig
 ```
 
-Operacja **kubeconfig** nie nadpisuje konfiguracji kubneretes dla innego klastra. Tworzony jest nowy kontekst konfiguracji. Dzięki temu możemy się przełączać pomiędzy klastrami kubernetes. Nadpisanie konfiguracji występuje wyłącznie w przypadku stworzenia klastra o nazwie takiej jaka już wcześniej była. W tym przypadku pojawia się pytaine o zatwierdzenie operacji.
+Operacja **kubeconfig** nie nadpisuje konfiguracji Kubernetes innych klastrów — tworzony jest nowy kontekst. Dzięki temu można przełączać się pomiędzy klastrami Kubernetes. Konfiguracja zostaje nadpisana wyłącznie wtedy, gdy wcześniej istniał już klaster o tej samej nazwie. W takim przypadku pojawia się prośba o zatwierdzenie operacji.

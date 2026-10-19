@@ -43,6 +43,10 @@ highlights:
         icon: server
         details: Proxmox Cluster Architecture Overview
         link: ./proxmox/
+      - title: Talos Cluster
+        icon: https://cdn.simpleicons.org/talos/fff
+        details: Building a Kubernetes cluster on the Talos Linux distribution
+        link: ./talos/
       - title: Kubernetes Cluster
         icon: dharmachakra
         details: Building a local Kubernetes cluster
