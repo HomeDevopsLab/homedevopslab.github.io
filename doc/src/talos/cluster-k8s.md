@@ -29,4 +29,36 @@ Więcej szczegółów dotyczących FluxCD: [Kubernetes/FluxCD](/kubernetes/flux)
 Więcej szczegółów dotyczących SOPS: [Kubernetes/SOPS](/kubernetes/sops)
 
 ## Load Balancer
+
+### Instalacja
+
+```bash :no-line-numbers
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.16.1/config/manifests/metallb-native.yaml
+```
+
+### Konfiguracja
+
+Trzeba skonfigurować rozgłaszanie adresów IP oraz pulę z której może korzystać MetalLB. Konfiguracja zostanie zapisana w **clusters/talos-dev/metallb**. FluxCD zajmie się wdrożeniem w klastrze.
+
+```yaml title="clusters/talos-dev/metallb/advertisement.yaml"
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: example
+  namespace: metallb-system
+```
+
+```yaml title="clusters/talos-dev/metallb/addresspool.yaml"
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: metallb-ip-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.3.170-192.168.3.179
+```
+
+Adresacja dla **IPAddressPool** nie może być przez nic innego używana.
+
 ## Ingress
