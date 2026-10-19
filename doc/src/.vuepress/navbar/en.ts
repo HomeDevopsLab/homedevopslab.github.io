@@ -18,7 +18,7 @@ export const enNavbar = navbar([
     text: "Talos Cluster",
     icon: "https://cdn.simpleicons.org/talos/fff",
     prefix: "/en/talos/",
-    children: ["cluster-install", "cluster-updates", "cluster-scale"],
+    children: ["cluster-install", "cluster-updates", "cluster-scale", "cluster-k8s"],
   },
   {
     text: "Gitops",
