@@ -233,5 +233,5 @@ Wybrane polecenia:
 | Polecenie | Opcje | Opis |
 | --------| ------| -----|
 | talosctl -n 192.0.2.33 list | -l / | Wyświetla zawartość katalogu na węźle klastra (odpowiednik `ls -l`). W ten sposób można przeglądać system plików. |
-| talosctl -n 192.0.2.33 usage  /var | -H | Sprawdza, ile miejsca zajmuje katalog na dysku. Opcja `-H` Pokazuje wartosć "human readable" |
+| talosctl -n 192.0.2.33 usage  /var | -H | Sprawdza, ile miejsca zajmuje katalog na dysku. Opcja `-H` pokazuje wartości w formacie czytelnym dla człowieka (human-readable). |
 | talosctl -n 192.0.2.33 reboot | -/- | Restartuje węzeł |

@@ -8,13 +8,13 @@ category:
 
 ## Architecture
 
-Talos Linux takes a completely different approach to system management than traditional Linux distributions. One of its core principles is immutability. As a result, there is no way to log in to the system over SSH. The only way to interact with the system is through its API, used by dedicated tools or IaC. This single difference has a huge impact on day-to-day operations: individual packages cannot be installed or updated, because the system is delivered as an image.
+Talos Linux takes a completely different approach to system management than traditional Linux distributions. One of its core principles is immutability. There is no way to log in to the system over SSH. The only way to interact with the system is through its API, used by dedicated tools or IaC. This single difference has a huge impact on day-to-day operations: individual packages cannot be installed or updated, because the system is delivered as an image.
 
 ![Talos Linux system architecture](/assets/image/talos-diagram.svg)
 
 ## System diagnostics
 
-The primary tool for interacting with a Talos cluster is **talosctl**. It provides live access to logs and to current resource usage, such as CPU, memory, disks and network. This article presents a few examples of how to use it. More details can be found in the documentation and by experimenting with `talosctl -h`.
+The primary tool for interacting with a Talos cluster is `talosctl`. It provides live access to logs and to current resource usage, such as CPU, memory, disks and network. This article presents a few examples of how to use it. More details can be found in the documentation and by experimenting with `talosctl -h`.
 
 - [Reference manual](https://docs.siderolabs.com/talos/v1.14/reference/cli)
 - [Talos documentation](https://docs.siderolabs.com/talos/v1.14/overview/what-is-talos)
@@ -233,5 +233,5 @@ Selected commands:
 | Command | Options | Description |
 | --------| ------| -----|
 | talosctl -n 192.0.2.33 list | -l / | Lists the contents of a directory on a cluster node (equivalent of `ls -l`). This is how you can browse the file system. |
-| talosctl -n 192.0.2.33 usage  /var | -H | Checks how much disk space a directory uses |
+| talosctl -n 192.0.2.33 usage  /var | -H | Checks how much disk space a directory uses. The `-H` option shows values in human-readable format. |
 | talosctl -n 192.0.2.33 reboot | -/- | Reboots the node |
