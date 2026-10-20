@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.0.0] - 2026-10-19
+
+### Added
+
+- Talos Cluster: new top-level section describing the immutable, API-driven Kubernetes cluster built on Talos Linux — installation from code, scaling, Talos and Kubernetes upgrades, base services (FluxCD, SOPS, MetalLB, Traefik, metrics-server) and day-to-day diagnostics with `talosctl`, published in both Polish and English.
+- Proxmox: Talos VM template added to the list of available templates (PL/EN).
+
 ## [5.1.0] - 2026-10-06
 
 ### Added

@@ -10,6 +10,13 @@ export const plSidebar = sidebar({
       children: "structure",
     },
     {
+      text: "Talos Cluster",
+      icon: "https://cdn.simpleicons.org/talos/fff",
+      prefix: "talos/",
+      link: "talos/",
+      children: "structure",
+    },
+    {
       text: "Kubernetes",
       icon: "dharmachakra",
       prefix: "kubernetes/",

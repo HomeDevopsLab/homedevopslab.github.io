@@ -94,6 +94,10 @@ spec:
   timeout: 1m0s
 ```
 
+::: tip Klucz prywatny
+Po zakończeniu konfiguracji można usunąć z dysku plik **age.agekey**. Cała infrastruktura szyfrowania secretów znajduje się już w klastrze Kubernetes: secret **sops-age** przechowuje klucz prywatny, a plik **.sops.yaml** — klucz publiczny.
+:::
+
 ## Szyfrowanie secretów
 
 W repozytorium klastra przyjęta została zasada, że pliki z secretami mają nazwę pasującą do wzorca: `*-secrets-clear.yaml` oraz `*-secrets-enc.yaml`. Te z **clear** w nazwie pliku nie są publikowane w repozytorium.
