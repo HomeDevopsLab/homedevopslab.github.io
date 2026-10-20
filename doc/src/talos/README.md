@@ -8,13 +8,13 @@ category:
 
 ## Architektura
 
-Talos Linux stosuje zupełnie inną filozofię obsługi systemu niż tradycyjne dystrybucje Linuksa. Jednym z założeń dystrybucji jest jej niezmienność (immutable). W związku z tym nie ma możliwości zalogowania się do systemu przez SSH. Jedynym sposobem interakcji z systemem jest API, z którego korzystają dedykowane narzędzia lub IaC. Ta jedna różnica ma ogromny wpływ na utrzymanie systemu: nie da się zainstalować ani zaktualizować pojedynczych pakietów, ponieważ system dostarczany jest jako obraz.
+Talos Linux stosuje zupełnie inną filozofię obsługi systemu niż tradycyjne dystrybucje Linuksa. Jednym z założeń dystrybucji jest jej niezmienność (immutable). Nie ma możliwości zalogowania się do systemu przez SSH. Jedynym sposobem interakcji z systemem jest API, z którego korzystają dedykowane narzędzia lub IaC. Ta jedna różnica ma ogromny wpływ na utrzymanie systemu: nie da się zainstalować ani zaktualizować pojedynczych pakietów, ponieważ system dostarczany jest jako obraz.
 
 ![Architektura systemu Talos Linux](/assets/image/talos-diagram.svg)
 
 ## Diagnostyka systemu
 
-Podstawowym narzędziem do interakcji z klastrem Talos jest **talosctl**. Umożliwia ono dostęp na żywo do logów oraz informacji o bieżącym wykorzystaniu zasobów, takich jak procesor, pamięć, dyski i sieć. Ten artykuł przedstawia kilka przykładów użycia tego narzędzia. Bardziej szczegółowe informacje można znaleźć w dokumentacji oraz eksperymentując z `talosctl -h`.
+Podstawowym narzędziem do interakcji z klastrem Talos jest `talosctl`. Umożliwia ono dostęp na żywo do logów oraz informacji o bieżącym wykorzystaniu zasobów, takich jak procesor, pamięć, dyski i sieć. Ten artykuł przedstawia kilka przykładów użycia tego narzędzia. Bardziej szczegółowe informacje można znaleźć w dokumentacji oraz eksperymentując z `talosctl -h`.
 
 - [Reference manual](https://docs.siderolabs.com/talos/v1.14/reference/cli)
 - [Dokumentacja Talos](https://docs.siderolabs.com/talos/v1.14/overview/what-is-talos)
@@ -233,5 +233,5 @@ Wybrane polecenia:
 | Polecenie | Opcje | Opis |
 | --------| ------| -----|
 | talosctl -n 192.0.2.33 list | -l / | Wyświetla zawartość katalogu na węźle klastra (odpowiednik `ls -l`). W ten sposób można przeglądać system plików. |
-| talosctl -n 192.0.2.33 usage  /var | -H | Sprawdza, ile miejsca zajmuje katalog na dysku |
+| talosctl -n 192.0.2.33 usage  /var | -H | Sprawdza, ile miejsca zajmuje katalog na dysku. Opcja `-H` Pokazuje wartosć "human readable" |
 | talosctl -n 192.0.2.33 reboot | -/- | Restartuje węzeł |
