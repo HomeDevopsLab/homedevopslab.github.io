@@ -1,5 +1,11 @@
 # Changelog
 
+## [6.0.1] - 2026-11-05
+
+### Changed
+
+- Security: the backups article now covers file-level backups with Borg — encrypted, deduplicated archives on TrueNAS with a ready-to-use CLI and Docker setup, retention policy and day-to-day commands, published in both Polish and English.
+
 ## [6.0.0] - 2026-10-19
 
 ### Added
