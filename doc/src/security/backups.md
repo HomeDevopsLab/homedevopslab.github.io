@@ -81,25 +81,25 @@ spec:
 
 ## Backup plikowy
 
-Detaliczny backup plików wykonywany jest narzędziem [Borg](https://www.borgbackup.org/). Repozytorium Borga znajduje się na serwerze TrueNAS. Wykonywaniem backupu steruje harmonogram CronJoba w Kubernetes. Bakcupy są szyfrowane. Podlegają kompresji oraz deduplikacji, co dodatkowo zmniejsza ilość wykorzystanej przestrzeni na dysku.
+Szczegółowy backup plików wykonywany jest narzędziem [Borg](https://www.borgbackup.org/). Repozytorium Borga znajduje się na serwerze TrueNAS, a uruchamianiem backupu steruje CronJob w Kubernetes. Backupy są szyfrowane, kompresowane i deduplikowane, co dodatkowo ogranicza zajmowaną przestrzeń dyskową.
 
-![Borg Schemat](/assets/image/borg-schema.svg)
+![Schemat backupu Borg](/assets/image/borg-schema.svg)
 
 ::: info Cloud backup
-Decyzja o miejscu w chmurze, gdzie będzie trzymana kopia backupu jeszcze nie została podjęta. Na pewno będzie to zależało od wielkości miesięcznego backupu.
+Decyzja o tym, w której usłudze chmurowej będzie przechowywana kopia backupu, nie została jeszcze podjęta. Będzie ona zależała przede wszystkim od miesięcznej wielkości backupu.
 :::
 
 ### Instalacja Borga
 
-Metody instalacji można znaleźć w [oficjalnej dokumentacji](https://borgbackup.readthedocs.io/en/stable/installation.html). Ja wybrałem opcję ręcznej instalacji binarki (Standalone Binary) pochodzącej z [projektu na Githubie](https://github.com/borgbackup/borg/releases). Dużą zaletą Borga jest to, że wystarczy go zainstalować w jednym miejscu, np. maszynie wirtualnej z której będzie wykonywany backup. Nie ma konieczności instalowania serwera i klientów. Borg może też działać w kontenerze.
+Metody instalacji opisane są w [oficjalnej dokumentacji](https://borgbackup.readthedocs.io/en/stable/installation.html). Wybrałem ręczną instalację samodzielnej binarki (Standalone Binary) z [wydań projektu na GitHubie](https://github.com/borgbackup/borg/releases). Dużą zaletą Borga jest to, że wystarczy zainstalować go w jednym miejscu, np. na maszynie wirtualnej, z której wykonywany będzie backup — nie trzeba instalować osobnego serwera ani klientów. Borg może też działać w kontenerze.
 
 ::: important Kompatybilność
-Dokumentacja jest zgodna z wersją 1.x Borga. Wersja 2.x posiada nieco inną składnię i opisane polecenia nie będą działać.
+Dokumentacja dotyczy Borga w wersji 1.x. Wersja 2.x ma nieco inną składnię, więc opisane polecenia nie będą w niej działać.
 :::
 
 ### Inicjalizacja repozytorium
 
-Zanim będzie można wykonać pierwszy backup trzeba wybrać miejsce, gdzie może być on przechowywany i zainicjować repozytorium.
+Przed wykonaniem pierwszego backupu trzeba wybrać miejsce jego przechowywania i zainicjować repozytorium.
 
 ```bash :no-line-numbers
 export BORG_REPO=/mnt/truenas/borgbackup
@@ -107,14 +107,13 @@ export BORG_PASSPHRASE='superSecret'
 borg init --encryption=repokey
 ```
 
-### Uruchomienie backupu (cli)
+### Uruchomienie backupu (CLI)
 
-Przed uruchomieniem backupu warto ustalić kilka kwestii.
+Przed uruchomieniem backupu warto ustalić kilka kwestii:
 
-1. Jak mają się nazywać kolejne backupy. Nie da się utworzyć backupu z nazwą archiwum, która już została wcześniej użyta.
-2. (Opcjonalnie) - czy zastosować prefix dla nazw archiwów (np. `backup-`)
-3. Retencja (daily / weekly / monthly)
-
+1. Konwencję nazewnictwa kolejnych archiwów — nie da się utworzyć archiwum o nazwie, która została już wcześniej użyta.
+2. (Opcjonalnie) prefiks nazw archiwów, np. `backup-`.
+3. Politykę retencji (daily / weekly / monthly).
 
 ```bash :no-line-numbers
 export BORG_REPO=/mnt/truenas/borgbackup
@@ -122,8 +121,8 @@ export BORG_PASSPHRASE='superSecret'
 borg create \
   --stats \
   --show-rc \
-  --progress \ 
-  ::20261105 /mnt/storage/katalog1 /mnt/storage/katalog2 /mnt/storage/katalog3
+  --progress \
+  ::20261105 /mnt/srv-storage/katalog1 /mnt/srv-storage/katalog2 /mnt/srv-storage/katalog3
 
 borg prune \
   --stats \
@@ -136,13 +135,13 @@ borg prune \
 borg compact --cleanup-commits --show-rc --progress
 ```
 
-W powyższym przykładzie zostanie uruchomiony backup dla trzech katalogów, nazwa archiwum to: `20261105`. Backup na kolejny dzień zostanie utworzony pod nazwą: `20261106`. Konwencja z datą bieżącego dnia pozwoli uniknąć kolizji w nazwach archiwum.
+Powyższy przykład tworzy backup trzech katalogów w archiwum o nazwie `20261105`. Backup z kolejnego dnia otrzyma nazwę `20261106` — konwencja oparta na bieżącej dacie pozwala uniknąć kolizji nazw archiwów.
 
-Kolejne polecenie: `borg prune` wykonuje ustaloną politykę retencji backupu. Ostatnie polecenie: `borg compact` porządkuje bazę borga.
+Polecenie `borg prune` stosuje ustaloną politykę retencji, a `borg compact` porządkuje repozytorium, zwalniając miejsce po usuniętych archiwach.
 
-### Uruchomienie backupu (docker)
+### Uruchomienie backupu (Docker)
 
-To samo można uzyskać uruchamiając Burga w kontenerze dockera
+Ten sam efekt można uzyskać, uruchamiając Borga w kontenerze Dockera:
 
 ```bash
 docker run --rm \
@@ -151,7 +150,7 @@ docker run --rm \
   -e ARCHIVE="{now:%Y%m%d}" \
   -e SHOW_PROGRESS=1 \
   -e PRUNE=1 \
-  -e BACKUP_DIRS="/mnt/storage/katalog1 /mnt/storage/katalog2 /mnt/storage/katalog3" \
+  -e BACKUP_DIRS="/mnt/srv-storage/katalog1 /mnt/srv-storage/katalog2 /mnt/srv-storage/katalog3" \
   -e BORG_CACHE_DIR=/mnt/srv-storage/borg/cache \
   -v /mnt/srv-storage:/mnt/srv-storage \
   -v /mnt/truenas:/mnt/truenas \
@@ -160,16 +159,17 @@ docker run --rm \
 ```
 
 ::: tip ARCHIVE
-Użyte w przykładzie wyrażenie: `{now:%Y%m%d}` instruuje borga, że ma pobrać aktualną datę z systemu, sformatować ją i użyć jako nazwę dla archiwum.
+Użyte w przykładzie wyrażenie `{now:%Y%m%d}` instruuje Borga, aby pobrał bieżącą datę systemową, sformatował ją i użył jako nazwy archiwum.
 :::
 
 ::: tip Cache
-W przypadku dockera warto ustawić zmienną `BORG_CACHE_DIR`, która umożliwi zapisanie cache poza kontenerem dockera. Pozwala to na znaczne skrócenie czasu wykonywania się backupów w kolejnych dniach.
+W przypadku Dockera warto ustawić zmienną `BORG_CACHE_DIR`, dzięki której cache zapisywany jest poza kontenerem. Znacznie skraca to czas wykonywania kolejnych backupów.
 :::
 
 ### Przydatne polecenia
 
 #### Lista backupów
+
 ```bash :no-line-numbers title="borg list"
 20261101                             Sun, 2026-11-01 08:09:03 [8ff280cad1cdd5c1ee212d1971b72b2179d2111a989c4d69c2a2d870ec4628bf]
 20261102                             Mon, 2026-11-02 06:16:17 [79b25e0a919d45e9fb5ac177d180177f1699f0c1b282db426358335f56e50e4e]
@@ -178,7 +178,7 @@ W przypadku dockera warto ustawić zmienną `BORG_CACHE_DIR`, która umożliwi 
 20261105                             Thu, 2026-11-05 07:00:24 [f2a74a4b48a87e50f789e242fe9132ffe413269bfff3bc0c6a999eaeb40de912]
 ```
 
-#### Zbiorcza informacja o bakckupach
+#### Zbiorcze informacje o backupach
 
 ```bash :no-line-numbers title="borg info"
 Repository ID: 6366992d491b2254f42edf86a343c86736e75be558d74309a05122cc1cb9316c
@@ -194,7 +194,7 @@ All archives:                1.07 TB              1.05 TB            186.82 GB
 Chunk index:                  124256               684945
 ```
 
-#### Informacja o wybranym backupie
+#### Informacje o wybranym backupie
 
 ```bash :no-line-numbers title="borg info ::20261105"
 Archive name: 20261105
@@ -218,9 +218,9 @@ All archives:                1.07 TB              1.05 TB            186.82 GB
 Chunk index:                  124256               684945
 ```
 
-#### Różnice pomędzy dwoma backupami.
+#### Różnice pomiędzy dwoma backupami
 
-```bash :no-line-numbers title="org diff --content-only ::20261103 20261104"
+```bash :no-line-numbers title="borg diff --content-only ::20261103 20261104"
   +1.9 MB   -1.9 MB mnt/srv-storage/paperless-webserver/data/celerybeat-schedule.db-wal
  +32.8 kB  -32.8 kB mnt/srv-storage/paperless-webserver/data/celerybeat-schedule.db-shm
  +80.3 kB  -76.6 kB mnt/srv-storage/paperless-webserver/data/log/paperless.log
