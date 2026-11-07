@@ -1,3 +1,5 @@
+![Angrybits Homelab](doc/src/.vuepress/public/assets/image/readme-banner.jpg)
+
 # docs.lab.angrybits.pl
 
 Strona z dokumentacją homelaba wygenerowana za pomocą [VuePress Theme Hope](https://theme-hope.vuejs.press/). Dostępna w dwóch językach: polskim (domyślny) i angielskim (`/en/`).
