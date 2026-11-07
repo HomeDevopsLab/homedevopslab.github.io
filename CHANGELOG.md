@@ -1,5 +1,11 @@
 # Changelog
 
+## [6.0.3] - 2026-11-07
+
+### Changed
+
+- Proxmox: Ubuntu VM template names corrected on the template list, so the names shown match the actual templates available in Proxmox (PL/EN).
+
 ## [6.0.2] - 2026-11-07
 
 ### Changed
