@@ -1,5 +1,11 @@
 # Changelog
 
+## [6.0.2] - 2026-11-07
+
+### Changed
+
+- Proxmox: Ubuntu 26.04 added to the list of available VM templates, so new machines can be provisioned on the latest LTS release; the English version is now fully translated (PL/EN).
+
 ## [6.0.1] - 2026-11-05
 
 ### Changed
