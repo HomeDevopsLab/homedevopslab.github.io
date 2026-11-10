@@ -30,6 +30,6 @@ export const enNavbar = navbar([
     text: "Security",
     icon: "shield",
     prefix: "/en/security/",
-    children: ["backups"],
+    children: ["backups", "restore"],
   }
 ]);

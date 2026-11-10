@@ -30,6 +30,6 @@ export const plNavbar = navbar([
     text: "Security",
     icon: "shield",
     prefix: "/security/",
-    children: ["backups"],
+    children: ["backups", "restore"],
   }
 ]);
