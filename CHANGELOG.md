@@ -1,5 +1,11 @@
 # Changelog
 
+## [6.1.0] - 2026-11-10
+
+### Added
+
+- Security: new article describing how to restore a virtual machine from a Proxmox backup, including safely testing a restore alongside the running production instance, published in both Polish and English.
+
 ## [6.0.3] - 2026-11-07
 
 ### Changed
