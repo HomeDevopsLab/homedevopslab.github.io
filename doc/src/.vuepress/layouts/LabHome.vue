@@ -109,6 +109,53 @@ const isInternal = (link: string): boolean => link.startsWith("/");
 // Grafiki: .is-loaded na <figure> po załadowaniu pliku (do tego czasu placeholder).
 const root = ref<HTMLElement | null>(null);
 let observer: IntersectionObserver | undefined;
+let tiltAbort: AbortController | undefined;
+
+// Grafiki sekcji: przechył 3D w stronę kursora + refleks światła (zmienne CSS
+// --rx/--ry/--gx/--gy). Tylko dla myszy i gdy użytkownik nie ogranicza animacji.
+const setupTilt = (el: HTMLElement): void => {
+  tiltAbort?.abort();
+  const canTilt = window.matchMedia(
+    "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+  ).matches;
+  if (!canTilt) return;
+
+  tiltAbort = new AbortController();
+  const { signal } = tiltAbort;
+
+  el.querySelectorAll<HTMLElement>(".ab-figure").forEach((figure) => {
+    let frame = 0;
+
+    figure.addEventListener(
+      "pointermove",
+      (event) => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          const box = figure.getBoundingClientRect();
+          const x = (event.clientX - box.left) / box.width;
+          const y = (event.clientY - box.top) / box.height;
+          figure.style.setProperty("--ry", `${((x - 0.5) * 10).toFixed(2)}deg`);
+          figure.style.setProperty("--rx", `${((0.5 - y) * 8).toFixed(2)}deg`);
+          figure.style.setProperty("--gx", `${(x * 100).toFixed(1)}%`);
+          figure.style.setProperty("--gy", `${(y * 100).toFixed(1)}%`);
+          figure.classList.add("is-tilting");
+        });
+      },
+      { signal },
+    );
+
+    figure.addEventListener(
+      "pointerleave",
+      () => {
+        cancelAnimationFrame(frame);
+        figure.classList.remove("is-tilting");
+        for (const prop of ["--rx", "--ry", "--gx", "--gy"])
+          figure.style.removeProperty(prop);
+      },
+      { signal },
+    );
+  });
+};
 
 const setupReveal = (): void => {
   const el = root.value;
@@ -123,6 +170,8 @@ const setupReveal = (): void => {
       img.addEventListener("error", done, { once: true });
     }
   });
+
+  setupTilt(el);
 
   observer?.disconnect();
   if (!("IntersectionObserver" in window)) return;
@@ -146,7 +195,10 @@ const setupReveal = (): void => {
 onMounted(setupReveal);
 // przełączenie języka (PL <-> EN) ponownie używa tego samego layoutu
 watch(routePath, () => nextTick(setupReveal));
-onBeforeUnmount(() => observer?.disconnect());
+onBeforeUnmount(() => {
+  observer?.disconnect();
+  tiltAbort?.abort();
+});
 const asset = (src: string): string =>
   /^(https?:)?\/\//.test(src) ? src : withBase(src);
 </script>
