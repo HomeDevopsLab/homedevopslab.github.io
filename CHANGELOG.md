@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.2.2] - 2026-11-11
+
+### Changed
+
+- Home: the hero is now an arcade title screen with a "PRESS START" menu leading to the lab story or the knowledge base, and the milestones section has become a small platformer level the mascot runs through as you scroll (PL/EN).
+- Home: section illustrations are redrawn to match the height of their text and stay readable on every screen size; homepage images no longer open a full-screen gallery.
+
 ## [6.2.1] - 2026-11-11
 
 ### Changed

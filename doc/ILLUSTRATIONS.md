@@ -11,7 +11,7 @@ Generowana przez serwer MCP `nano-banana` (Gemini):
 
 | parametr | wartość |
 | --- | --- |
-| `aspectRatio` | `16:9` |
+| `aspectRatio` | `1:1` (lub `4:3` przy krótkim tekście sekcji) |
 | `resolution` | `2K` |
 | `thinking` | `high` |
 | `returnInlineImage` | `false` |
@@ -25,8 +25,18 @@ Te elementy powtarzaj w każdym promptcie — one budują spójność:
 - subtelna siatka heksagonalna w tle
 - low-poly ikony 3D stojące na cienkich, świecących heksagonalnych podestach
 - łączące je linie przepływu danych z drobnymi wędrującymi cząstkami światła
-- kinowe światło, ostre wektorowe krawędzie, szeroka kompozycja 16:9
-   z dużą ilością pustej ciemnej przestrzeni
+- kinowe światło, ostre wektorowe krawędzie, kompozycja 1:1 (lub 4:3),
+   w której scena wypełnia większość kadru
+- mało, ale dużych elementów i 3–4 krótkie etykiety: grafika wyświetla się
+   w kolumnie ~530 px, więc drobne panele i napisy są tam nieczytelne
+
+### Proporcje
+
+Ilustracja stoi w połowie szerokości obok tekstu sekcji, więc powinna mieć
+podobną wysokość jak ten tekst. Panorama 16:9 wychodzi jako niski pasek,
+dlatego domyślnie generuj **1:1**, a **4:3** tylko dla sekcji z krótkim
+opisem (np. „Wirtualizacja & High Availability”). Na wąskich ekranach karta
+ma najwyżej 560 px szerokości i nie jest przycinana.
 
 ### Etykiety
 
