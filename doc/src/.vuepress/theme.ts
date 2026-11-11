@@ -16,49 +16,19 @@ const updatedDate = process.env.VUEPRESS_BUILD_DATE || (() => {
   catch { return 'unknown'; }
 })();
 
-// Stopka w stylu terminala — treść jest już czysto techniczna/angielska (systemctl,
+// Stopka w stylu terminala — treść jest czysto techniczna/angielska (systemctl,
 // pipeline, version...), więc ten sam szablon współdzielimy między lokalizacjami PL i EN.
+// Wygląd: klasy .ab-terminal* w styles/index.scss.
 const footerHtml = `
-  <div style="
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    font-family: 'Fira Code', Consolas, Monaco, monospace;
-    font-size: 0.85rem;
-    color: #94a3b8;
-    padding: 15px 0;
-  ">
-    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px; width: fit-content;">
-      <div style="color: #64748b;">
-        <span style="color: #38bdf8;">[angrybits-homelab]$</span> systemctl status documentation.service
-      </div>
-      <div style="display: inline-flex; align-items: center; gap: 8px; padding-left: 2px;">
-        <span style="
-          background: rgba(0, 223, 162, 0.15);
-          color: #00dfa2;
-          padding: 2px 8px;
-          border-radius: 4px;
-          font-size: 0.75rem;
-          font-weight: bold;
-          border: 1px solid rgba(0, 223, 162, 0.3);
-        ">● active (running)</span>
-        <span style="color: #64748b; font-size: 0.8rem;">since Sat 2023-02-25; k3s & pve node manager</span>
-      </div>
+  <div class="ab-terminal" role="group" aria-label="documentation.service">
+    <div class="ab-terminal-bar">
+      <span class="ab-terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>documentation.service</span>
     </div>
-
-    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; align-items: center; font-size: 0.8rem; color: #64748b; width: 100%; border-top: 1px solid rgba(148, 163, 184, 0.08); padding-top: 12px;">
-      <span style="display: inline-flex; align-items: center; gap: 5px;">
-        <iconify-icon icon="fa6-brands:gitlab" style="color: #fc6d26;"></iconify-icon>
-        pipeline: <span style="color: #00dfa2;">#stable</span>
-      </span>
-      <span>•</span>
-      <span style="display: inline-flex; align-items: center; gap: 5px;">
-        <iconify-icon icon="fa6-solid:tag"></iconify-icon>
-        version: <span style="color: #e2e8f0; font-weight: bold;">${gitTag}</span>
-      </span>
-      <span>•</span>
-      <span>updated: ${updatedDate}</span>
+    <div class="ab-terminal-body">
+      <div><span class="ab-terminal-prompt">[angrybits-homelab]$</span> systemctl status documentation.service</div>
+      <div><span class="ab-terminal-ok">● active (running)</span> <span class="ab-terminal-dim">since Sat 2023-02-25; k3s &amp; pve node manager</span></div>
+      <div class="ab-terminal-dim">pipeline: <b>#stable</b> • version: <b>${gitTag}</b> • updated: <b>${updatedDate}</b></div>
     </div>
   </div>
 `;
@@ -71,7 +41,7 @@ export default hopeTheme({
     url: "https://kkrolikowski.github.io",
   },
 
-  logo: "/assets/image/logo.png",
+  logo: "/logo.svg",
 
   repo: "vuepress-theme-hope/vuepress-theme-hope",
 
@@ -223,6 +193,12 @@ export default hopeTheme({
 
     icon: {
       assets: "fontawesome-with-brands",
+    },
+
+    // galeria pełnoekranowa po kliknięciu: domyślny selektor (obrazki w treści stron)
+    // + ilustracje sekcji strony głównej (layout LabHome)
+    photoSwipe: {
+      selector: ["[vp-content] :not(a) > img:not([no-view])", ".ab-figure img"],
     },
 
     // Install @vuepress/plugin-pwa and uncomment these if you want a PWA

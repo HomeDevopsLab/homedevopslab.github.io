@@ -1,138 +1,128 @@
 ---
-home: true
+layout: LabHome
 icon: house
 title: Home
-heroImage: /assets/image/homelab-logo2.png
-bgImage: /assets/image/hero-bg-light.svg
-bgImageDark: /assets/image/hero-bg.svg
-bgImageStyle:
-  background-attachment: fixed
-  background-position: center -15%
-  background-size: contain # <--- KLUCZOWA ZMIANA
-  background-repeat: no-repeat # Zabezpieczenie przed kafelkowaniem
-  filter: brightness(0.80) contrast(0.7)
-heroText: Angrybits Homelab
-tagline: Infrastructure as code, automation as standard
 
-highlights:
-  - header: Milestones
-    image: /assets/image/highlights-img.png
-    bgImage: /assets/image/highlights-light.svg
-    bgImageDark: /assets/image/highlights.svg
-    bgImageStyle:
-      background-size: cover
-      background-position: center
-      filter: brightness(0.5) contrast(0.8) # Przyciemnia niebieską sieć i wtapia ją w głęboki granat
-    highlights:
-      - title: "<strong>🚀 25.02.2023</strong> — Launching a 2-node cluster on Raspberry Pi 4"
-      - title: "<strong>🏗️ 17.06.2023</strong> — Cluster scales up with two additional RPis and Proxmox server"
-      - title: "<strong>💾 18.04.2025</strong> — Deploying a large NAS (8TB) for backups"
-      - title: "<strong>🛠️ 11.07.2025</strong> — Central IaC Repository (Terragrunt / Terraform / Ansible)"
-      - title: "<strong>🔥 21.02.2026</strong> — Proxmox cluster reaches full capacity: 3x 64GB RAM"
+hero:
+  title: Angrybits Homelab
+  tagline: Infrastructure as code, automation as standard
+  image: /logo.svg
+  imageAlt: Angrybits Homelab logo — an angry processor chip
+  actions:
+    - text: Knowledge Base
+      link: "#knowledge-base"
+      type: primary
 
-  - header: Knowledge Base
-    description: Select a category below to explore the documentation
-    image: /assets/image/docs-image.png
-    bgImage: https://theme-hope-assets.vuejs.press/bg/2-light.svg
-    bgImageDark: https://theme-hope-assets.vuejs.press/bg/2-dark.svg
-    bgImageStyle:
-      background-repeat: repeat
-      background-size: initial
-    features:
-      - title: Proxmox Cluster
-        icon: server
-        details: Proxmox Cluster Architecture Overview
-        link: ./proxmox/
-      - title: Talos Cluster
-        icon: https://cdn.simpleicons.org/talos/fff
-        details: Building a Kubernetes cluster on the Talos Linux distribution
-        link: ./talos/
-      - title: Kubernetes Cluster
-        icon: dharmachakra
-        details: Building a local Kubernetes cluster
-        link: ./kubernetes/
-      - title: GitOps
-        icon: infinity
-        details: Git-driven environment management
-        link: ./gitops/
-      - title: Security
-        icon: shield
-        details: Backups and environment continuity
-        link: ./security/
+milestones:
+  title: Milestones
+  image: /assets/image/milestones.jpg
+  imageWidth: 1600
+  imageHeight: 1195
+  imageAlt: The homelab's growth path — from two Raspberry Pis, through a NAS and an IaC repository, to a server cluster
+  items:
+    - date: 25.02.2023
+      text: Launching a 2-node cluster on Raspberry Pi 4
+    - date: 17.06.2023
+      text: Cluster scales up with two additional RPis and Proxmox server
+    - date: 18.04.2025
+      text: Deploying a large NAS (8TB) for backups
+    - date: 11.07.2025
+      text: Central IaC Repository
+    - date: 21.02.2026
+      text: "Proxmox cluster reaches full capacity: 3x 64GB RAM"
 
-  - header: Virtualization & High Availability
-    description: 'An ultra-reliable computing environment based on a 3-node Proxmox VE hypervisor cluster. Thanks to full hyper-converged integration, a single server failure does not interrupt the operation of critical services.<br/><br/><a href="./proxmox/" class="vp-section-cta">Explore Proxmox architecture →</a>'
+knowledge:
+  id: knowledge-base
+  title: Knowledge Base
+  description: Select a category below to explore the documentation
+  cards:
+    - title: Proxmox Cluster
+      icon: server
+      details: Proxmox Cluster Architecture Overview
+      link: /en/proxmox/
+    - title: Talos Cluster
+      icon: https://cdn.simpleicons.org/talos/fff
+      details: Building a Kubernetes cluster on the Talos Linux distribution
+      link: /en/talos/
+    - title: Kubernetes Cluster
+      icon: dharmachakra
+      details: Building a local Kubernetes cluster
+      link: /en/kubernetes/
+    - title: GitOps
+      icon: infinity
+      details: Git-driven environment management
+      link: /en/gitops/
+    - title: Security
+      icon: shield
+      details: Backups and environment continuity
+      link: /en/security/
+
+sections:
+  - title: Virtualization & High Availability
+    description: An ultra-reliable computing environment based on a 3-node Proxmox VE hypervisor cluster. Thanks to full hyper-converged integration, a single server failure does not interrupt the operation of critical services.
+    cta:
+      text: Explore Proxmox architecture
+      link: /en/proxmox/
     image: /assets/image/rack.jpg
-    bgImage: /assets/image/virtualization-bg-light.svg
-    bgImageDark: /assets/image/virtualization-bg.svg
-    bgImageStyle:
-      background-size: cover
-      background-position: center
-      filter: brightness(0.5) contrast(0.8)
-    highlights:
-      - title: <strong>42 vCPU</strong> – Moc obliczeniowa klastra
-        icon: microchip
-      - title: <strong>184 GB RAM</strong> – Pamięć z obsługą HA
-        icon: memory
-      - title: <strong>14 TB Ceph NVMe</strong> – Replikowany storage
-        icon: hard-drive
-  - header: Orchestration & GitOps (Kubernetes)
-    description: 'A primary, highly available application environment powered by a k3s cluster. The entire infrastructure and service lifecycle are managed declaratively, eliminating the need for manual configuration or deployments via SSH.<br/><br/><a href="./kubernetes/" class="vp-section-cta">Explore Kubernetes docs →</a>'
+    imageWidth: 2000
+    imageHeight: 830
+    imageAlt: Server rack running the Proxmox VE cluster with a high-availability console
+    stats:
+      - value: 42 vCPU
+        label: Cluster computing power
+      - value: 184 GB RAM
+        label: HA-backed memory pool
+      - value: 14 TB Ceph NVMe
+        label: Replicated storage
+
+  - title: Orchestration & GitOps (Kubernetes)
+    description: A primary, highly available application environment powered by a k3s cluster. The entire infrastructure and service lifecycle are managed declaratively, eliminating the need for manual configuration or deployments via SSH.
+    cta:
+      text: Explore Kubernetes docs
+      link: /en/kubernetes/
     image: /assets/image/k3s.jpg
-    bgImage: /assets/image/cloudy-light.svg
-    bgImageDark: /assets/image/cloudy.svg
-    bgImageStyle:
-      background-attachment: fixed
-      background-position: center -15%
-      background-size: contain
-      filter: brightness(0.80) contrast(0.7)
-    highlights:
-      - title: <strong>100% GitOps Driven</strong>
-        icon: code-branch
+    imageWidth: 2816
+    imageHeight: 1536
+    imageAlt: k3s cluster reconciled by FluxCD from a Git repository
+    features:
+      - title: 100% GitOps Driven
         details: Zero manual changes – cluster state is fully synchronized with Git.
-      - title: <strong>FluxCD Reconcile</strong>
-        icon: infinity
+      - title: FluxCD Reconcile
         details: Continuous consistency checks and automatic auto-remediation of drifts.
-      - title: <strong>Helm & Kustomize</strong>
-        icon: cubes
+      - title: Helm & Kustomize
         details: Full standardization, code reusability, and environment isolation.
 
-  - header: GitOps Ecosystem — Infrastructure Repositories
-    description: 'The entire homelab environment is maintained through a distributed ecosystem of Git repositories, where each one owns a distinct stage of the infrastructure lifecycle — from provisioning, through maintenance, to observability. This split keeps every change fully versioned, repeatable, and easy to audit.<br/><br/><a href="./gitops/" class="vp-section-cta">Explore GitOps repositories →</a>'
+  - title: GitOps Ecosystem — Infrastructure Repositories
+    description: The entire homelab environment is maintained through a distributed ecosystem of Git repositories, where each one owns a distinct stage of the infrastructure lifecycle — from provisioning, through maintenance, to observability. This split keeps every change fully versioned, repeatable, and easy to audit.
+    cta:
+      text: Explore GitOps repositories
+      link: /en/gitops/
     image: /assets/image/gitops-ecosystem.jpg
-    bgImage: /assets/image/gitops-bg-light.svg
-    bgImageDark: /assets/image/gitops-bg.svg
-    bgImageStyle:
-      background-size: cover
-      background-position: center
-      filter: brightness(0.5) contrast(0.8)
-    highlights:
-      - title: <strong>Infrastructure as Code</strong>
-        icon: layer-group
+    imageWidth: 2000
+    imageHeight: 1116
+    imageAlt: The homelab's GitOps repository ecosystem
+    features:
+      - title: Infrastructure as Code
         details: angrybits-homelab — a 3-layer IaC codebase managing VMs, Docker containers, firewall configuration, DNS, and inventory
-      - title: <strong>Provisioning & Maintenance</strong>
-        icon: arrows-rotate
+      - title: Provisioning & Maintenance
         details: proxmox-vm-templates builds cloud-init images, while homelab-tasks handles recurring updates and SSH key distribution
-      - title: <strong>Monitoring</strong>
-        icon: bell
+      - title: Monitoring
         details: proxmox-metrics, grafana-matrix-api — threshold alerts
 
-  - header: Security & Business Continuity
-    description: 'Homelab data is protected in two layers — snapshots of entire virtual machines at the Proxmox cluster level, and fine-grained dumps of the databases. Database copies satisfy the 3-2-1 strategy, and every backup job reports its own metrics, so a broken process becomes visible before the copy is actually needed.<br/><br/><a href="./security/" class="vp-section-cta">Explore the backup strategy →</a>'
+  - title: Security & Business Continuity
+    description: Homelab data is protected in two layers — snapshots of entire virtual machines at the Proxmox cluster level, and fine-grained dumps of the databases. Database copies satisfy the 3-2-1 strategy, and every backup job reports its own metrics, so a broken process becomes visible before the copy is actually needed.
+    cta:
+      text: Explore the backup strategy
+      link: /en/security/
     image: /assets/image/homelab-security.jpg
-    bgImage: /assets/image/security-bg-light.svg
-    bgImageDark: /assets/image/security-bg.svg
-    bgImageStyle:
-      background-size: cover
-      background-position: center
-      filter: brightness(0.5) contrast(0.8)
-    highlights:
-      - title: <strong>Virtual machine snapshots</strong>
-        icon: hard-drive
+    imageWidth: 2000
+    imageHeight: 1116
+    imageAlt: 3-2-1 backup strategy — Proxmox, NAS, AWS S3 and Grafana
+    features:
+      - title: Virtual machine snapshots
         details: A nightly Proxmox cluster cronjob writing full VM images to the NAS over NFS
-      - title: <strong>3-2-1 strategy</strong>
-        icon: shield-halved
+      - title: 3-2-1 strategy
         details: Databases copied in parallel to the local NAS and to AWS S3 — two media types, one off-site copy
-      - title: <strong>Backup observability</strong>
-        icon: chart-line
+      - title: Backup observability
         details: Snapshot size and duration of every job land in Prometheus and on Grafana dashboards
+---

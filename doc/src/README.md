@@ -1,140 +1,128 @@
 ---
-home: true
+layout: LabHome
 icon: house
 title: Home
-heroImage: /assets/image/homelab-logo2.png
-bgImage: /assets/image/hero-bg-light.svg
-bgImageDark: /assets/image/hero-bg.svg
-bgImageStyle:
-  background-attachment: fixed
-  background-position: center -15%
-  background-size: contain
-  background-repeat: no-repeat
-  filter: brightness(0.80) contrast(0.7)
-heroText: Angrybits Homelab
-tagline: Infrastruktura jako kod, automatyzacja jako standard
 
-highlights:
+hero:
+  title: Angrybits Homelab
+  tagline: Infrastruktura jako kod, automatyzacja jako standard
+  image: /logo.svg
+  imageAlt: Logo Angrybits Homelab — zdenerwowany procesor
+  actions:
+    - text: Baza Wiedzy
+      link: "#baza-wiedzy"
+      type: primary
 
-- header: Kamienie milowe
-  image: /assets/image/highlights-img.png
-  bgImage: /assets/image/highlights-light.svg
-  bgImageDark: /assets/image/highlights.svg
-  bgImageStyle:
-    background-size: cover
-    background-position: center
-    filter: brightness(0.5) contrast(0.8)
-  highlights:
-    - title: "<strong>🚀 25.02.2023</strong> — Uruchamiam 2-node cluster na Raspberry Pi4"
-    - title: "<strong>🏗️ 17.06.2023</strong> — Cluster zwiększa się o dwa RPi + serwer Proxmox"
-    - title: "<strong>💾 18.04.2025</strong> — Uruchamiam duży NAS (8TB) do backupów"
-    - title: "<strong>🛠️ 11.07.2025</strong> — Centralne repozytorium IaC (Terragrunt / Terraform / Ansible)"
-    - title: "<strong>🔥 21.02.2026</strong> — Pełne capacity klastra Proxmox: 3x 64GB RAM"
+milestones:
+  title: Kamienie milowe
+  image: /assets/image/milestones.jpg
+  imageWidth: 1600
+  imageHeight: 1195
+  imageAlt: Ścieżka rozwoju homelaba — od dwóch Raspberry Pi, przez NAS i repozytorium IaC, po klaster serwerów
+  items:
+    - date: 25.02.2023
+      text: Uruchamiam 2-node cluster na Raspberry Pi4
+    - date: 17.06.2023
+      text: Cluster zwiększa się o dwa RPi + serwer Proxmox
+    - date: 18.04.2025
+      text: Uruchamiam duży NAS (8TB) do backupów
+    - date: 11.07.2025
+      text: Centralne repozytorium IaC
+    - date: 21.02.2026
+      text: "Pełne capacity klastra Proxmox: 3x 64GB RAM"
 
-- header: Baza Wiedzy
+knowledge:
+  id: baza-wiedzy
+  title: Baza Wiedzy
   description: Wybierz interesujący Cię obszar, aby przejść do szczegółów
-  image: /assets/image/docs-image.png
-  bgImage: https://theme-hope-assets.vuejs.press/bg/2-light.svg
-  bgImageDark: https://theme-hope-assets.vuejs.press/bg/2-dark.svg
-  bgImageStyle:
-    background-repeat: repeat
-    background-size: initial
-  features:
+  cards:
     - title: Proxmox Cluster
       icon: server
       details: Opis architektury clustra proxmox
-      link: ./proxmox/
+      link: /proxmox/
     - title: Talos Cluster
       icon: https://cdn.simpleicons.org/talos/fff
       details: Budowa klastra Kubernetes z wykorzystaniem dystrybucji Talos Linux
-      link: ./talos/
+      link: /talos/
     - title: Kubernetes Cluster
       icon: dharmachakra
       details: Budowa lokalnego clustra kubernetes
-      link: ./kubernetes/
+      link: /kubernetes/
     - title: GitOps
       icon: infinity
       details: Zarządzanie środowiskiem w oparciu o repozytoria git
-      link: ./gitops/
+      link: /gitops/
     - title: Security
       icon: shield
       details: Backupy i ciągłość działania środowiska
-      link: ./security/
+      link: /security/
 
-- header: Wirtualizacja & High Availability
-  description: 'Ultra-niezawodne środowisko obliczeniowe oparte o 3-węzłowy klaster hypervisorów Proxmox VE. Dzięki pełnej integracji hiperkonwergentnej, awaria pojedynczego serwera nie przerywa działania krytycznych usług.<br/><br/><a href="./proxmox/" class="vp-section-cta">Zobacz architekturę Proxmox →</a>'
-  image: /assets/image/rack.jpg
-  bgImage: /assets/image/virtualization-bg-light.svg
-  bgImageDark: /assets/image/virtualization-bg.svg
-  bgImageStyle:
-    background-size: cover
-    background-position: center
-    filter: brightness(0.5) contrast(0.8)
-  highlights:
-    - title: <strong>42 vCPU</strong> – Moc obliczeniowa klastra
-      icon: microchip
-    - title: <strong>184 GB RAM</strong> – Pamięć z obsługą HA
-      icon: memory
-    - title: <strong>14 TB Ceph NVMe</strong> – Replikowany storage
-      icon: hard-drive
+sections:
+  - title: Wirtualizacja & High Availability
+    description: Ultra-niezawodne środowisko obliczeniowe oparte o 3-węzłowy klaster hypervisorów Proxmox VE. Dzięki pełnej integracji hiperkonwergentnej, awaria pojedynczego serwera nie przerywa działania krytycznych usług.
+    cta:
+      text: Zobacz architekturę Proxmox
+      link: /proxmox/
+    image: /assets/image/rack.jpg
+    imageWidth: 2000
+    imageHeight: 830
+    imageAlt: Szafa rack z klastrem Proxmox VE i konsolą wysokiej dostępności
+    stats:
+      - value: 42 vCPU
+        label: Moc obliczeniowa klastra
+      - value: 184 GB RAM
+        label: Pamięć z obsługą HA
+      - value: 14 TB Ceph NVMe
+        label: Replikowany storage
 
-- header: Orkiestracja & GitOps (Kubernetes)
-  description: 'Główne, wysoce dostępne środowisko aplikacyjne klastra k3s. Całość infrastruktury oraz cykl życia usług są zarządzane w pełni deklaratywnie, eliminując potrzebę ręcznej konfiguracji i wdrażania zmian przez SSH.<br/><br/><a href="./kubernetes/" class="vp-section-cta">Zobacz dokumentację Kubernetes →</a>'
-  image: /assets/image/k3s.jpg
-  bgImage: /assets/image/cloudy-light.svg
-  bgImageDark: /assets/image/cloudy.svg
-  bgImageStyle:
-    background-attachment: fixed
-    background-position: center -15%
-    background-size: contain
-    filter: brightness(0.80) contrast(0.7)
-  highlights:
-    - title: <strong>100% GitOps Driven</strong>
-      icon: code-branch
-      details: Zero manualnych zmian – stan klastra zsynchronizowany z Git
-    - title: <strong>FluxCD Reconcile</strong>
-      icon: infinity
-      details: Ciągłe sprawdzanie spójności i automatyczne wdrażanie poprawek
-    - title: <strong>Helm & Kustomize</strong>
-      icon: cubes
-      details: Pełna standaryzacja, reużywalność kodu i separacja środowisk
+  - title: Orkiestracja & GitOps (Kubernetes)
+    description: Główne, wysoce dostępne środowisko aplikacyjne klastra k3s. Całość infrastruktury oraz cykl życia usług są zarządzane w pełni deklaratywnie, eliminując potrzebę ręcznej konfiguracji i wdrażania zmian przez SSH.
+    cta:
+      text: Zobacz dokumentację Kubernetes
+      link: /kubernetes/
+    image: /assets/image/k3s.jpg
+    imageWidth: 2816
+    imageHeight: 1536
+    imageAlt: Klaster k3s zarządzany przez FluxCD z repozytorium Git
+    features:
+      - title: 100% GitOps Driven
+        details: Zero manualnych zmian – stan klastra zsynchronizowany z Git
+      - title: FluxCD Reconcile
+        details: Ciągłe sprawdzanie spójności i automatyczne wdrażanie poprawek
+      - title: Helm & Kustomize
+        details: Pełna standaryzacja, reużywalność kodu i separacja środowisk
 
-- header: Ekosystem GitOps — Repozytoria Infrastruktury
-  description: 'Całe środowisko homelab utrzymywane jest w oparciu o rozproszony ekosystem repozytoriów Git, gdzie każde z nich odpowiada za osobny etap cyklu życia infrastruktury — od provisioningu, przez utrzymanie, aż po obserwowalność. Dzięki takiemu podziałowi każda zmiana jest w pełni wersjonowana, powtarzalna i łatwa do audytu.<br/><br/><a href="./gitops/" class="vp-section-cta">Zobacz repozytoria GitOps →</a>'
-  image: /assets/image/gitops-ecosystem.jpg
-  bgImage: /assets/image/gitops-bg-light.svg
-  bgImageDark: /assets/image/gitops-bg.svg
-  bgImageStyle:
-    background-size: cover
-    background-position: center
-    filter: brightness(0.5) contrast(0.8)
-  highlights:
-    - title: <strong>Infrastructure as Code</strong>
-      icon: layer-group
-      details: angrybits-homelab — 3-warstwowy kod IaC zarządzający VM, kontenerami Docker, firewallem, DNS i inventory
-    - title: <strong>Provisioning & Utrzymanie</strong>
-      icon: arrows-rotate
-      details: proxmox-vm-templates (obrazy cloud-init) oraz homelab-tasks (aktualizacje, dystrybucja kluczy SSH)
-    - title: <strong>Monitoring</strong>
-      icon: bell
-      details: proxmox-metrics, grafana-matrix-api — alerty progowe
+  - title: Ekosystem GitOps — Repozytoria Infrastruktury
+    description: Całe środowisko homelab utrzymywane jest w oparciu o rozproszony ekosystem repozytoriów Git, gdzie każde z nich odpowiada za osobny etap cyklu życia infrastruktury — od provisioningu, przez utrzymanie, aż po obserwowalność. Dzięki takiemu podziałowi każda zmiana jest w pełni wersjonowana, powtarzalna i łatwa do audytu.
+    cta:
+      text: Zobacz repozytoria GitOps
+      link: /gitops/
+    image: /assets/image/gitops-ecosystem.jpg
+    imageWidth: 2000
+    imageHeight: 1116
+    imageAlt: Ekosystem repozytoriów GitOps homelaba
+    features:
+      - title: Infrastructure as Code
+        details: angrybits-homelab — 3-warstwowy kod IaC zarządzający VM, kontenerami Docker, firewallem, DNS i inventory
+      - title: Provisioning & Utrzymanie
+        details: proxmox-vm-templates (obrazy cloud-init) oraz homelab-tasks (aktualizacje, dystrybucja kluczy SSH)
+      - title: Monitoring
+        details: proxmox-metrics, grafana-matrix-api — alerty progowe
 
-- header: Bezpieczeństwo & Ciągłość Działania
-  description: 'Dane w homelabie chronione są dwuwarstwowo — snapshotami całych maszyn wirtualnych na poziomie klastra Proxmox oraz szczegółowymi zrzutami baz danych. Kopie baz spełniają kryteria strategii 3-2-1, a każde zadanie backupu raportuje własne metryki, dzięki czemu awaria procesu jest widoczna zanim kopia okaże się potrzebna.<br/><br/><a href="./security/" class="vp-section-cta">Zobacz strategię backupów →</a>'
-  image: /assets/image/homelab-security.jpg
-  bgImage: /assets/image/security-bg-light.svg
-  bgImageDark: /assets/image/security-bg.svg
-  bgImageStyle:
-    background-size: cover
-    background-position: center
-    filter: brightness(0.5) contrast(0.8)
-  highlights:
-    - title: <strong>Snapshoty maszyn wirtualnych</strong>
-      icon: hard-drive
-      details: Nocny cronjob klastra Proxmox zapisujący pełne obrazy VM na NAS przez NFS
-    - title: <strong>Strategia 3-2-1</strong>
-      icon: shield-halved
-      details: Bazy danych kopiowane równolegle na lokalny NAS oraz do AWS S3 — dwa nośniki, jedna kopia off-site
-    - title: <strong>Obserwowalność backupów</strong>
-      icon: chart-line
-      details: Rozmiar snapshotu i czas wykonania każdego zadania trafiają do Prometheusa i na dashboardy Grafany
+  - title: Bezpieczeństwo & Ciągłość Działania
+    description: Dane w homelabie chronione są dwuwarstwowo — snapshotami całych maszyn wirtualnych na poziomie klastra Proxmox oraz szczegółowymi zrzutami baz danych. Kopie baz spełniają kryteria strategii 3-2-1, a każde zadanie backupu raportuje własne metryki, dzięki czemu awaria procesu jest widoczna zanim kopia okaże się potrzebna.
+    cta:
+      text: Zobacz strategię backupów
+      link: /security/
+    image: /assets/image/homelab-security.jpg
+    imageWidth: 2000
+    imageHeight: 1116
+    imageAlt: Strategia backupów 3-2-1 — Proxmox, NAS, AWS S3 i Grafana
+    features:
+      - title: Snapshoty maszyn wirtualnych
+        details: Nocny cronjob klastra Proxmox zapisujący pełne obrazy VM na NAS przez NFS
+      - title: Strategia 3-2-1
+        details: Bazy danych kopiowane równolegle na lokalny NAS oraz do AWS S3 — dwa nośniki, jedna kopia off-site
+      - title: Obserwowalność backupów
+        details: Rozmiar snapshotu i czas wykonania każdego zadania trafiają do Prometheusa i na dashboardy Grafany
+---
