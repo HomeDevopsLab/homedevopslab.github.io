@@ -195,6 +195,12 @@ export default hopeTheme({
       assets: "fontawesome-with-brands",
     },
 
+    // galeria pełnoekranowa po kliknięciu: domyślny selektor (obrazki w treści stron)
+    // + ilustracje sekcji strony głównej (layout LabHome)
+    photoSwipe: {
+      selector: ["[vp-content] :not(a) > img:not([no-view])", ".ab-figure img"],
+    },
+
     // Install @vuepress/plugin-pwa and uncomment these if you want a PWA
     // pwa: {
     //   favicon: "/favicon.ico",
