@@ -5,6 +5,8 @@ $display: "Space Grotesk", "Inter", system-ui, sans-serif;
 $body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 $mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 $pixel: "Press Start 2P", "JetBrains Mono", ui-monospace, monospace;
+// tytuł hero: wąska pikselowa czcionka w stylu tablicy wyników automatu
+$marquee: "Jersey 10", "Press Start 2P", ui-monospace, monospace;
 
 .ab-home-container {
   --ab-bg: #05060f;
@@ -27,12 +29,21 @@ $pixel: "Press Start 2P", "JetBrains Mono", ui-monospace, monospace;
   --ab-node-bg: #0c1030;
   --ab-navbar-bg: rgba(5, 6, 15, 0.72);
   --ab-figure-shadow: 0 0 90px rgba(110, 130, 255, 0.16);
-  // przycisk arcade w hero
-  --ab-cap: #5b7bff;
-  --ab-bezel-a: #2a2f4d;
-  --ab-bezel-b: #0b0d1c;
-  --ab-bezel-ring: #3a4170;
-  --ab-bezel-drop: rgba(0, 0, 0, 0.55);
+  // plansza kamieni milowych i pikselowa maskotka
+  --ab-brick: #26306b;
+  --ab-brick-hi: #3a4699;
+  --ab-brick-lo: #141a44;
+  --ab-block: #1f9c8f;
+  --ab-block-hi: #6fe3d6;
+  --ab-block-lo: #0d5a52;
+  --ab-block-used: #2a2f4d;
+  --ab-sign-bg: rgba(12, 16, 48, 0.82);
+  --ab-level-drop: rgba(0, 0, 0, 0.5);
+  --ab-spr-o: #3f4fd8;
+  --ab-spr-b: #dfe6ff;
+  --ab-spr-d: #0f1330;
+  --ab-spr-p: #9aa3cc;
+  --ab-spr-l: #6fe3d6;
 
   background-color: var(--ab-bg);
   color: var(--ab-fg);
@@ -59,10 +70,18 @@ html[data-theme="light"] .ab-home-container {
   --ab-node-bg: #ffffff;
   --ab-navbar-bg: rgba(243, 245, 255, 0.78);
   --ab-figure-shadow: 0 24px 60px rgba(15, 19, 48, 0.18);
-  --ab-bezel-a: #f4f6ff;
-  --ab-bezel-b: #c3c9e4;
-  --ab-bezel-ring: #9aa3cc;
-  --ab-bezel-drop: rgba(15, 19, 48, 0.25);
+  --ab-brick: #8f9be0;
+  --ab-brick-hi: #b7c0f0;
+  --ab-brick-lo: #5f6cc4;
+  --ab-block: #24b3a3;
+  --ab-block-hi: #8cf0e4;
+  --ab-block-lo: #0f7a70;
+  --ab-block-used: #b9c0dc;
+  --ab-sign-bg: rgba(255, 255, 255, 0.86);
+  --ab-level-drop: rgba(15, 19, 48, 0.2);
+  --ab-spr-b: #ffffff;
+  --ab-spr-p: #6d76a3;
+  --ab-spr-l: #0f8f84;
 }
 
 // ---------- navbar i stopka motywu na stronie głównej ----------
@@ -327,11 +346,11 @@ html[data-theme="light"] .ab-home-container {
 .ab-hero-title {
   position: relative;
   margin: 0;
-  font-family: $display;
-  font-weight: 700;
-  font-size: clamp(2.5rem, 6.4vw, 5.25rem);
-  line-height: 1.02;
-  letter-spacing: -0.02em;
+  font-family: $marquee;
+  font-weight: 400;
+  font-size: clamp(3.25rem, 8.6vw, 7rem);
+  line-height: 0.95;
+  letter-spacing: 0.03em;
   color: var(--ab-fg);
   text-shadow: 0 0 60px rgba(130, 150, 255, 0.45);
   border: 0;
@@ -369,143 +388,94 @@ html[data-theme="light"] .ab-home-container {
 .ab-actions {
   position: relative;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   gap: 14px;
   margin-top: 8px;
 }
 
-.ab-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  padding: 0 28px;
-  border-radius: 999px;
-  border: 1px solid var(--ab-card-line);
-  background: color-mix(in srgb, var(--ab-bg) 50%, transparent);
-  font-weight: 500;
-  font-size: 0.95rem;
-  color: var(--ab-fg) !important;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    border-color: var(--ab-card-line-hover);
-    box-shadow: 0 0 28px var(--ab-glow);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--ab-accent);
-    outline-offset: 3px;
-  }
-}
-
-.ab-btn-primary {
-  border-color: transparent;
-  background: var(--ab-accent);
-  color: var(--ab-on-accent) !important;
-  font-weight: 600;
-  box-shadow: 0 0 32px var(--ab-glow);
-}
-
-// ---------- przycisk z automatu arcade (główna akcja w hero) ----------
-.ab-arcade {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  color: var(--ab-fg) !important;
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-
-  &:focus-visible .ab-arcade-bezel {
-    outline: 3px solid var(--ab-accent);
-    outline-offset: 6px;
-  }
-}
-
-.ab-arcade-start,
-.ab-arcade-label {
+.ab-start,
+.ab-menu-item {
   font-family: $pixel;
   text-transform: uppercase;
   line-height: 1.4;
 }
 
-.ab-arcade-start {
+.ab-start {
+  margin: 0;
   font-size: 11px;
   letter-spacing: 0.12em;
   color: var(--ab-accent-2);
   text-shadow: 0 0 10px color-mix(in srgb, var(--ab-accent-2) 60%, transparent);
 }
 
-.ab-arcade-label {
-  font-size: 13px;
-  letter-spacing: 0.06em;
-}
-
-.ab-arcade-caret {
-  margin-right: 0.6em;
-  color: var(--ab-accent-2);
-}
-
-// obudowa: ciemny (lub jasny w motywie jasnym) pierścień, w którym siedzi grzybek
-.ab-arcade-bezel {
+.ab-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
-  place-items: center;
-  width: 116px;
-  height: 116px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 35%, var(--ab-bezel-a), var(--ab-bezel-b) 72%);
-  box-shadow:
-    0 0 0 3px var(--ab-bezel-ring),
-    inset 0 2px 1px rgba(255, 255, 255, 0.18),
-    inset 0 -4px 8px rgba(0, 0, 0, 0.45),
-    0 12px 26px var(--ab-bezel-drop);
-}
+  gap: 10px;
+  text-align: left;
 
-// grzybek: wypukły połysk + „ścianka” z cienia; wciśnięcie zjeżdża w dół i zjada ściankę
-.ab-arcade-cap {
-  --cap-wall: color-mix(in srgb, var(--ab-cap) 45%, black);
-
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 36% 28%, rgba(255, 255, 255, 0.85) 0 7%, transparent 22%),
-    radial-gradient(
-      circle at 50% 45%,
-      color-mix(in srgb, var(--ab-cap) 75%, white),
-      var(--ab-cap) 55%,
-      color-mix(in srgb, var(--ab-cap) 70%, black)
-    );
-  box-shadow:
-    0 8px 0 var(--cap-wall),
-    0 10px 14px rgba(0, 0, 0, 0.45),
-    0 0 24px color-mix(in srgb, var(--ab-cap) 45%, transparent);
-  transform: translateY(-6px);
-  transition:
-    transform 0.08s ease-out,
-    box-shadow 0.08s ease-out;
-
-  .ab-arcade:hover & {
-    box-shadow:
-      0 8px 0 var(--cap-wall),
-      0 10px 14px rgba(0, 0, 0, 0.45),
-      0 0 44px color-mix(in srgb, var(--ab-cap) 75%, transparent);
-  }
-
-  .ab-arcade:active & {
-    transform: translateY(1px);
-    box-shadow:
-      0 1px 0 var(--cap-wall),
-      0 2px 4px rgba(0, 0, 0, 0.4),
-      0 0 56px color-mix(in srgb, var(--ab-cap) 90%, transparent);
+  li {
+    margin: 0;
   }
 }
+
+.ab-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 6px 12px 6px 6px;
+  border-radius: 6px;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: var(--ab-muted) !important;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s ease;
+
+  &.is-selected {
+    color: var(--ab-fg) !important;
+
+    span {
+      text-shadow: 0 0 12px color-mix(in srgb, var(--ab-accent-2) 55%, transparent);
+    }
+
+    .ab-menu-cursor {
+      visibility: visible;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px dashed var(--ab-accent);
+    outline-offset: 3px;
+  }
+}
+
+// kursor = maskotka; zawsze zajmuje miejsce, żeby pozycje się nie przesuwały
+.ab-menu-cursor {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  visibility: hidden;
+}
+
+// ---------- pikselowa maskotka (components/PixelMascot.vue) ----------
+.ab-mascot {
+  display: block;
+  shape-rendering: crispEdges;
+
+  .ab-mascot-legs-b {
+    display: none;
+  }
+}
+
+.ab-px-o { fill: var(--ab-spr-o); }
+.ab-px-b { fill: var(--ab-spr-b); }
+.ab-px-d { fill: var(--ab-spr-d); }
+.ab-px-p { fill: var(--ab-spr-p); }
+.ab-px-l { fill: var(--ab-spr-l); }
 
 // ---------- sekcje ----------
 .ab-section {
@@ -626,65 +596,250 @@ html[data-theme="light"] .ab-home-container {
     display: block;
     width: 100%;
     height: auto;
+  }
 
-    // w układzie jednokolumnowym wysokie ilustracje (4:3) nie mogą zdominować ekranu
-    @media (max-width: 959px) {
-      max-height: 440px;
-      object-fit: cover;
+  // w układzie jednokolumnowym ilustracje (4:3 i 1:1) nie mogą zdominować ekranu:
+  // zamiast przycinać, ograniczamy szerokość karty i centrujemy ją
+  @media (max-width: 959px) {
+    justify-self: center;
+    width: 100%;
+    max-width: 560px;
+  }
+}
+
+// ---------- kamienie milowe: plansza (components/MilestoneLevel.vue) ----------
+.ab-milestones .ab-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.ab-level-frame {
+  border: 1px solid var(--ab-card-line);
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--ab-bg);
+  box-shadow: var(--ab-figure-shadow);
+}
+
+.ab-level-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+
+.ab-level {
+  position: relative;
+  min-width: 860px;
+}
+
+.ab-level-sky {
+  position: relative;
+  height: 360px;
+  background:
+    radial-gradient(40% 60% at 20% 30%, var(--ab-glow-a), transparent 70%),
+    radial-gradient(40% 60% at 80% 20%, var(--ab-glow-b), transparent 70%),
+    linear-gradient(var(--ab-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ab-grid) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 24px 24px, 24px 24px;
+}
+
+// ilustracja kamieni milowych jako przygaszone tło „w oddali”
+.ab-level-art {
+  position: absolute;
+  inset: 0;
+  background-position: center 40%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.16;
+  filter: saturate(0.6) blur(1px);
+  mask-image: linear-gradient(to bottom, transparent, black 30%, black 75%, transparent);
+
+  html[data-theme="light"] & {
+    opacity: 0.1;
+  }
+}
+
+.ab-level-hud {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: $pixel;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ab-fg);
+
+  b {
+    font-weight: 400;
+    color: var(--ab-accent-2);
+  }
+}
+
+.ab-level-platform {
+  position: absolute;
+  width: 112px;
+  height: 24px;
+  translate: -50% 0;
+  background:
+    linear-gradient(var(--ab-brick-hi) 0 4px, transparent 4px),
+    repeating-linear-gradient(90deg, var(--ab-brick) 0 26px, var(--ab-brick-lo) 26px 28px);
+  box-shadow:
+    inset 0 -4px 0 var(--ab-brick-lo),
+    0 8px 16px var(--ab-level-drop);
+}
+
+.ab-level-block {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  translate: -50% 0;
+  display: grid;
+  place-items: center;
+  font-family: $pixel;
+  font-size: 12px;
+  color: var(--ab-spr-d);
+  background: var(--ab-block);
+  box-shadow:
+    inset 3px 3px 0 var(--ab-block-hi),
+    inset -3px -3px 0 var(--ab-block-lo);
+  transition: background-color 0.2s;
+
+  &.is-used {
+    color: transparent;
+    background: var(--ab-block-used);
+    box-shadow:
+      inset 3px 3px 0 rgba(255, 255, 255, 0.08),
+      inset -3px -3px 0 rgba(0, 0, 0, 0.25);
+  }
+}
+
+.ab-level-plus {
+  position: absolute;
+  translate: -50% 0;
+  font-family: $pixel;
+  font-size: 10px;
+  color: var(--ab-accent-2);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ab-level-flag {
+  position: absolute;
+  width: 4px;
+  height: 92px;
+  translate: 30px 0;
+  background: var(--ab-spr-p);
+
+  &::before {
+    content: "AB";
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    box-sizing: border-box;
+    width: 30px;
+    padding: 6px 8px 6px 6px;
+    font-family: $pixel;
+    font-size: 8px;
+    line-height: 1;
+    color: var(--ab-bg);
+    background: var(--ab-accent);
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: -3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ab-accent-2);
+  }
+}
+
+.ab-level-mascot {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  translate: -50% -100%;
+
+  .ab-mascot {
+    width: 100%;
+    height: 100%;
+  }
+
+  &.is-step {
+    .ab-mascot-legs-a { display: none; }
+    .ab-mascot-legs-b { display: inline; }
+  }
+
+  &.is-air {
+    .ab-mascot-legs-a,
+    .ab-mascot-legs-b {
+      display: none;
     }
   }
 }
 
-// oś czasu
-.ab-timeline {
-  position: relative;
+.ab-level-ground {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
   list-style: none;
-  margin: 10px 0 0;
+  margin: 0;
   padding: 0;
+  border-top: 2px solid var(--ab-brick-lo);
+  background:
+    linear-gradient(var(--ab-brick-hi) 0 6px, transparent 6px),
+    repeating-linear-gradient(0deg, var(--ab-brick-lo) 0 2px, transparent 2px 22px),
+    var(--ab-brick);
+}
+
+.ab-level-sign {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 6px;
+  min-width: 0;
+  margin: 18px 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--ab-card-line);
+  border-radius: 6px;
+  background: var(--ab-sign-bg);
+  color: var(--ab-fg);
+  transition:
+    opacity 0.25s,
+    border-color 0.25s,
+    box-shadow 0.25s;
 
-  &::before {
-    content: "";
-    position: absolute;
-    left: 5px;
-    top: 10px;
-    bottom: 10px;
-    width: 1px;
-    background: linear-gradient(var(--ab-accent), rgba(160, 180, 255, 0.15));
+  time {
+    font-family: $pixel;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    color: var(--ab-accent-2);
   }
 
-  li {
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-    margin: 0;
+  span {
+    font-size: 0.85rem;
+    line-height: 1.4;
   }
-}
 
-.ab-dot {
-  flex: none;
-  width: 11px;
-  height: 11px;
-  margin-top: 7px;
-  border-radius: 3px;
-  background: var(--ab-accent);
-  box-shadow: 0 0 12px var(--ab-accent);
-}
+  // podświetlenie tylko gdy plansza „żyje”; inaczej wszystkie tabliczki są pełne
+  .is-live & {
+    opacity: 0.78;
+  }
 
-.ab-timeline-body {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px 16px;
-  align-items: baseline;
-}
-
-.ab-date {
-  font-family: $mono;
-  font-size: 0.875rem;
-  color: var(--ab-accent);
+  &.is-hit,
+  .is-live &.is-hit {
+    opacity: 1;
+    border-color: var(--ab-accent-2);
+    box-shadow: 0 0 22px color-mix(in srgb, var(--ab-accent-2) 30%, transparent);
+  }
 }
 
 // baza wiedzy
@@ -1007,8 +1162,18 @@ html[data-theme="light"] .ab-home-container {
 @keyframes ab-hero-out {
   to { opacity: 0; translate: 0 -70px; }
 }
-@keyframes ab-arcade-blink {
+@keyframes ab-start-blink {
   50% { opacity: 0; }
+}
+@keyframes ab-cursor-bob {
+  50% { translate: 0 -3px; }
+}
+@keyframes ab-block-bump {
+  40% { translate: -50% -10px; }
+}
+@keyframes ab-plus {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-28px); }
 }
 @keyframes ab-shimmer {
   to { background-position: -200% 0; }
@@ -1051,8 +1216,17 @@ html[data-theme="light"] .ab-home-container {
   .ab-card:hover::after {
     animation: ab-scan 0.9s ease-out;
   }
-  .ab-arcade-start {
-    animation: ab-arcade-blink 1.1s steps(1, end) infinite;
+  .ab-start {
+    animation: ab-start-blink 1.1s steps(1, end) infinite;
+  }
+  .ab-menu-item.is-selected .ab-menu-cursor {
+    animation: ab-cursor-bob 1.2s ease-in-out infinite;
+  }
+  .is-live .ab-level-block.is-used {
+    animation: ab-block-bump 0.28s ease-out;
+  }
+  .is-live .ab-level-plus.is-used {
+    animation: ab-plus 0.8s ease-out;
   }
 
   // tagline „wpisywany” — tylko gdy mieści się w jednej linii
@@ -1130,17 +1304,6 @@ $ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
       opacity: 1;
       translate: 0 0;
       scale: 1;
-    }
-
-    // oś czasu „rysuje się” z góry na dół
-    .ab-reveal-line::before {
-      scale: 1 0;
-      transform-origin: top;
-      transition: scale 1.4s $ease-out 0.2s;
-    }
-
-    .ab-reveal-line.is-visible::before {
-      scale: 1 1;
     }
 
     // grafika: placeholder z przelatującym światłem, potem wyostrzenie po załadowaniu
@@ -1254,44 +1417,5 @@ $ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
   .ab-home .ab-figure:hover img,
   .ab-home .ab-figure.is-loaded:hover img {
     scale: 1;
-  }
-}
-
-// ---------- grafiki: podgląd pełnoekranowy (PhotoSwipe, selektor w theme.ts) ----------
-.ab-home .ab-figure img {
-  cursor: zoom-in;
-}
-
-// ikona „powiększ” w rogu: na dotyku zawsze widoczna, z kursorem — po najechaniu
-.ab-figure-zoom {
-  position: absolute;
-  z-index: 1;
-  right: 12px;
-  top: 12px;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #eef1ff;
-  background: rgba(5, 6, 15, 0.6);
-  border: 1px solid rgba(190, 205, 255, 0.35);
-  backdrop-filter: blur(6px);
-  pointer-events: none;
-  transition:
-    opacity 0.3s ease,
-    translate 0.3s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .ab-figure-zoom {
-    opacity: 0;
-    translate: 0 -4px;
-  }
-
-  .ab-figure:hover .ab-figure-zoom {
-    opacity: 1;
-    translate: 0 0;
   }
 }

@@ -9,11 +9,14 @@ hero:
   image: /logo.svg
   imageAlt: Angrybits Homelab logo — an angry processor chip
   actions:
+    - text: Lab story
+      link: "#milestones"
+      type: primary
     - text: Knowledge Base
       link: "#knowledge-base"
-      type: primary
 
 milestones:
+  id: milestones
   title: Milestones
   image: /assets/image/milestones.jpg
   imageWidth: 1600
@@ -65,7 +68,7 @@ sections:
       link: /en/proxmox/
     image: /assets/image/rack.jpg
     imageWidth: 2000
-    imageHeight: 830
+    imageHeight: 1493
     imageAlt: Server rack running the Proxmox VE cluster with a high-availability console
     stats:
       - value: 42 vCPU
@@ -81,8 +84,8 @@ sections:
       text: Explore Kubernetes docs
       link: /en/kubernetes/
     image: /assets/image/k3s.jpg
-    imageWidth: 2816
-    imageHeight: 1536
+    imageWidth: 2000
+    imageHeight: 2000
     imageAlt: k3s cluster reconciled by FluxCD from a Git repository
     features:
       - title: 100% GitOps Driven
@@ -99,7 +102,7 @@ sections:
       link: /en/gitops/
     image: /assets/image/gitops-ecosystem.jpg
     imageWidth: 2000
-    imageHeight: 1116
+    imageHeight: 2000
     imageAlt: The homelab's GitOps repository ecosystem
     features:
       - title: Infrastructure as Code
@@ -116,7 +119,7 @@ sections:
       link: /en/security/
     image: /assets/image/homelab-security.jpg
     imageWidth: 2000
-    imageHeight: 1116
+    imageHeight: 2000
     imageAlt: 3-2-1 backup strategy — Proxmox, NAS, AWS S3 and Grafana
     features:
       - title: Virtual machine snapshots

@@ -2,6 +2,8 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { RouteLink, withBase } from "vuepress/client";
 import { MainLayout, useData } from "vuepress-theme-hope/client";
+import MilestoneLevel from "../components/MilestoneLevel.vue";
+import PixelMascot from "../components/PixelMascot.vue";
 
 interface Link {
   text: string;
@@ -48,6 +50,7 @@ interface LabHomeFrontmatter extends Record<string, unknown> {
     actions?: Action[];
   };
   milestones?: {
+    id?: string;
     title: string;
     image?: string;
     imageAlt?: string;
@@ -102,6 +105,22 @@ const nodes = (
 const hexPoints = nodes.map(({ x, y }) => `${x},${y}`).join(" ");
 
 const isInternal = (link: string): boolean => link.startsWith("/");
+
+// Menu ekranu tytułowego w hero: maskotka-kursor stoi przy zaznaczonej pozycji.
+// Zaznaczenie idzie za myszą i fokusem, strzałki ↑↓ przenoszą fokus między pozycjami.
+const selected = ref(0);
+const onMenuKey = (event: KeyboardEvent): void => {
+  if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+  const items = [
+    ...(event.currentTarget as HTMLElement).querySelectorAll<HTMLElement>(".ab-menu-item"),
+  ];
+  if (!items.length) return;
+  event.preventDefault();
+  const current = items.indexOf(document.activeElement as HTMLElement);
+  const from = current === -1 ? selected.value : current;
+  const next = (from + (event.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+  items[next].focus();
+};
 
 // Leniwe pojawianie się treści: elementy .ab-reveal* dostają .is-visible, gdy wejdą
 // w viewport (raz). Klasa .ab-animate na korzeniu włącza stan początkowy dopiero po
@@ -186,7 +205,7 @@ const setupReveal = (): void => {
     },
     { rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
   );
-  el.querySelectorAll(".ab-reveal, .ab-reveal-img, .ab-reveal-line").forEach(
+  el.querySelectorAll(".ab-reveal, .ab-reveal-img").forEach(
     (node) => observer?.observe(node),
   );
   el.classList.add("ab-animate");
@@ -277,71 +296,51 @@ const asset = (src: string): string =>
             }}</span>
           </p>
 
+          <!-- menu jak na ekranie tytułowym gry; kursorem jest maskotka z planszy kamieni milowych -->
           <div v-if="hero.actions?.length" class="ab-hero-out ab-actions">
-            <template v-for="action in hero.actions" :key="action.text">
-              <!-- główna akcja: przycisk z automatu arcade z mrugającym „PRESS START” -->
-              <a v-if="action.type === 'primary'" :href="action.link" class="ab-arcade">
-                <span class="ab-arcade-start" aria-hidden="true">Press start</span>
-                <span class="ab-arcade-bezel" aria-hidden="true">
-                  <span class="ab-arcade-cap" />
-                </span>
-                <span class="ab-arcade-label">
-                  <span class="ab-arcade-caret" aria-hidden="true">▶</span>{{ action.text }}
-                </span>
-              </a>
-              <RouteLink
-                v-else-if="isInternal(action.link)"
-                :to="action.link"
-                class="ab-btn"
-                :class="{ 'ab-btn-primary': action.type === 'primary' }"
-                >{{ action.text }}</RouteLink
-              >
-              <a
-                v-else
-                :href="action.link"
-                class="ab-btn"
-                :class="{ 'ab-btn-primary': action.type === 'primary' }"
-                >{{ action.text }}</a
-              >
-            </template>
+            <p class="ab-start" aria-hidden="true">Press start</p>
+            <ul class="ab-menu" @keydown="onMenuKey">
+              <li v-for="(action, i) in hero.actions" :key="action.text">
+                <RouteLink
+                  v-if="isInternal(action.link)"
+                  :to="action.link"
+                  class="ab-menu-item"
+                  :class="{ 'is-selected': selected === i }"
+                  @mouseenter="selected = i"
+                  @focus="selected = i"
+                >
+                  <PixelMascot class="ab-menu-cursor" />
+                  <span>{{ action.text }}</span>
+                </RouteLink>
+                <a
+                  v-else
+                  :href="action.link"
+                  class="ab-menu-item"
+                  :class="{ 'is-selected': selected === i }"
+                  @mouseenter="selected = i"
+                  @focus="selected = i"
+                >
+                  <PixelMascot class="ab-menu-cursor" />
+                  <span>{{ action.text }}</span>
+                </a>
+              </li>
+            </ul>
           </div>
         </section>
 
-        <!-- KAMIENIE MILOWE -->
-        <section v-if="milestones" class="ab-section">
-          <div class="ab-wrap ab-split">
-            <div class="ab-copy">
-              <h2 class="ab-h2 ab-reveal">{{ milestones.title }}</h2>
-              <ol class="ab-timeline ab-reveal-line">
-                <li
-                  v-for="(item, i) in milestones.items"
-                  :key="item.date"
-                  class="ab-reveal"
-                  :style="{ '--i': i + 1 }"
-                >
-                  <span class="ab-dot" aria-hidden="true" />
-                  <span class="ab-timeline-body">
-                    <time class="ab-date">{{ item.date }}</time>
-                    <span>{{ item.text }}</span>
-                  </span>
-                </li>
-              </ol>
-            </div>
-            <figure v-if="milestones.image" class="ab-figure ab-reveal-img">
-              <img
-                :src="asset(milestones.image)"
-                :alt="milestones.imageAlt ?? ''"
-                :width="milestones.imageWidth"
-                :height="milestones.imageHeight"
-                loading="lazy"
-                decoding="async"
-              />
-              <span class="ab-figure-zoom" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-                </svg>
-              </span>
-            </figure>
+        <!-- KAMIENIE MILOWE: plansza platformówki -->
+        <section
+          v-if="milestones"
+          :id="milestones.id ?? 'milestones'"
+          class="ab-section ab-milestones"
+        >
+          <div class="ab-wrap">
+            <h2 class="ab-h2 ab-reveal">{{ milestones.title }}</h2>
+            <MilestoneLevel
+              :anchor="milestones.id ?? 'milestones'"
+              :items="milestones.items"
+              :image="milestones.image ? asset(milestones.image) : undefined"
+            />
           </div>
         </section>
 
@@ -438,11 +437,6 @@ const asset = (src: string): string =>
                 loading="lazy"
                 decoding="async"
               />
-              <span class="ab-figure-zoom" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-                </svg>
-              </span>
             </figure>
           </div>
         </section>

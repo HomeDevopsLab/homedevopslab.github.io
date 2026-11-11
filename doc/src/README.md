@@ -9,11 +9,14 @@ hero:
   image: /logo.svg
   imageAlt: Logo Angrybits Homelab — zdenerwowany procesor
   actions:
+    - text: Historia labu
+      link: "#kamienie-milowe"
+      type: primary
     - text: Baza Wiedzy
       link: "#baza-wiedzy"
-      type: primary
 
 milestones:
+  id: kamienie-milowe
   title: Kamienie milowe
   image: /assets/image/milestones.jpg
   imageWidth: 1600
@@ -65,7 +68,7 @@ sections:
       link: /proxmox/
     image: /assets/image/rack.jpg
     imageWidth: 2000
-    imageHeight: 830
+    imageHeight: 1493
     imageAlt: Szafa rack z klastrem Proxmox VE i konsolą wysokiej dostępności
     stats:
       - value: 42 vCPU
@@ -81,8 +84,8 @@ sections:
       text: Zobacz dokumentację Kubernetes
       link: /kubernetes/
     image: /assets/image/k3s.jpg
-    imageWidth: 2816
-    imageHeight: 1536
+    imageWidth: 2000
+    imageHeight: 2000
     imageAlt: Klaster k3s zarządzany przez FluxCD z repozytorium Git
     features:
       - title: 100% GitOps Driven
@@ -99,7 +102,7 @@ sections:
       link: /gitops/
     image: /assets/image/gitops-ecosystem.jpg
     imageWidth: 2000
-    imageHeight: 1116
+    imageHeight: 2000
     imageAlt: Ekosystem repozytoriów GitOps homelaba
     features:
       - title: Infrastructure as Code
@@ -116,7 +119,7 @@ sections:
       link: /security/
     image: /assets/image/homelab-security.jpg
     imageWidth: 2000
-    imageHeight: 1116
+    imageHeight: 2000
     imageAlt: Strategia backupów 3-2-1 — Proxmox, NAS, AWS S3 i Grafana
     features:
       - title: Snapshoty maszyn wirtualnych
