@@ -1,5 +1,18 @@
 # Changelog
 
+## [6.2.0] - 2026-11-11
+
+### Added
+
+- Home: lazy-loaded sections and illustrations that animate into view as you scroll, with a placeholder while each image loads.
+- Home: illustrations tilt in 3D towards the cursor, zoom in and catch a light glare on hover; clicking one opens a full-screen gallery of all homepage illustrations.
+
+### Changed
+
+- Home: redesigned homepage with an IT and automation theme — a network topology hero with animated data flow, a milestone timeline, knowledge base cards and topic sections, fully responsive on phones, tablets and desktops in both light and dark mode (PL/EN).
+- New Angrybits Homelab logo, favicon and app icons, plus a new milestones illustration.
+- Footer: restyled as a terminal card on every page.
+
 ## [6.1.0] - 2026-11-10
 
 ### Added
