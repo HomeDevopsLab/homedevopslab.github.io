@@ -4,6 +4,7 @@
 $display: "Space Grotesk", "Inter", system-ui, sans-serif;
 $body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 $mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+$pixel: "Press Start 2P", "JetBrains Mono", ui-monospace, monospace;
 
 .ab-home-container {
   --ab-bg: #05060f;
@@ -26,6 +27,12 @@ $mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
   --ab-node-bg: #0c1030;
   --ab-navbar-bg: rgba(5, 6, 15, 0.72);
   --ab-figure-shadow: 0 0 90px rgba(110, 130, 255, 0.16);
+  // przycisk arcade w hero
+  --ab-cap: #5b7bff;
+  --ab-bezel-a: #2a2f4d;
+  --ab-bezel-b: #0b0d1c;
+  --ab-bezel-ring: #3a4170;
+  --ab-bezel-drop: rgba(0, 0, 0, 0.55);
 
   background-color: var(--ab-bg);
   color: var(--ab-fg);
@@ -52,6 +59,10 @@ html[data-theme="light"] .ab-home-container {
   --ab-node-bg: #ffffff;
   --ab-navbar-bg: rgba(243, 245, 255, 0.78);
   --ab-figure-shadow: 0 24px 60px rgba(15, 19, 48, 0.18);
+  --ab-bezel-a: #f4f6ff;
+  --ab-bezel-b: #c3c9e4;
+  --ab-bezel-ring: #9aa3cc;
+  --ab-bezel-drop: rgba(15, 19, 48, 0.25);
 }
 
 // ---------- navbar i stopka motywu na stronie głównej ----------
@@ -399,6 +410,101 @@ html[data-theme="light"] .ab-home-container {
   color: var(--ab-on-accent) !important;
   font-weight: 600;
   box-shadow: 0 0 32px var(--ab-glow);
+}
+
+// ---------- przycisk z automatu arcade (główna akcja w hero) ----------
+.ab-arcade {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: var(--ab-fg) !important;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+
+  &:focus-visible .ab-arcade-bezel {
+    outline: 3px solid var(--ab-accent);
+    outline-offset: 6px;
+  }
+}
+
+.ab-arcade-start,
+.ab-arcade-label {
+  font-family: $pixel;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+.ab-arcade-start {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ab-accent-2);
+  text-shadow: 0 0 10px color-mix(in srgb, var(--ab-accent-2) 60%, transparent);
+}
+
+.ab-arcade-label {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+
+.ab-arcade-caret {
+  margin-right: 0.6em;
+  color: var(--ab-accent-2);
+}
+
+// obudowa: ciemny (lub jasny w motywie jasnym) pierścień, w którym siedzi grzybek
+.ab-arcade-bezel {
+  display: grid;
+  place-items: center;
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, var(--ab-bezel-a), var(--ab-bezel-b) 72%);
+  box-shadow:
+    0 0 0 3px var(--ab-bezel-ring),
+    inset 0 2px 1px rgba(255, 255, 255, 0.18),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.45),
+    0 12px 26px var(--ab-bezel-drop);
+}
+
+// grzybek: wypukły połysk + „ścianka” z cienia; wciśnięcie zjeżdża w dół i zjada ściankę
+.ab-arcade-cap {
+  --cap-wall: color-mix(in srgb, var(--ab-cap) 45%, black);
+
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 36% 28%, rgba(255, 255, 255, 0.85) 0 7%, transparent 22%),
+    radial-gradient(
+      circle at 50% 45%,
+      color-mix(in srgb, var(--ab-cap) 75%, white),
+      var(--ab-cap) 55%,
+      color-mix(in srgb, var(--ab-cap) 70%, black)
+    );
+  box-shadow:
+    0 8px 0 var(--cap-wall),
+    0 10px 14px rgba(0, 0, 0, 0.45),
+    0 0 24px color-mix(in srgb, var(--ab-cap) 45%, transparent);
+  transform: translateY(-6px);
+  transition:
+    transform 0.08s ease-out,
+    box-shadow 0.08s ease-out;
+
+  .ab-arcade:hover & {
+    box-shadow:
+      0 8px 0 var(--cap-wall),
+      0 10px 14px rgba(0, 0, 0, 0.45),
+      0 0 44px color-mix(in srgb, var(--ab-cap) 75%, transparent);
+  }
+
+  .ab-arcade:active & {
+    transform: translateY(1px);
+    box-shadow:
+      0 1px 0 var(--cap-wall),
+      0 2px 4px rgba(0, 0, 0, 0.4),
+      0 0 56px color-mix(in srgb, var(--ab-cap) 90%, transparent);
+  }
 }
 
 // ---------- sekcje ----------
@@ -901,6 +1007,9 @@ html[data-theme="light"] .ab-home-container {
 @keyframes ab-hero-out {
   to { opacity: 0; translate: 0 -70px; }
 }
+@keyframes ab-arcade-blink {
+  50% { opacity: 0; }
+}
 @keyframes ab-shimmer {
   to { background-position: -200% 0; }
 }
@@ -941,6 +1050,9 @@ html[data-theme="light"] .ab-home-container {
   }
   .ab-card:hover::after {
     animation: ab-scan 0.9s ease-out;
+  }
+  .ab-arcade-start {
+    animation: ab-arcade-blink 1.1s steps(1, end) infinite;
   }
 
   // tagline „wpisywany” — tylko gdy mieści się w jednej linii

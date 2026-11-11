@@ -1,5 +1,11 @@
 # Changelog
 
+## [6.2.1] - 2026-11-11
+
+### Changed
+
+- Home: the "Knowledge Base" button in the hero is now a retro arcade push button with a blinking "PRESS START" prompt, matching the arcade feel of the homepage in both light and dark mode (PL/EN).
+
 ## [6.2.0] - 2026-11-11
 
 ### Added
