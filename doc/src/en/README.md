@@ -27,7 +27,7 @@ milestones:
     - date: 18.04.2025
       text: Deploying a large NAS (8TB) for backups
     - date: 11.07.2025
-      text: Central IaC Repository (Terragrunt / Terraform / Ansible)
+      text: Central IaC Repository
     - date: 21.02.2026
       text: "Proxmox cluster reaches full capacity: 3x 64GB RAM"
 

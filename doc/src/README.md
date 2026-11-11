@@ -27,7 +27,7 @@ milestones:
     - date: 18.04.2025
       text: Uruchamiam duży NAS (8TB) do backupów
     - date: 11.07.2025
-      text: Centralne repozytorium IaC (Terragrunt / Terraform / Ansible)
+      text: Centralne repozytorium IaC
     - date: 21.02.2026
       text: "Pełne capacity klastra Proxmox: 3x 64GB RAM"
 
