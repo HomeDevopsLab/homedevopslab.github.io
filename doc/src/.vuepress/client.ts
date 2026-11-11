@@ -1,9 +1,9 @@
 import { defineClientConfig } from "vuepress/client";
 
-import SpaceHome from "./layouts/SpaceHome.vue";
+import LabHome from "./layouts/LabHome.vue";
 
 export default defineClientConfig({
   layouts: {
-    SpaceHome,
+    LabHome,
   },
 });

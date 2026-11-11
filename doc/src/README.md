@@ -1,5 +1,5 @@
 ---
-layout: SpaceHome
+layout: LabHome
 icon: house
 title: Home
 
@@ -7,13 +7,11 @@ hero:
   title: Angrybits Homelab
   tagline: Infrastruktura jako kod, automatyzacja jako standard
   image: /logo.svg
-  imageAlt: Logo Angrybits Homelab — planeta z orbitą
+  imageAlt: Logo Angrybits Homelab — zdenerwowany procesor
   actions:
     - text: Baza Wiedzy
       link: "#baza-wiedzy"
       type: primary
-    - text: Architektura Proxmox
-      link: /proxmox/
 
 milestones:
   title: Kamienie milowe

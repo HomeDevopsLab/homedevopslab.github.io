@@ -37,7 +37,7 @@ interface Section {
   stats?: Stat[];
   features?: Feature[];
 }
-interface SpaceHomeFrontmatter extends Record<string, unknown> {
+interface LabHomeFrontmatter extends Record<string, unknown> {
   hero: {
     title: string;
     tagline: string;
@@ -60,12 +60,42 @@ interface SpaceHomeFrontmatter extends Record<string, unknown> {
   sections?: Section[];
 }
 
-const { frontmatter } = useData<SpaceHomeFrontmatter>();
+const { frontmatter } = useData<LabHomeFrontmatter>();
 
 const hero = computed(() => frontmatter.value.hero);
 const milestones = computed(() => frontmatter.value.milestones);
 const knowledge = computed(() => frontmatter.value.knowledge);
 const sections = computed(() => frontmatter.value.sections ?? []);
+
+// Topologia wokół logo w hero: 6 węzłów na sześciokącie (r = 150, środek 200,200).
+// Glify to ścieżki w siatce 24×24 (obrys), dekoracyjne — aria-hidden.
+const ring = (cx: number, cy: number, r: number): string =>
+  `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0`;
+
+const glyphs = {
+  git: `${ring(6, 5, 2.5)}${ring(6, 19, 2.5)}${ring(18, 8, 2.5)}M6 7.5v9M18 10.5c0 4-6 3-12 6`,
+  cloud: "M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6.1 9.6 4.3 4.3 0 0 0 7 18z",
+  kubernetes: `${ring(12, 12, 9)}${ring(12, 12, 2.5)}M12 3v6.5M12 14.5V21M3 12h6.5M14.5 12H21`,
+  server:
+    "M4.5 4h15A1.5 1.5 0 0 1 21 5.5v4a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 9.5v-4A1.5 1.5 0 0 1 4.5 4zM4.5 13h15a1.5 1.5 0 0 1 1.5 1.5v4a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5v-4A1.5 1.5 0 0 1 4.5 13zM7 7.5h.01M7 16.5h.01",
+  database:
+    "M4 5a8 3 0 1 0 16 0a8 3 0 1 0-16 0M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3",
+  shield:
+    "M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6l8-3zM9 12l2.2 2.2L15.5 10",
+};
+
+const nodes = (
+  ["git", "cloud", "kubernetes", "server", "database", "shield"] as const
+).map((glyph, i) => {
+  const angle = ((-90 + i * 60) * Math.PI) / 180;
+  return {
+    x: +(200 + 150 * Math.cos(angle)).toFixed(1),
+    y: +(200 + 150 * Math.sin(angle)).toFixed(1),
+    d: glyphs[glyph],
+  };
+});
+
+const hexPoints = nodes.map(({ x, y }) => `${x},${y}`).join(" ");
 
 const isInternal = (link: string): boolean => link.startsWith("/");
 const asset = (src: string): string =>
@@ -81,23 +111,70 @@ const asset = (src: string): string =>
         <!-- HERO -->
         <section class="ab-hero">
           <div class="ab-hero-glow" aria-hidden="true" />
-          <div class="ab-planet" aria-hidden="true" />
-          <div class="ab-comet" aria-hidden="true" />
+          <div class="ab-floor" aria-hidden="true"><div class="ab-floor-grid" /></div>
+          <div class="ab-horizon" aria-hidden="true" />
+          <span class="ab-streak ab-streak-1" aria-hidden="true" />
+          <span class="ab-streak ab-streak-2" aria-hidden="true" />
+          <span class="ab-streak ab-streak-3" aria-hidden="true" />
 
-          <div class="ab-hero-out ab-orbits">
-            <div class="ab-orbit ab-orbit-a" aria-hidden="true"><span /></div>
-            <div class="ab-orbit ab-orbit-b" aria-hidden="true"><span /></div>
+          <div class="ab-hero-out ab-topology">
+            <svg
+              class="ab-topology-svg"
+              viewBox="0 0 400 400"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <circle class="ab-topo-ring" cx="200" cy="200" r="190" />
+              <polygon class="ab-topo-hex" :points="hexPoints" />
+              <polygon class="ab-topo-hex-flow" :points="hexPoints" />
+              <line
+                v-for="(node, i) in nodes"
+                :key="`link-${i}`"
+                class="ab-topo-link"
+                x1="200"
+                y1="200"
+                :x2="node.x"
+                :y2="node.y"
+              />
+              <line
+                v-for="(node, i) in nodes"
+                :key="`flow-${i}`"
+                class="ab-topo-flow"
+                :class="{ 'ab-topo-flow-rev': i % 2 }"
+                :style="{ animationDelay: `${-i * 0.45}s` }"
+                x1="200"
+                y1="200"
+                :x2="node.x"
+                :y2="node.y"
+              />
+              <circle class="ab-topo-core" cx="200" cy="200" r="86" />
+              <g
+                v-for="(node, i) in nodes"
+                :key="`node-${i}`"
+                :transform="`translate(${node.x} ${node.y})`"
+              >
+                <g class="ab-topo-node" :style="{ animationDelay: `${i * 0.7}s` }">
+                  <rect x="-25" y="-25" width="50" height="50" rx="13" />
+                  <path :d="node.d" transform="translate(-12 -12)" />
+                </g>
+              </g>
+            </svg>
             <img
               class="ab-hero-logo"
               :src="asset(hero.image)"
               :alt="hero.imageAlt ?? ''"
-              width="168"
-              height="168"
+              width="136"
+              height="136"
             />
           </div>
 
           <h1 class="ab-hero-out ab-hero-title">{{ hero.title }}</h1>
-          <p class="ab-hero-out ab-hero-tagline">{{ hero.tagline }}</p>
+          <p class="ab-hero-out ab-hero-tagline">
+            <span class="ab-prompt" aria-hidden="true">$</span>
+            <span class="ab-typed" :style="{ '--chars': hero.tagline.length }">{{
+              hero.tagline
+            }}</span>
+          </p>
 
           <div v-if="hero.actions?.length" class="ab-hero-out ab-actions">
             <template v-for="action in hero.actions" :key="action.text">
@@ -241,5 +318,5 @@ const asset = (src: string): string =>
 </template>
 
 <style lang="scss">
-@use "../styles/space-home";
+@use "../styles/lab-home";
 </style>

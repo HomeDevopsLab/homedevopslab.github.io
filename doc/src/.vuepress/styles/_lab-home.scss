@@ -1,4 +1,4 @@
-// Strona główna „wersja kosmiczna” — layout SpaceHome.
+// Strona główna — layout LabHome. Motyw: centrum danych / sieć / automatyzacja.
 // Tokeny są na kontenerze motywu (.ab-home-container), więc obejmują też navbar i stopkę.
 
 $display: "Space Grotesk", "Inter", system-ui, sans-serif;
@@ -14,19 +14,16 @@ $mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
   --ab-accent-2: #6fe3d6;
   --ab-on-accent: #05060f;
   --ab-line: rgba(160, 180, 255, 0.14);
+  --ab-grid: rgba(160, 180, 255, 0.055);
+  --ab-grid-node: rgba(157, 184, 255, 0.85);
+  --ab-floor-line: rgba(124, 140, 255, 0.55);
   --ab-card-bg: rgba(140, 160, 255, 0.06);
   --ab-card-line: rgba(160, 180, 255, 0.22);
   --ab-card-line-hover: rgba(200, 215, 255, 0.6);
   --ab-glow: rgba(130, 160, 255, 0.32);
-  --ab-nebula-a: rgba(96, 84, 230, 0.2);
-  --ab-nebula-b: rgba(60, 150, 200, 0.16);
-  --ab-star: #ffffff;
-  --ab-star-tint: rgba(200, 215, 255, 0.9);
-  --ab-planet-core: #1a2254;
-  --ab-planet-mid: #0b0f2a;
-  --ab-planet-rim: rgba(200, 215, 255, 0.95);
-  --ab-planet-halo: rgba(120, 155, 255, 0.55);
-  --ab-planet-halo-2: rgba(120, 90, 255, 0.35);
+  --ab-glow-a: rgba(96, 84, 230, 0.2);
+  --ab-glow-b: rgba(60, 150, 200, 0.16);
+  --ab-node-bg: #0c1030;
   --ab-navbar-bg: rgba(5, 6, 15, 0.72);
   --ab-figure-shadow: 0 0 90px rgba(110, 130, 255, 0.16);
 
@@ -43,19 +40,16 @@ html[data-theme="light"] .ab-home-container {
   --ab-accent-2: #0f8f84;
   --ab-on-accent: #ffffff;
   --ab-line: rgba(63, 79, 216, 0.14);
+  --ab-grid: rgba(63, 79, 216, 0.07);
+  --ab-grid-node: rgba(63, 79, 216, 0.6);
+  --ab-floor-line: rgba(63, 79, 216, 0.45);
   --ab-card-bg: rgba(255, 255, 255, 0.72);
   --ab-card-line: rgba(63, 79, 216, 0.18);
   --ab-card-line-hover: rgba(63, 79, 216, 0.55);
   --ab-glow: rgba(63, 79, 216, 0.2);
-  --ab-nebula-a: rgba(124, 140, 255, 0.22);
-  --ab-nebula-b: rgba(111, 227, 214, 0.2);
-  --ab-star: rgba(63, 79, 216, 0.45);
-  --ab-star-tint: rgba(96, 84, 230, 0.35);
-  --ab-planet-core: #c9d3ff;
-  --ab-planet-mid: #e2e7ff;
-  --ab-planet-rim: rgba(63, 79, 216, 0.6);
-  --ab-planet-halo: rgba(124, 140, 255, 0.4);
-  --ab-planet-halo-2: rgba(111, 227, 214, 0.25);
+  --ab-glow-a: rgba(124, 140, 255, 0.22);
+  --ab-glow-b: rgba(111, 227, 214, 0.2);
+  --ab-node-bg: #ffffff;
   --ab-navbar-bg: rgba(243, 245, 255, 0.78);
   --ab-figure-shadow: 0 24px 60px rgba(15, 19, 48, 0.18);
 }
@@ -79,7 +73,7 @@ html[data-theme="light"] .ab-home-container {
   }
 }
 
-// ---------- tło z gwiazdami ----------
+// ---------- tło: siatka „blueprint” z pulsującymi węzłami ----------
 .ab-home {
   position: relative;
   overflow: clip;
@@ -90,35 +84,26 @@ html[data-theme="light"] .ab-home-container {
   color: var(--ab-fg);
 
   background-image:
-    radial-gradient(1.6px 1.6px at 40px 60px, var(--ab-star) 50%, transparent 52%),
-    radial-gradient(1px 1px at 130px 210px, var(--ab-star) 50%, transparent 52%),
-    radial-gradient(1.2px 1.2px at 220px 90px, var(--ab-star-tint) 50%, transparent 52%),
-    radial-gradient(1px 1px at 300px 330px, var(--ab-star) 50%, transparent 52%),
-    radial-gradient(2px 2px at 380px 150px, var(--ab-star-tint) 50%, transparent 52%),
-    radial-gradient(1px 1px at 450px 420px, var(--ab-star) 50%, transparent 52%),
-    radial-gradient(1px 1px at 90px 400px, var(--ab-star) 50%, transparent 52%),
-    radial-gradient(1.4px 1.4px at 180px 300px, rgba(255, 230, 200, 0.85) 50%, transparent 52%),
-    radial-gradient(1px 1px at 260px 470px, var(--ab-star) 50%, transparent 52%),
-    radial-gradient(1px 1px at 340px 30px, var(--ab-star) 50%, transparent 52%),
-    radial-gradient(1.2px 1.2px at 420px 260px, rgba(210, 190, 255, 0.85) 50%, transparent 52%),
-    radial-gradient(1px 1px at 20px 250px, var(--ab-star) 50%, transparent 52%),
-    radial-gradient(1px 1px at 470px 80px, var(--ab-star) 50%, transparent 52%),
-    radial-gradient(1px 1px at 150px 20px, var(--ab-star) 50%, transparent 52%);
-  background-size: 500px 500px;
+    linear-gradient(var(--ab-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ab-grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: -1px -1px;
 
-  // druga warstwa gwiazd — migocze
+  // węzły na przecięciach siatki — migają jak diody
   &::before {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 0.55;
     background-image:
-      radial-gradient(1.6px 1.6px at 70px 120px, var(--ab-star) 50%, transparent 52%),
-      radial-gradient(1.2px 1.2px at 250px 40px, var(--ab-star-tint) 50%, transparent 52%),
-      radial-gradient(1.4px 1.4px at 390px 310px, var(--ab-star) 50%, transparent 52%),
-      radial-gradient(1px 1px at 160px 380px, var(--ab-star) 50%, transparent 52%);
-    background-size: 430px 430px;
+      radial-gradient(2px 2px at 48px 96px, var(--ab-grid-node) 60%, transparent 70%),
+      radial-gradient(2px 2px at 192px 48px, var(--ab-grid-node) 60%, transparent 70%),
+      radial-gradient(1.5px 1.5px at 336px 240px, var(--ab-grid-node) 60%, transparent 70%),
+      radial-gradient(2px 2px at 144px 288px, var(--ab-grid-node) 60%, transparent 70%),
+      radial-gradient(1.5px 1.5px at 288px 384px, var(--ab-grid-node) 60%, transparent 70%);
+    background-size: 432px 432px;
+    background-position: -1px -1px;
   }
 
   a {
@@ -129,10 +114,6 @@ html[data-theme="light"] .ab-home-container {
   img {
     max-width: 100%;
   }
-}
-
-html[data-theme="light"] .ab-home::before {
-  opacity: 0.35;
 }
 
 // pasek postępu przewijania tuż pod navbarem
@@ -155,113 +136,181 @@ html[data-theme="light"] .ab-home::before {
 
 // ---------- HERO ----------
 .ab-hero {
+  --floor-h: clamp(150px, 26vh, 260px);
+
   position: relative;
   overflow: clip;
-  min-height: min(820px, calc(100svh - var(--navbar-height, 3.75rem)));
-
-  @media (max-width: 559px) {
-    min-height: 0;
-  }
+  min-height: min(840px, calc(100svh - var(--navbar-height, 3.75rem)));
   box-sizing: border-box;
-  padding: clamp(40px, 8vh, 72px) 16px clamp(150px, 26vh, 260px);
+  padding: clamp(32px, 6vh, 64px) 16px calc(var(--floor-h) + 8px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(18px, 3vh, 28px);
+  gap: clamp(16px, 2.6vh, 24px);
   text-align: center;
+
+  @media (max-width: 559px) {
+    min-height: 0;
+  }
 }
 
 .ab-hero-glow {
   position: absolute;
   left: 50%;
-  top: 8%;
+  top: 4%;
   width: min(900px, 160vw);
-  height: 620px;
+  height: 640px;
   transform: translateX(-50%);
-  background: radial-gradient(closest-side, var(--ab-nebula-a), rgba(40, 60, 160, 0.08) 60%, transparent);
+  background: radial-gradient(closest-side, var(--ab-glow-a), rgba(40, 60, 160, 0.08) 60%, transparent);
 }
 
-.ab-planet {
+// podłoga serwerowni: siatka w perspektywie, przesuwa się w stronę widza
+.ab-floor {
   position: absolute;
-  left: 50%;
-  top: calc(100% - clamp(120px, 18vh, 170px));
-  width: max(230%, 900px);
-  aspect-ratio: 1;
-  transform: translateX(-50%);
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 0%, var(--ab-planet-core) 0%, var(--ab-planet-mid) 14%, var(--ab-bg) 34%);
+  left: -50%;
+  right: -50%;
+  bottom: 0;
+  height: var(--floor-h);
+  overflow: hidden;
+  perspective: 360px;
+  perspective-origin: 50% 0%;
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 45%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 45%);
+}
+
+.ab-floor-grid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 300%;
+  transform-origin: 50% 0;
+  transform: rotateX(68deg);
+  background-image:
+    linear-gradient(var(--ab-floor-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ab-floor-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.ab-horizon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--floor-h);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ab-accent) 30%, var(--ab-accent-2) 50%, var(--ab-accent) 70%, transparent);
   box-shadow:
-    0 -1px 0 var(--ab-planet-rim),
-    0 -10px 50px var(--ab-planet-halo),
-    0 -50px 170px var(--ab-planet-halo-2);
+    0 0 18px 2px var(--ab-glow),
+    0 -40px 120px 20px var(--ab-glow-a);
 }
 
-.ab-comet {
+// „pakiety” przelatujące wzdłuż linii siatki
+.ab-streak {
   position: absolute;
-  left: 12%;
-  top: 18%;
-  width: 140px;
-  height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, transparent, var(--ab-fg));
+  left: 0;
+  width: 160px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ab-accent-2));
+  box-shadow: 0 0 8px var(--ab-accent-2);
   opacity: 0;
-  rotate: 18deg;
 }
 
-.ab-orbits {
+.ab-streak-1 {
+  top: 131px;
+}
+
+.ab-streak-2 {
+  top: 323px;
+  background: linear-gradient(90deg, transparent, var(--ab-accent));
+  box-shadow: 0 0 8px var(--ab-accent);
+}
+
+.ab-streak-3 {
+  top: 467px;
+}
+
+// topologia sieci wokół logo
+.ab-topology {
   position: relative;
-  width: clamp(220px, 30vw, 280px);
+  width: clamp(260px, 34vw, 380px);
   aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.ab-orbit {
+.ab-topology-svg {
   position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(160, 180, 255, 0.24);
-
-  span {
-    position: absolute;
-    left: 50%;
-    border-radius: 50%;
-  }
-}
-
-.ab-orbit-a {
   inset: 0;
-
-  span {
-    top: -5px;
-    width: 9px;
-    height: 9px;
-    margin-left: -4px;
-    background: var(--ab-accent);
-    box-shadow: 0 0 14px var(--ab-accent);
-  }
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-.ab-orbit-b {
-  inset: 14%;
-  border-color: rgba(160, 180, 255, 0.36);
+.ab-topo-ring {
+  fill: none;
+  stroke: var(--ab-card-line);
+  stroke-width: 1;
+  stroke-dasharray: 2 10;
+  transform-origin: 200px 200px;
+}
 
-  span {
-    bottom: -4px;
-    width: 6px;
-    height: 6px;
-    margin-left: -3px;
-    background: var(--ab-accent-2);
-    box-shadow: 0 0 10px var(--ab-accent-2);
+.ab-topo-hex {
+  fill: none;
+  stroke: var(--ab-card-line);
+  stroke-width: 1;
+}
+
+.ab-topo-hex-flow {
+  fill: none;
+  stroke: var(--ab-accent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 2 46;
+  opacity: 0.8;
+}
+
+.ab-topo-link {
+  stroke: var(--ab-card-line);
+  stroke-width: 1;
+}
+
+.ab-topo-flow {
+  stroke: var(--ab-accent-2);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1 23;
+  filter: drop-shadow(0 0 3px var(--ab-accent-2));
+}
+
+.ab-topo-core {
+  fill: var(--ab-bg);
+  stroke: var(--ab-card-line);
+  stroke-width: 1;
+}
+
+.ab-topo-node {
+  rect {
+    fill: var(--ab-node-bg);
+    stroke: var(--ab-card-line-hover);
+    stroke-width: 1;
+  }
+
+  path {
+    fill: none;
+    stroke: var(--ab-fg);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 }
 
 .ab-hero-logo {
   position: relative;
-  width: 60%;
+  width: 36%;
   height: auto;
-  filter: drop-shadow(0 0 32px rgba(124, 140, 255, 0.55));
+  filter: drop-shadow(0 0 28px rgba(124, 140, 255, 0.55));
 }
 
 .ab-hero-title {
@@ -278,13 +327,32 @@ html[data-theme="light"] .ab-home::before {
   padding: 0;
 }
 
+// tagline jako polecenie w terminalu, „wpisywane” znak po znaku
 .ab-hero-tagline {
   position: relative;
   margin: 0;
-  max-width: 640px;
-  font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+  max-width: 100%;
+  font-family: $mono;
+  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
   line-height: 1.5;
   color: var(--ab-muted);
+}
+
+.ab-prompt {
+  margin-right: 0.6ch;
+  color: var(--ab-accent-2);
+}
+
+// na telefonie tekst się zawija razem z „$”; od 560px jedna linia (pod animację pisania)
+.ab-typed {
+  display: inline;
+  border-right: 2px solid var(--ab-accent-2);
+  padding-right: 2px;
+
+  @media (min-width: 560px) {
+    display: inline-block;
+    vertical-align: bottom;
+  }
 }
 
 .ab-actions {
@@ -301,7 +369,7 @@ html[data-theme="light"] .ab-home::before {
   align-items: center;
   justify-content: center;
   min-height: 48px;
-  padding: 0 26px;
+  padding: 0 28px;
   border-radius: 999px;
   border: 1px solid var(--ab-card-line);
   background: color-mix(in srgb, var(--ab-bg) 50%, transparent);
@@ -376,6 +444,7 @@ html[data-theme="light"] .ab-home::before {
   min-width: 0;
 }
 
+// miękka poświata w tle sekcji
 .ab-nebula {
   position: absolute;
   top: 0;
@@ -387,12 +456,12 @@ html[data-theme="light"] .ab-home::before {
 
 .ab-nebula-left {
   left: 0;
-  background: radial-gradient(closest-side, var(--ab-nebula-a), transparent);
+  background: radial-gradient(closest-side, var(--ab-glow-a), transparent);
 }
 
 .ab-nebula-right {
   right: 0;
-  background: radial-gradient(closest-side, var(--ab-nebula-b), transparent);
+  background: radial-gradient(closest-side, var(--ab-glow-b), transparent);
 }
 
 .ab-h2 {
@@ -491,7 +560,7 @@ html[data-theme="light"] .ab-home::before {
   width: 11px;
   height: 11px;
   margin-top: 7px;
-  border-radius: 50%;
+  border-radius: 3px;
   background: var(--ab-accent);
   box-shadow: 0 0 12px var(--ab-accent);
 }
@@ -530,7 +599,7 @@ html[data-theme="light"] .ab-home::before {
 }
 
 // telefon: 1 kolumna, kompaktowe karty (ikona obok tekstu)
-// tablet: siatka 6-kolumnowa 3 + 2 bez dziur; desktop: 5 w rzędzie
+// tablet: siatka 6-kolumnowa 3 + 2 bez dziur; desktop: wszystkie w jednym rzędzie
 .ab-cards {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -575,10 +644,23 @@ html[data-theme="light"] .ab-home::before {
   flex-direction: column;
   gap: 12px;
   color: var(--ab-fg) !important;
+  overflow: hidden;
   transition:
     transform 0.25s ease,
     box-shadow 0.25s ease,
     border-color 0.25s ease;
+
+  // linia „skanu” przesuwająca się po karcie przy najechaniu
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--ab-accent-2), transparent);
+    opacity: 0;
+  }
 
   &:hover {
     transform: translateY(-6px);
@@ -600,9 +682,9 @@ html[data-theme="light"] .ab-home::before {
 .ab-card-icon {
   width: 52px;
   height: 52px;
-  border-radius: 50%;
+  border-radius: 14px;
   border: 1px solid rgba(190, 205, 255, 0.4);
-  background: radial-gradient(circle at 30% 25%, #7c8cff, #1a1f5c 72%);
+  background: linear-gradient(145deg, #7c8cff, #1a1f5c 80%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -735,13 +817,15 @@ html[data-theme="light"] .ab-home::before {
   }
 }
 
+// znacznik listy: pojedynczy „bit”
 .ab-diamond {
   flex: none;
   width: 8px;
   height: 8px;
   margin-top: 10px;
-  transform: rotate(45deg);
+  border-radius: 2px;
   background: var(--ab-accent);
+  box-shadow: 0 0 8px var(--ab-accent);
 }
 
 .ab-feature-body {
@@ -761,31 +845,55 @@ html[data-theme="light"] .ab-home::before {
 }
 
 // ---------- animacje ----------
-@keyframes ab-twinkle {
-  from { opacity: 0.12; }
-  to { opacity: 0.9; }
+@keyframes ab-blink-leds {
+  from { opacity: 0.15; }
+  to { opacity: 0.85; }
 }
 @keyframes ab-spin {
   to { rotate: 360deg; }
 }
 @keyframes ab-pulse {
-  from { opacity: 0.5; }
+  from { opacity: 0.55; }
   to { opacity: 1; }
 }
-@keyframes ab-comet {
-  0% { opacity: 0; translate: 0 0; }
-  4% { opacity: 1; }
-  14% { opacity: 0; translate: 520px 170px; }
-  100% { opacity: 0; translate: 520px 170px; }
+@keyframes ab-floor-move {
+  to { background-position: 0 48px; }
+}
+@keyframes ab-streak {
+  0% { opacity: 0; translate: -200px 0; }
+  6% { opacity: 1; }
+  30% { opacity: 1; }
+  36% { opacity: 0; translate: calc(100vw + 200px) 0; }
+  100% { opacity: 0; translate: calc(100vw + 200px) 0; }
+}
+@keyframes ab-flow-out {
+  to { stroke-dashoffset: -48; }
+}
+@keyframes ab-flow-ring {
+  to { stroke-dashoffset: -96; }
+}
+@keyframes ab-node-glow {
+  0%, 70%, 100% { filter: none; }
+  80% { filter: drop-shadow(0 0 10px var(--ab-accent-2)); }
+}
+@keyframes ab-typing {
+  from { width: 0; }
+}
+@keyframes ab-caret {
+  50% { border-color: transparent; }
+}
+@keyframes ab-scan {
+  0% { opacity: 1; top: 0; }
+  100% { opacity: 0; top: 100%; }
 }
 @keyframes ab-drift {
-  to { background-position: 0 500px; }
+  to { background-position: -1px 47px; }
 }
 @keyframes ab-progress {
   to { scale: 1 1; }
 }
-@keyframes ab-rise {
-  to { translate: 0 -110px; scale: 1.05; }
+@keyframes ab-floor-tilt {
+  to { translate: 0 60px; opacity: 0.4; }
 }
 @keyframes ab-hero-out {
   to { opacity: 0; translate: 0 -70px; }
@@ -799,19 +907,58 @@ html[data-theme="light"] .ab-home::before {
 
 @media (prefers-reduced-motion: no-preference) {
   .ab-home::before {
-    animation: ab-twinkle 3.4s ease-in-out infinite alternate;
-  }
-  .ab-orbit-a {
-    animation: ab-spin 26s linear infinite;
-  }
-  .ab-orbit-b {
-    animation: ab-spin 38s linear infinite reverse;
+    animation: ab-blink-leds 2.6s ease-in-out infinite alternate;
   }
   .ab-hero-glow {
     animation: ab-pulse 6s ease-in-out infinite alternate;
   }
-  .ab-comet {
-    animation: ab-comet 11s ease-in 2s infinite;
+  .ab-floor-grid {
+    animation: ab-floor-move 1.6s linear infinite;
+  }
+  .ab-streak-1 {
+    animation: ab-streak 7s ease-in 1s infinite;
+  }
+  .ab-streak-2 {
+    animation: ab-streak 9s ease-in 3.5s infinite;
+  }
+  .ab-streak-3 {
+    animation: ab-streak 8s ease-in 6s infinite;
+  }
+  .ab-topo-ring {
+    animation: ab-spin 60s linear infinite;
+  }
+  .ab-topo-flow {
+    animation: ab-flow-out 1.4s linear infinite;
+  }
+  .ab-topo-flow-rev {
+    animation-direction: reverse;
+  }
+  .ab-topo-hex-flow {
+    animation: ab-flow-ring 3s linear infinite;
+  }
+  .ab-topo-node {
+    animation: ab-node-glow 4.2s ease-in-out infinite;
+  }
+  .ab-card:hover::after {
+    animation: ab-scan 0.9s ease-out;
+  }
+
+  // tagline „wpisywany” — tylko gdy mieści się w jednej linii
+  @media (min-width: 560px) {
+    .ab-typed {
+      overflow: hidden;
+      white-space: nowrap;
+      width: calc(var(--chars) * 1ch + 4px);
+      animation:
+        ab-typing 2.4s steps(var(--chars), end) 0.5s both,
+        ab-caret 0.9s step-end infinite;
+    }
+  }
+
+  @media (max-width: 559px) {
+    .ab-typed {
+      animation: ab-caret 0.9s step-end infinite;
+    }
   }
 
   // animacje sterowane przewijaniem — tylko tam, gdzie przeglądarka je wspiera
@@ -824,8 +971,9 @@ html[data-theme="light"] .ab-home::before {
       animation: ab-progress linear both;
       animation-timeline: scroll(root);
     }
-    .ab-planet {
-      animation: ab-rise linear both;
+    .ab-floor,
+    .ab-horizon {
+      animation: ab-floor-tilt linear both;
       animation-timeline: scroll(root);
       animation-range: 0 760px;
     }
