@@ -279,8 +279,18 @@ const asset = (src: string): string =>
 
           <div v-if="hero.actions?.length" class="ab-hero-out ab-actions">
             <template v-for="action in hero.actions" :key="action.text">
+              <!-- główna akcja: przycisk z automatu arcade z mrugającym „PRESS START” -->
+              <a v-if="action.type === 'primary'" :href="action.link" class="ab-arcade">
+                <span class="ab-arcade-start" aria-hidden="true">Press start</span>
+                <span class="ab-arcade-bezel" aria-hidden="true">
+                  <span class="ab-arcade-cap" />
+                </span>
+                <span class="ab-arcade-label">
+                  <span class="ab-arcade-caret" aria-hidden="true">▶</span>{{ action.text }}
+                </span>
+              </a>
               <RouteLink
-                v-if="isInternal(action.link)"
+                v-else-if="isInternal(action.link)"
                 :to="action.link"
                 class="ab-btn"
                 :class="{ 'ab-btn-primary': action.type === 'primary' }"
