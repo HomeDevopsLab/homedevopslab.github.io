@@ -406,6 +406,9 @@ html[data-theme="light"] .ab-home-container {
   position: relative;
   border-top: 1px solid var(--ab-line);
   scroll-margin-top: var(--navbar-height, 3.75rem);
+  // leniwe renderowanie: sekcje poza ekranem nie są malowane, dopóki nie zbliżą się do viewportu
+  content-visibility: auto;
+  contain-intrinsic-size: auto 820px;
 }
 
 .ab-wrap {
@@ -898,11 +901,8 @@ html[data-theme="light"] .ab-home-container {
 @keyframes ab-hero-out {
   to { opacity: 0; translate: 0 -70px; }
 }
-@keyframes ab-reveal {
-  from { opacity: 0; translate: 0 44px; }
-}
-@keyframes ab-reveal-img {
-  from { opacity: 0; scale: 0.92; translate: 0 60px; }
+@keyframes ab-shimmer {
+  to { background-position: -200% 0; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -982,15 +982,85 @@ html[data-theme="light"] .ab-home-container {
       animation-timeline: scroll(root);
       animation-range: 120px 560px;
     }
+  }
+}
+
+// ---------- leniwe pojawianie się treści (IntersectionObserver w LabHome.vue) ----------
+// .ab-animate dokłada JS po starcie — bez niego wszystko jest widoczne od razu.
+$ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+@media (prefers-reduced-motion: no-preference) {
+  .ab-animate {
     .ab-reveal {
-      animation: ab-reveal linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 80%;
+      --d: calc(var(--i, 0) * 90ms);
+
+      opacity: 0;
+      translate: 0 36px;
+      // osobne opóźnienia: kaskada dotyczy tylko wejścia, nie hovera kart
+      transition-property: opacity, translate, transform, box-shadow, border-color;
+      transition-duration: 0.7s, 0.7s, 0.25s, 0.25s, 0.25s;
+      transition-timing-function: $ease-out;
+      transition-delay: var(--d), var(--d), 0s, 0s, 0s;
     }
+
     .ab-reveal-img {
-      animation: ab-reveal-img linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 70%;
+      opacity: 0;
+      translate: 0 56px;
+      scale: 0.94;
+      transition:
+        opacity 0.9s $ease-out 0.1s,
+        translate 0.9s $ease-out 0.1s,
+        scale 0.9s $ease-out 0.1s;
+    }
+
+    .ab-reveal.is-visible,
+    .ab-reveal-img.is-visible {
+      opacity: 1;
+      translate: 0 0;
+      scale: 1;
+    }
+
+    // oś czasu „rysuje się” z góry na dół
+    .ab-reveal-line::before {
+      scale: 1 0;
+      transform-origin: top;
+      transition: scale 1.4s $ease-out 0.2s;
+    }
+
+    .ab-reveal-line.is-visible::before {
+      scale: 1 1;
+    }
+
+    // grafika: placeholder z przelatującym światłem, potem wyostrzenie po załadowaniu
+    .ab-figure {
+      min-height: 120px;
+
+      img {
+        opacity: 0;
+        scale: 1.04;
+        filter: blur(10px);
+        transition:
+          opacity 0.8s $ease-out,
+          scale 1.2s $ease-out,
+          filter 0.8s $ease-out;
+      }
+
+      &:not(.is-loaded) {
+        background-image: linear-gradient(
+          100deg,
+          transparent 30%,
+          var(--ab-glow) 50%,
+          transparent 70%
+        );
+        background-size: 200% 100%;
+        animation: ab-shimmer 1.4s linear infinite;
+      }
+
+      &.is-loaded img {
+        opacity: 1;
+        scale: 1;
+        filter: none;
+      }
     }
   }
 }

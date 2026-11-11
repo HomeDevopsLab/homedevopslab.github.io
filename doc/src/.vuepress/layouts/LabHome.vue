@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { RouteLink, withBase } from "vuepress/client";
 import { MainLayout, useData } from "vuepress-theme-hope/client";
 
@@ -34,6 +34,8 @@ interface Section {
   cta?: Link;
   image: string;
   imageAlt?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   stats?: Stat[];
   features?: Feature[];
 }
@@ -49,6 +51,8 @@ interface LabHomeFrontmatter extends Record<string, unknown> {
     title: string;
     image?: string;
     imageAlt?: string;
+    imageWidth?: number;
+    imageHeight?: number;
     items: Milestone[];
   };
   knowledge?: {
@@ -60,7 +64,7 @@ interface LabHomeFrontmatter extends Record<string, unknown> {
   sections?: Section[];
 }
 
-const { frontmatter } = useData<LabHomeFrontmatter>();
+const { frontmatter, routePath } = useData<LabHomeFrontmatter>();
 
 const hero = computed(() => frontmatter.value.hero);
 const milestones = computed(() => frontmatter.value.milestones);
@@ -98,13 +102,58 @@ const nodes = (
 const hexPoints = nodes.map(({ x, y }) => `${x},${y}`).join(" ");
 
 const isInternal = (link: string): boolean => link.startsWith("/");
+
+// Leniwe pojawianie się treści: elementy .ab-reveal* dostają .is-visible, gdy wejdą
+// w viewport (raz). Klasa .ab-animate na korzeniu włącza stan początkowy dopiero po
+// starcie JS — bez JS (i przy prefers-reduced-motion) treść jest od razu widoczna.
+// Grafiki: .is-loaded na <figure> po załadowaniu pliku (do tego czasu placeholder).
+const root = ref<HTMLElement | null>(null);
+let observer: IntersectionObserver | undefined;
+
+const setupReveal = (): void => {
+  const el = root.value;
+  if (!el) return;
+
+  el.querySelectorAll<HTMLImageElement>(".ab-figure img").forEach((img) => {
+    const figure = img.closest(".ab-figure");
+    const done = (): void => figure?.classList.add("is-loaded");
+    if (img.complete && img.naturalWidth > 0) done();
+    else {
+      img.addEventListener("load", done, { once: true });
+      img.addEventListener("error", done, { once: true });
+    }
+  });
+
+  observer?.disconnect();
+  if (!("IntersectionObserver" in window)) return;
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add("is-visible");
+        observer?.unobserve(entry.target);
+      }
+    },
+    { rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
+  );
+  el.querySelectorAll(".ab-reveal, .ab-reveal-img, .ab-reveal-line").forEach(
+    (node) => observer?.observe(node),
+  );
+  el.classList.add("ab-animate");
+};
+
+onMounted(setupReveal);
+// przełączenie języka (PL <-> EN) ponownie używa tego samego layoutu
+watch(routePath, () => nextTick(setupReveal));
+onBeforeUnmount(() => observer?.disconnect());
 const asset = (src: string): string =>
   /^(https?:)?\/\//.test(src) ? src : withBase(src);
 </script>
 
 <template>
   <MainLayout container-class="ab-home-container" no-sidebar no-toc>
-    <div class="ab-home">
+    <div ref="root" class="ab-home">
       <div class="ab-progress" aria-hidden="true" />
 
       <main id="main-content" class="ab-main">
@@ -201,11 +250,12 @@ const asset = (src: string): string =>
           <div class="ab-wrap ab-split">
             <div class="ab-copy">
               <h2 class="ab-h2 ab-reveal">{{ milestones.title }}</h2>
-              <ol class="ab-timeline">
+              <ol class="ab-timeline ab-reveal-line">
                 <li
-                  v-for="item in milestones.items"
+                  v-for="(item, i) in milestones.items"
                   :key="item.date"
                   class="ab-reveal"
+                  :style="{ '--i': i + 1 }"
                 >
                   <span class="ab-dot" aria-hidden="true" />
                   <span class="ab-timeline-body">
@@ -219,6 +269,8 @@ const asset = (src: string): string =>
               <img
                 :src="asset(milestones.image)"
                 :alt="milestones.imageAlt ?? ''"
+                :width="milestones.imageWidth"
+                :height="milestones.imageHeight"
                 loading="lazy"
                 decoding="async"
               />
@@ -240,10 +292,11 @@ const asset = (src: string): string =>
             </div>
             <div class="ab-cards">
               <RouteLink
-                v-for="card in knowledge.cards"
+                v-for="(card, i) in knowledge.cards"
                 :key="card.title"
                 :to="card.link"
                 class="ab-card ab-reveal"
+                :style="{ '--i': i }"
               >
                 <span class="ab-card-icon" aria-hidden="true">
                   <VPIcon :icon="card.icon" />
@@ -278,11 +331,17 @@ const asset = (src: string): string =>
                 v-if="section.cta"
                 :to="section.cta.link"
                 class="ab-cta ab-reveal"
+                :style="{ '--i': 1 }"
                 >{{ section.cta.text }} <span aria-hidden="true">→</span></RouteLink
               >
 
               <ul v-if="section.stats?.length" class="ab-stats">
-                <li v-for="stat in section.stats" :key="stat.value" class="ab-reveal">
+                <li
+                  v-for="(stat, i) in section.stats"
+                  :key="stat.value"
+                  class="ab-reveal"
+                  :style="{ '--i': i + 2 }"
+                >
                   <span class="ab-stat-value">{{ stat.value }}</span>
                   <span class="ab-stat-label">{{ stat.label }}</span>
                 </li>
@@ -290,9 +349,10 @@ const asset = (src: string): string =>
 
               <ul v-if="section.features?.length" class="ab-features">
                 <li
-                  v-for="feature in section.features"
+                  v-for="(feature, i) in section.features"
                   :key="feature.title"
                   class="ab-reveal"
+                  :style="{ '--i': i + 2 }"
                 >
                   <span class="ab-diamond" aria-hidden="true" />
                   <span class="ab-feature-body">
@@ -306,6 +366,8 @@ const asset = (src: string): string =>
               <img
                 :src="asset(section.image)"
                 :alt="section.imageAlt ?? ''"
+                :width="section.imageWidth"
+                :height="section.imageHeight"
                 loading="lazy"
                 decoding="async"
               />

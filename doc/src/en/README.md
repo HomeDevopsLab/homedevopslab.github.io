@@ -16,6 +16,8 @@ hero:
 milestones:
   title: Milestones
   image: /assets/image/milestones.jpg
+  imageWidth: 1600
+  imageHeight: 1195
   imageAlt: The homelab's growth path — from two Raspberry Pis, through a NAS and an IaC repository, to a server cluster
   items:
     - date: 25.02.2023
@@ -62,6 +64,8 @@ sections:
       text: Explore Proxmox architecture
       link: /en/proxmox/
     image: /assets/image/rack.jpg
+    imageWidth: 2000
+    imageHeight: 830
     imageAlt: Server rack running the Proxmox VE cluster with a high-availability console
     stats:
       - value: 42 vCPU
@@ -77,6 +81,8 @@ sections:
       text: Explore Kubernetes docs
       link: /en/kubernetes/
     image: /assets/image/k3s.jpg
+    imageWidth: 2816
+    imageHeight: 1536
     imageAlt: k3s cluster reconciled by FluxCD from a Git repository
     features:
       - title: 100% GitOps Driven
@@ -92,6 +98,8 @@ sections:
       text: Explore GitOps repositories
       link: /en/gitops/
     image: /assets/image/gitops-ecosystem.jpg
+    imageWidth: 2000
+    imageHeight: 1116
     imageAlt: The homelab's GitOps repository ecosystem
     features:
       - title: Infrastructure as Code
@@ -107,6 +115,8 @@ sections:
       text: Explore the backup strategy
       link: /en/security/
     image: /assets/image/homelab-security.jpg
+    imageWidth: 2000
+    imageHeight: 1116
     imageAlt: 3-2-1 backup strategy — Proxmox, NAS, AWS S3 and Grafana
     features:
       - title: Virtual machine snapshots

@@ -16,6 +16,8 @@ hero:
 milestones:
   title: Kamienie milowe
   image: /assets/image/milestones.jpg
+  imageWidth: 1600
+  imageHeight: 1195
   imageAlt: Ścieżka rozwoju homelaba — od dwóch Raspberry Pi, przez NAS i repozytorium IaC, po klaster serwerów
   items:
     - date: 25.02.2023
@@ -62,6 +64,8 @@ sections:
       text: Zobacz architekturę Proxmox
       link: /proxmox/
     image: /assets/image/rack.jpg
+    imageWidth: 2000
+    imageHeight: 830
     imageAlt: Szafa rack z klastrem Proxmox VE i konsolą wysokiej dostępności
     stats:
       - value: 42 vCPU
@@ -77,6 +81,8 @@ sections:
       text: Zobacz dokumentację Kubernetes
       link: /kubernetes/
     image: /assets/image/k3s.jpg
+    imageWidth: 2816
+    imageHeight: 1536
     imageAlt: Klaster k3s zarządzany przez FluxCD z repozytorium Git
     features:
       - title: 100% GitOps Driven
@@ -92,6 +98,8 @@ sections:
       text: Zobacz repozytoria GitOps
       link: /gitops/
     image: /assets/image/gitops-ecosystem.jpg
+    imageWidth: 2000
+    imageHeight: 1116
     imageAlt: Ekosystem repozytoriów GitOps homelaba
     features:
       - title: Infrastructure as Code
@@ -107,6 +115,8 @@ sections:
       text: Zobacz strategię backupów
       link: /security/
     image: /assets/image/homelab-security.jpg
+    imageWidth: 2000
+    imageHeight: 1116
     imageAlt: Strategia backupów 3-2-1 — Proxmox, NAS, AWS S3 i Grafana
     features:
       - title: Snapshoty maszyn wirtualnych
